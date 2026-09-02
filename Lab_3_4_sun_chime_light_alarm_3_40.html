@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUN CHIME — รูปที่ 3-40 ปลุกด้วยแสงอาทิตย์</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+:root{
+  --deck:#0e1317; --panel:#171e25; --panel-2:#1f2831; --rail:#2b3742; --edge:#3a4753;
+  --ink:#e8eef4; --ink-dim:#8fa0b0; --ink-faint:#5f7080;
+  --signal:#f2a541; --ref:#7fb9cd; --ok:#4ade80; --bad:#f43f5e;
+  --board:#0b1015; --shade:rgba(255,255,255,.05);
+  --mono:'IBM Plex Mono','Courier New',monospace;
+  --disp:'Bai Jamjuree','IBM Plex Sans Thai',sans-serif;
+  --body:'IBM Plex Sans Thai','Bai Jamjuree',sans-serif;
+  --wirecol:#7d8b98; --compstroke:#9fb0bd;
+}
+html[data-theme="light"]{
+  --deck:#eef1f5; --panel:#ffffff; --panel-2:#f5f8fa; --rail:#cdd7e0; --edge:#d7dfe6;
+  --ink:#16202a; --ink-dim:#4d5f6e; --ink-faint:#7b8b98;
+  --signal:#b96c12; --ref:#1f6f8c; --ok:#15803d; --bad:#be123c;
+  --board:#f8fafc; --shade:rgba(0,0,0,.04);
+  --wirecol:#44515c; --compstroke:#34414c;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:radial-gradient(1200px 600px at 50% -10%, var(--panel-2) 0%, var(--deck) 62%);
+  color:var(--ink); font-family:var(--body); font-size:15px; line-height:1.6;
+  min-height:100vh; padding-bottom:60px; transition:background .3s,color .3s;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px;}
+
+.plate{
+  margin-top:22px;border:1px solid var(--edge);border-radius:14px;
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  box-shadow:0 18px 40px rgba(0,0,0,.28), inset 0 1px 0 var(--shade);
+  padding:18px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+}
+.plate h1{font-family:var(--disp);font-weight:700;font-size:25px;letter-spacing:.06em;margin:0;line-height:1.15;}
+.plate h1 span{color:var(--signal);}
+.plate .sub{color:var(--ink-dim);font-size:13.5px;margin-top:2px;}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:16px;}
+.score{text-align:right;border-left:1px solid var(--edge);padding-left:18px;}
+.score b{font-family:var(--mono);font-size:24px;color:var(--signal);display:block;line-height:1;}
+.score small{color:var(--ink-faint);letter-spacing:.14em;font-size:11px;}
+#themebtn{
+  font-family:var(--disp);font-weight:600;font-size:13px;background:var(--panel-2);
+  color:var(--ink-dim);border:1px solid var(--edge);border-radius:20px;padding:7px 14px;cursor:pointer;
+}
+#themebtn:hover{border-color:var(--signal);color:var(--signal);}
+
+nav{display:flex;gap:6px;margin:20px 0 16px;flex-wrap:wrap;}
+nav button{
+  font-family:var(--disp);font-weight:600;font-size:13.5px;background:var(--panel);color:var(--ink-dim);
+  border:1px solid var(--edge);border-radius:9px 9px 0 0;padding:9px 15px;cursor:pointer;transition:.16s;
+}
+nav button:hover{color:var(--ink);background:var(--panel-2);}
+nav button.on{background:var(--panel-2);color:var(--signal);border-color:var(--signal);box-shadow:inset 0 -3px 0 var(--signal);}
+nav button.lock{opacity:.45;}
+nav button:focus-visible{outline:2px solid var(--signal);outline-offset:2px;}
+
+section.tab{display:none;} section.tab.on{display:block;animation:fade .25s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+.card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:18px 20px;margin-bottom:16px;
+  box-shadow:0 10px 26px rgba(0,0,0,.16), inset 0 1px 0 var(--shade);}
+.card h2{font-family:var(--disp);font-size:17px;font-weight:700;margin:0 0 4px;}
+.card h3{font-family:var(--disp);font-size:15px;font-weight:600;margin:18px 0 6px;color:var(--ref);}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--ink-faint);text-transform:uppercase;margin-bottom:8px;}
+.muted{color:var(--ink-dim);font-size:14px;}
+.grid2{display:grid;grid-template-columns:320px 1fr;gap:16px;}
+@media(max-width:860px){.grid2{grid-template-columns:1fr;}}
+
+.faceplate{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--edge);
+  border-radius:14px;padding:20px;box-shadow:inset 0 1px 0 var(--shade),0 14px 34px rgba(0,0,0,.2);margin-bottom:16px;}
+.railwrap{position:relative;height:58px;border:1px solid var(--rail);border-radius:10px;background:var(--board);overflow:hidden;}
+.railfill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,rgba(242,165,65,.14),rgba(242,165,65,.55));border-right:2px solid var(--signal);transition:width .12s linear;}
+.notch{position:absolute;top:0;bottom:0;width:1px;background:var(--ref);opacity:.7;}
+.notch b{position:absolute;top:4px;left:5px;font-family:var(--mono);font-size:10.5px;color:var(--ref);font-weight:400;white-space:nowrap;}
+.railval{position:absolute;bottom:6px;font-family:var(--mono);font-size:13px;color:var(--signal);white-space:nowrap;}
+
+.readout{font-family:var(--mono);background:var(--board);border:1px solid var(--rail);border-radius:8px;padding:10px 12px;width:100%;}
+.readout .row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;}
+.readout .row span:first-child{color:var(--ink-faint);}
+.btn{font-family:var(--disp);font-weight:600;font-size:13.5px;background:var(--panel-2);color:var(--ink);
+  border:1px solid var(--edge);border-radius:8px;padding:8px 14px;cursor:pointer;transition:.15s;}
+.btn:hover{border-color:var(--signal);color:var(--signal);}
+.btn.pri{background:var(--signal);color:#12181d;border-color:var(--signal);}
+html[data-theme="light"] .btn.pri{color:#fff;}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+
+.scope{background:var(--board);border:1px solid var(--rail);border-radius:12px;padding:10px;overflow-x:auto;}
+svg{display:block;max-width:100%;height:auto;}
+.wire{stroke:var(--wirecol);stroke-width:2;fill:none;stroke-linecap:round;}
+.wire.hot{stroke:var(--signal);}
+.comp{fill:none;stroke:var(--compstroke);stroke-width:2;}
+.lbl{font-family:var(--mono);font-size:11px;fill:var(--ink-dim);}
+.lbl.v{fill:var(--ref);font-size:11.5px;}
+.lbl.sig{fill:var(--signal);}
+.tag{font-family:var(--disp);font-size:12px;font-weight:600;fill:var(--ink);}
+.dot{fill:var(--wirecol);}
+.flowline{stroke:var(--signal);stroke-width:2.6;fill:none;opacity:0;stroke-dasharray:6 12;}
+.flowline.live{opacity:.95;animation:flow .55s linear infinite;}
+@keyframes flow{to{stroke-dashoffset:-18;}}
+
+.checklist{list-style:none;padding:0;margin:10px 0 0;}
+.checklist li{padding:6px 10px;border-left:3px solid var(--rail);color:var(--ink-dim);font-size:13.5px;margin-bottom:4px;background:var(--panel-2);}
+.checklist li.done{border-left-color:var(--ok);color:var(--ink);}
+.checklist li.done::before{content:"✓ ";color:var(--ok);font-weight:700;}
+
+.qcard{background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;padding:16px;margin-bottom:12px;}
+.qhead{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--ink-faint);}
+.qtext{font-family:var(--disp);font-size:16px;font-weight:600;margin:6px 0 14px;line-height:1.5;}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+@media(max-width:620px){.opts{grid-template-columns:1fr;}}
+.opt{text-align:left;background:var(--panel);border:1px solid var(--edge);border-radius:9px;padding:11px 13px;
+  cursor:pointer;color:var(--ink);font-family:var(--body);font-size:14px;transition:.14s;}
+.opt:hover{border-color:var(--ref);}
+.opt.pick{border-color:var(--signal);background:var(--shade);}
+.opt.right{border-color:var(--ok);background:rgba(74,222,128,.13);}
+.opt.wrong{border-color:var(--bad);background:rgba(244,63,94,.12);}
+.explain{margin-top:13px;padding:12px 14px;border-left:3px solid var(--ref);background:var(--panel);border-radius:0 8px 8px 0;font-size:14px;}
+.explain b{color:var(--ref);}
+.note{font-size:13.5px;color:var(--ink-dim);border-left:3px solid var(--signal);padding:8px 12px;background:var(--panel-2);border-radius:0 8px 8px 0;margin-top:12px;}
+.eq{font-family:var(--mono);font-size:13.5px;background:var(--board);border:1px solid var(--rail);border-radius:8px;padding:11px 14px;margin:10px 0;color:var(--ref);overflow-x:auto;}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;}
+.field label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-faint);margin-bottom:4px;}
+.field input{width:100%;background:var(--board);border:1px solid var(--rail);border-radius:7px;color:var(--signal);
+  font-family:var(--mono);font-size:14px;padding:8px 10px;}
+.field input:focus{outline:none;border-color:var(--signal);}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.chip{font-size:12.5px;font-family:var(--disp);font-weight:600;background:var(--panel-2);border:1px solid var(--edge);
+  color:var(--ink-dim);border-radius:20px;padding:5px 13px;cursor:pointer;}
+.chip:hover{border-color:var(--ref);color:var(--ref);}
+ul.tight{margin:6px 0;padding-left:20px;} ul.tight li{margin-bottom:5px;}
+table.cmp{width:100%;border-collapse:collapse;font-size:13.5px;}
+table.cmp th{font-family:var(--disp);font-size:12px;color:var(--ink-faint);text-align:left;padding:6px 8px;border-bottom:1px solid var(--rail);font-weight:600;}
+table.cmp td{padding:8px;border-bottom:1px solid var(--edge);font-family:var(--mono);font-size:13px;}
+.pill{display:inline-block;padding:1px 9px;border-radius:20px;font-size:11.5px;font-family:var(--disp);font-weight:600;}
+.pill.on{background:rgba(74,222,128,.16);color:var(--ok);border:1px solid rgba(74,222,128,.4);}
+.pill.off{background:var(--shade);color:var(--ink-faint);border:1px solid var(--edge);}
+.gaugebar{height:26px;background:var(--board);border:1px solid var(--rail);border-radius:6px;overflow:hidden;margin:4px 0 12px;}
+.gaugebar i{display:block;height:100%;background:var(--ref);transition:width .5s;}
+.gaugebar i.post{background:var(--signal);}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--panel-2);
+  border:1px solid var(--signal);color:var(--ink);padding:10px 18px;border-radius:9px;font-family:var(--disp);
+  font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:99;}
+.toast.show{opacity:1;transform:translateX(-50%);}
+.locked{text-align:center;padding:50px 20px;color:var(--ink-dim);}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+
+.clobox{margin-top:22px;text-align:left;border-top:1px solid var(--edge);padding-top:16px;}
+.clolist{margin:8px 0 0;padding-left:0;list-style:none;}
+.clolist li{margin-bottom:8px;font-size:14px;color:var(--ink-dim);line-height:1.55;
+  border-left:3px solid var(--edge);padding:2px 0 2px 12px;}
+.clolist li b{display:block;color:var(--ink);font-family:var(--disp);font-size:14.5px;}
+.clotag{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--ref);}
+.setid{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);letter-spacing:.06em;margin-top:8px;}
+.setid b{color:var(--ref);font-weight:600;}
+.clot{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px;}
+.clot th{font-family:var(--disp);font-size:12px;color:var(--ink-faint);text-align:left;
+  padding:7px 8px;border-bottom:1px solid var(--rail);font-weight:600;}
+.clot td{padding:9px 8px;border-bottom:1px solid var(--edge);font-size:13.5px;vertical-align:top;}
+.clot td.mk{font-family:var(--mono);font-size:16px;text-align:center;width:56px;}
+.mk.y{color:var(--ok);} .mk.n{color:var(--bad);opacity:.75;}
+.clost{font-family:var(--disp);font-size:12.5px;font-weight:600;border-radius:20px;
+  padding:3px 11px;border:1px solid var(--edge);white-space:nowrap;display:inline-block;}
+.clost.up{color:var(--ok);border-color:var(--ok);}
+.clost.keep{color:var(--ref);border-color:var(--ref);}
+.clost.down{color:var(--signal);border-color:var(--signal);}
+.clost.miss{color:var(--bad);border-color:var(--bad);}
+
+.gate{max-width:560px;margin:26px auto;text-align:center;}
+.gate .idin{width:100%;background:var(--panel-2);border:1px solid var(--rail);border-radius:10px;
+  color:var(--signal);font-family:var(--mono);font-size:19px;padding:13px 15px;text-align:center;letter-spacing:.04em;}
+.gate .idin:focus{outline:none;border-color:var(--signal);box-shadow:0 0 0 3px rgba(242,165,65,.16);}
+.gate .hint{font-size:12.5px;color:var(--ink-faint);margin-top:9px;}
+
+.cert{position:relative;border:1px solid var(--edge);border-radius:16px;padding:26px 26px 22px;
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  box-shadow:0 20px 46px rgba(0,0,0,.30);overflow:hidden;}
+.cert::before{content:"";position:absolute;inset:7px;border:1px solid var(--edge);border-radius:11px;
+  pointer-events:none;opacity:.65;}
+.cert-top{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;position:relative;}
+.cert-name{font-family:var(--disp);font-weight:700;font-size:32px;line-height:1.2;margin:2px 0 0;}
+.cert-meta{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);letter-spacing:.1em;margin-top:6px;}
+.cert-medal{margin-left:auto;text-align:center;min-width:112px;}
+.cert-medal b{display:block;font-family:var(--mono);font-size:34px;line-height:1;color:var(--signal);}
+.cert-medal small{display:block;font-size:11px;letter-spacing:.14em;color:var(--ink-faint);margin-top:5px;}
+.cert-rank{display:inline-block;margin-top:9px;padding:4px 14px;border-radius:20px;font-family:var(--disp);
+  font-weight:600;font-size:12.5px;border:1px solid var(--signal);color:var(--signal);background:var(--panel-2);}
+.scorepair{display:grid;grid-template-columns:1fr 74px 1fr;gap:14px;align-items:center;margin:22px 0 6px;}
+@media(max-width:640px){.scorepair{grid-template-columns:1fr;} .arrowcell{transform:rotate(90deg);}}
+.scorebox{background:var(--panel-2);border:1px solid var(--rail);border-radius:12px;padding:16px 18px;text-align:center;}
+.scorebox.after{border-color:var(--signal);}
+.scorebox .cap{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--ink-faint);}
+.scorebox .num{font-family:var(--mono);font-size:40px;font-weight:600;line-height:1.1;margin:4px 0 2px;color:var(--ref);}
+.scorebox.after .num{color:var(--signal);}
+.scorebox .pct{font-size:12.5px;color:var(--ink-dim);}
+.dotrow{display:flex;gap:6px;justify-content:center;margin-top:10px;}
+.dotrow i{width:13px;height:13px;border-radius:50%;border:1px solid var(--rail);background:transparent;display:block;}
+.dotrow i.hit{background:var(--ok);border-color:var(--ok);}
+.dotrow i.miss{background:var(--bad);border-color:var(--bad);opacity:.5;}
+.arrowcell{text-align:center;font-family:var(--mono);font-size:13px;color:var(--ink-faint);}
+.arrowcell b{display:block;font-size:22px;color:var(--signal);line-height:1;}
+.praise{margin-top:18px;border-left:3px solid var(--signal);background:var(--panel-2);border-radius:0 10px 10px 0;padding:14px 16px;}
+.praise h4{font-family:var(--disp);font-size:17px;margin:0 0 5px;color:var(--ink);}
+.praise p{margin:0;font-size:14px;color:var(--ink-dim);}
+.stamp{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+.stamp span{font-family:var(--mono);font-size:11px;color:var(--ink-faint);border:1px solid var(--edge);
+  border-radius:6px;padding:5px 10px;background:var(--panel-2);}
+.stamp span b{color:var(--ink-dim);font-weight:600;}
+.vcode{font-family:var(--mono);font-size:15px;letter-spacing:.22em;color:var(--ok);}
+
+/* ===== ส่วนเสริมเฉพาะชุดเซนเซอร์แสง/อินฟราเรด ===== */
+.simgrid{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;}
+@media(max-width:900px){.simgrid{grid-template-columns:1fr;}}
+.slidebox{margin-bottom:16px;}
+.slidebox .slbl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:6px;}
+.slidebox .slbl b{color:var(--signal);font-size:13px;}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:4px;
+  background:var(--rail);outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;
+  background:var(--signal);border:3px solid var(--panel);box-shadow:0 0 0 1px var(--signal);cursor:pointer;}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--signal);
+  border:3px solid var(--panel);box-shadow:0 0 0 1px var(--signal);cursor:pointer;}
+.statusled{display:inline-flex;align-items:center;gap:8px;font-family:var(--disp);font-weight:600;font-size:13px;
+  padding:6px 12px;border-radius:20px;border:1px solid var(--edge);background:var(--panel-2);color:var(--ink-dim);}
+.statusled i{width:11px;height:11px;border-radius:50%;background:var(--ink-faint);display:block;box-shadow:0 0 0 3px rgba(0,0,0,0) ;transition:.2s;}
+.statusled.live{color:var(--signal);border-color:var(--signal);}
+.statusled.live i{background:var(--signal);box-shadow:0 0 10px 2px rgba(242,165,65,.7);}
+.wavebadge{display:inline-flex;gap:6px;align-items:center;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);
+  border:1px solid var(--edge);border-radius:20px;padding:3px 10px;background:var(--panel-2);}
+.compbox{background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;padding:14px 16px;margin-top:10px;}
+.compbox h4{margin:0 0 8px;font-family:var(--disp);font-size:14px;color:var(--ref);}
+.stepnum{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;
+  background:var(--signal);color:#12181d;font-family:var(--mono);font-weight:700;font-size:12px;margin-right:8px;flex-shrink:0;}
+html[data-theme="light"] .stepnum{color:#fff;}
+.stepline{display:flex;align-items:flex-start;margin-bottom:10px;font-size:14px;}
+
+
+:root{
+  --deck:#1a1006; --panel:#241708; --panel-2:#2e1d0a; --rail:#4a3212; --edge:#5c3f15;
+  --ink:#fff3e0; --ink-dim:#d9b98a; --ink-faint:#a3825a;
+  --signal:#ff8a3d; --ref:#ffd166; --ok:#8bd17c; --bad:#ff5d5d;
+  --board:#140c04; --shade:rgba(255,255,255,.05);
+  --wirecol:#8a6a48; --compstroke:#d9b98a;
+}
+html[data-theme="light"]{
+  --deck:#fdf4e7; --panel:#fffaf1; --panel-2:#fbeed9; --rail:#e8cfa0; --edge:#dcb877;
+  --ink:#3a2410; --ink-dim:#7a5a34; --ink-faint:#a3825a;
+  --signal:#c9600f; --ref:#a3780a; --ok:#2f7d3c; --bad:#c23636;
+  --board:#fff9ee; --shade:rgba(0,0,0,.04);
+  --wirecol:#8a6a48; --compstroke:#5c3f15;
+}
+
+.icbox{fill:var(--panel-2);}
+path.led{fill:var(--panel);stroke:var(--compstroke);stroke-width:2;transition:fill .2s,stroke .2s;}
+path.led.on{fill:var(--signal);stroke:var(--signal);}
+line.ray{stroke:var(--signal);stroke-width:1.6;opacity:0;transition:opacity .2s;}
+line.ray.on{opacity:1;}
+path.soundwave{stroke:var(--signal);stroke-width:2;fill:none;opacity:0;transition:opacity .2s;}
+path.soundwave.on{opacity:1;animation:wavepulse 1s ease-in-out infinite;}
+@keyframes wavepulse{0%,100%{opacity:.35;}50%{opacity:1;}}
+rect.on, circle.on{filter:drop-shadow(0 0 6px var(--signal));}
+.beamline{stroke:var(--signal);stroke-width:2;stroke-dasharray:5 5;opacity:.85;transition:opacity .25s,stroke .25s;}
+.beamline.broken{stroke:var(--bad);opacity:.35;stroke-dasharray:2 6;}
+.beamline.off{opacity:.15;}
+.circuit-svg{min-width:820px;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="plate">
+    <div>
+      <h1>SUN <span>CHIME</span></h1>
+      <div class="sub">รูปที่ 3-40 — ปลุกด้วยแสงอาทิตย์ · วงจรเตือนเสียงเมื่อแสงอาทิตย์ตกกระทบ ด้วย LDR และออสซิลเลเตอร์เสียงคู่ไอซี</div>
+    </div>
+    <div class="hdr-right">
+      <button id="themebtn">โหมดสว่าง</button>
+      <div class="score" id="whobox" style="display:none;border-left:none;padding-left:0;text-align:right;">
+        <b id="whoname" style="font-family:var(--disp);font-size:16px;color:var(--ink);"></b>
+        <small>ผู้เรียน</small>
+      </div>
+      <div class="score"><b id="xp">0</b><small>คะแนนสะสม</small></div>
+    </div>
+  </div>
+
+  <nav>
+    <button class="on" data-tab="pre">1 · ทดสอบก่อนเรียน</button>
+    <button data-tab="theory">2 · หลักการวงจร</button>
+    <button data-tab="lab">3 · ห้องทดลองจำลอง</button>
+    <button data-tab="post">4 · ทดสอบหลังเรียน</button>
+    <button data-tab="report">5 · ผลการเรียนรู้</button>
+  </nav>
+
+  <!-- PRETEST -->
+  <section class="tab on" id="tab-pre">
+    <div class="card" id="idcard">
+      <div class="eyebrow">ขั้นที่ 0 · ลงทะเบียนก่อนเริ่ม</div>
+      <div class="gate">
+        <h2 style="font-size:21px;">ระบุชื่อเล่นของผู้เรียน</h2>
+        <p class="muted" style="margin-bottom:16px;">ชื่อนี้จะปรากฏบนใบสรุปผลการเรียนรู้เมื่อจบบทเรียน
+        พร้อมรหัสยืนยันเฉพาะตัวที่ผูกกับพฤติกรรมการทำแบบทดสอบของผู้เรียนเอง</p>
+        <input class="idin" id="nick" maxlength="24" autocomplete="off" placeholder="พิมพ์ชื่อเล่นที่นี่">
+        <div class="btnrow" style="justify-content:center;">
+          <button class="btn pri" id="nickgo">ยืนยันชื่อและเริ่มบทเรียน</button>
+        </div>
+        <div class="hint" id="nickmsg">ใช้ได้ทั้งภาษาไทยและอังกฤษ ความยาว 2 ถึง 24 ตัวอักษร</div>
+
+        <div class="clobox">
+          <div class="eyebrow">ผลลัพธ์การเรียนรู้ที่คาดหวังของบทเรียนนี้</div>
+          <ol class="clolist" id="clolist"></ol>
+          <div class="hint">แบบทดสอบก่อนเรียนและหลังเรียนจะสุ่มข้อจากคลังตามผลลัพธ์การเรียนรู้ข้างต้น
+          ผลลัพธ์ละ 1 ข้อ โดยระบบรับประกันว่าข้อที่ได้ในรอบหลังเรียนจะไม่ซ้ำกับรอบก่อนเรียน
+          และตัวเลือกของทุกข้อถูกสับตำแหน่งใหม่ทุกครั้ง</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="precard" style="display:none;">
+      <div class="eyebrow">ขั้นที่ 1 · แบบทดสอบก่อนเรียน · 3 ข้อ · สุ่มจากคลัง · ไม่เฉลยระหว่างทำ</div>
+      <h2>วัดความเข้าใจเดิมก่อนเข้าห้องทดลอง</h2>
+      <p class="muted">ตอบตามความเข้าใจปัจจุบัน ระบบจะเก็บคะแนนไว้เทียบกับหลังเรียน
+      เพื่อคำนวณความก้าวหน้าเชิงปกติ (normalized gain) ซึ่งเป็นตัวชี้วัดว่าสื่อนี้ช่วยให้เข้าใจขึ้นจริงมากน้อยเพียงใด</p>
+      <div class="setid setidout"></div>
+      <div class="btnrow"><button class="btn" id="preshuffle">สุ่มชุดข้อสอบใหม่</button></div>
+      <div id="prebox" style="margin-top:14px;"></div>
+      <div class="btnrow"><button class="btn pri" id="presubmit">ส่งคำตอบและไปที่หลักการวงจร</button></div>
+      <div class="note" id="premsg">ตอบให้ครบทั้ง 3 ข้อจึงจะส่งได้</div>
+    </div>
+  </section>
+
+  <!-- THEORY -->
+  <section class="tab" id="tab-theory">
+    <div id="theory-lock" class="card locked">ทำแบบทดสอบก่อนเรียนให้เสร็จก่อน จึงจะเข้าเนื้อหาหลักการได้</div>
+    <div id="theory-body" style="display:none;">
+
+      <div class="card">
+        <div class="eyebrow">รูปที่ 3-40 · ปลุกด้วยแสงอาทิตย์</div>
+        <h2>หลักการทำงานของวงจรปลุกด้วยแสงอาทิตย์</h2>
+        <p class="muted">วงจรนี้อาศัยหลักการเดียวกับ "สวิตช์แสง" ที่พบทั่วไปในงาน IoT และระบบเกษตรอัจฉริยะ
+        คือการแปลงปริมาณแสง (ปริมาณเชิงกายภาพที่ต่อเนื่อง) ให้กลายเป็นแรงดันไฟฟ้า แล้วใช้วงจรเปรียบเทียบตัดสินใจ
+        ว่าจะสั่งให้อุปกรณ์เอาต์พุตทำงานหรือไม่ ซึ่งเป็นสถาปัตยกรรมพื้นฐานของเซนเซอร์แบบ threshold-trigger</p>
+
+        <h3>1. ตัวรับรู้แสง (Light-Dependent Resistor)</h3>
+        <p class="muted">LDR1 คือสารกึ่งตัวนำแคดเมียมซัลไฟด์ (CdS) ที่ความต้านทานลดลงแบบไม่เป็นเชิงเส้นเมื่อมีแสงตกกระทบมากขึ้น
+        โดยทั่วไปมีค่าตั้งแต่หลักร้อยโอห์มในที่สว่างจัด ไปจนถึงหลักเมกะโอห์มในที่มืดสนิท คุณสมบัตินี้ทำให้ LDR
+        เหมาะกับงานตรวจจับระดับแสงแบบหยาบ (threshold detection) มากกว่างานวัดค่าความสว่างแบบละเอียด (photometry)</p>
+
+        <h3>2. ตัวแบ่งแรงดันร่วมกับทริมเมอร์ตั้งไว</h3>
+        <p class="muted">R2, VR2 และ LDR1 ต่ออนุกรมกันเป็นตัวแบ่งแรงดันจากราง +9V ลงกราวด์ แรงดันที่จุดต่อกลาง
+        คำนวณได้จากกฎตัวแบ่งแรงดัน</p>
+        <div class="eq">V<sub>node</sub> = V<sub>CC</sub> × R<sub>LDR</sub> / (R2 + R<sub>VR2</sub> + R<sub>LDR</sub>)</div>
+        <p class="muted">เมื่อแสงมากขึ้น R<sub>LDR</sub> ลดลง ทำให้ V<sub>node</sub> ลดลงตามไปด้วย ในทางกลับกันการหมุน VR2
+        คือการเปลี่ยนสัดส่วนของตัวแบ่งแรงดัน ซึ่งเท่ากับเป็นการเลื่อน "จุดตั้งไว" ของระบบว่าจะให้ปลุกที่ความสว่างเท่าใด</p>
+
+        <h3>3. วงจรเปรียบเทียบและวงจรกำเนิดเสียง (IC2 และ IC1)</h3>
+        <p class="muted">IC2 ทำหน้าที่เป็นตัวเปรียบเทียบแรงดัน (comparator) ระหว่างแรงดันจากตัวแบ่งกับแรงดันอ้างอิงภายใน
+        เมื่อแรงดันข้ามจุดตัด เอาต์พุตของ IC2 จะเปลี่ยนสถานะและไปเปิดการทำงาน (enable) ของ IC1 ซึ่งถูกออกแบบให้เป็น
+        วงจรกำเนิดสัญญาณเสียงความถี่คงที่ หลักการนี้เรียกว่า "gated oscillator" คือให้ออสซิลเลเตอร์ทำงานเฉพาะเมื่อมีเงื่อนไขอนุญาต
+        แทนที่จะให้ทำงานตลอดเวลา ซึ่งประหยัดพลังงานและไม่รบกวนผู้ใช้งานเมื่อยังไม่ถึงเงื่อนไข</p>
+
+        <h3>4. ภาคขับลำโพง</h3>
+        <p class="muted">สัญญาณเสียงจาก IC1/IC2 มีกระแสไม่มากพอจะขับลำโพงโดยตรง จึงต้องผ่าน R3 เข้าขาเบสของทรานซิสเตอร์ Q1
+        เพื่อขยายกระแส Q1 ทำหน้าที่เป็นสวิตช์อิเล็กทรอนิกส์ความเร็วสูง สลับเปิดปิดตามความถี่เสียง ทำให้กระแสไหลผ่าน SP1
+        และ R4 เป็นจังหวะ เกิดเป็นเสียงที่หูมนุษย์ได้ยิน</p>
+
+        <h3>5. ทำไมต้องมี C1</h3>
+        <p class="muted">C1 ทำหน้าที่กรองแรงดันไฟเลี้ยงให้เรียบ (decoupling) ลดผลกระทบจากการกระชากของกระแสขณะ
+        ลำโพงทำงาน ซึ่งอาจทำให้แรงดันอ้างอิงของวงจรเปรียบเทียบเลื่อนและเกิดการทำงานผิดพลาดได้</p>
+
+        <div class="note">ข้อสังเกตเชิงวิศวกรรม วงจรนี้เป็นตัวอย่างที่ดีของ "Schmitt-like" behavior แม้จะไม่มีฮิสเทอรีซิสจริง
+        หากต้องการป้องกันการสั่นค้างเมื่อแสงอยู่ใกล้จุดตัดพอดี (เช่น ขณะเมฆบัง) ควรเพิ่มตัวต้านทานป้อนกลับเชิงบวกเล็กน้อยที่ IC2
+        เพื่อสร้างฮิสเทอรีซิส เช่นเดียวกับหลักการที่ใช้ในวงจร TRIP POINT</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LAB -->
+  <section class="tab" id="tab-lab">
+    <div id="lab-lock" class="card locked">ทำแบบทดสอบก่อนเรียนให้เสร็จก่อน จึงจะเข้าห้องทดลองได้</div>
+    <div id="lab-body" style="display:none;">
+
+      <div class="faceplate">
+        <div class="eyebrow">ห้องทดลองจำลอง · รูปที่ 3-40 · ปลุกด้วยแสงอาทิตย์</div>
+        <h2 style="margin-bottom:10px;">ทดลองปรับ "ความสว่างของดวงอาทิตย์" แล้วดูว่าวงจรตัดสินใจอย่างไร</h2>
+        <p class="muted">ลากแถบเลื่อนด้านล่างเพื่อจำลองปริมาณแสงที่ตกกระทบ LDR1 และจุดตั้งไวของ VR2
+        เมื่อแรงดันที่จุดต่อระหว่าง VR2 กับ LDR1 ข้ามจุดตั้งไว วงจร IC2 จะเปิดการทำงานของ IC1 ให้ขับลำโพงส่งเสียงปลุก</p>
+        <div class="scope"><div id="circuitHolder"></div></div>
+      </div>
+
+      <div class="simgrid">
+        <div class="card">
+          <div class="eyebrow">แผงควบคุมการทดลอง</div>
+          <div class="slidebox">
+            <div class="slbl"><span>ระดับแสงอาทิตย์ที่ตกกระทบ LDR1</span><b id="lv-light">40%</b></div>
+            <input type="range" id="sldLight" min="0" max="100" value="40">
+          </div>
+          <div class="slidebox">
+            <div class="slbl"><span>จุดตั้งไวของ VR2 (ค่าความสว่างที่ต้องการให้ปลุก)</span><b id="lv-thresh">55%</b></div>
+            <input type="range" id="sldThresh" min="0" max="100" value="55">
+          </div>
+          <div class="slidebox">
+            <div class="slbl"><span>ความสว่างไฟบอกสถานะ LED1 (VR1)</span><b id="lv-pilot">60%</b></div>
+            <input type="range" id="sldPilot" min="0" max="100" value="60">
+          </div>
+          <div id="statusPill" class="statusled"><i></i><span id="statusTxt">ยังไม่ถึงเวลาปลุก — วงจรเงียบ</span></div>
+        </div>
+
+        <div class="card">
+          <div class="eyebrow">ค่าที่คำนวณได้จากแบบจำลอง</div>
+          <div class="readout">
+            <div class="row"><span>ความต้านทาน LDR1 โดยประมาณ</span><span id="ro-rldr">—</span></div>
+            <div class="row"><span>แรงดันที่จุดต่อ VR2/LDR1 (เข้า IC2)</span><span id="ro-vnode">—</span></div>
+            <div class="row"><span>จุดตั้งไวที่แปลงเป็นแรงดัน</span><span id="ro-vthresh">—</span></div>
+            <div class="row"><span>เอาต์พุต IC2</span><span id="ro-ic2">—</span></div>
+            <div class="row"><span>สถานะ IC1 (ออสซิลเลเตอร์เสียง)</span><span id="ro-ic1">—</span></div>
+            <div class="row"><span>ลำโพง SP1</span><span id="ro-sp1">—</span></div>
+          </div>
+          <div class="railwrap" style="margin-top:12px;">
+            <div class="railfill" id="railFill" style="width:40%;"></div>
+            <div class="notch" id="railNotch" style="left:55%;"><b>จุดตั้งไว</b></div>
+            <div class="railval" id="railVal" style="left:6px;">แสงอาทิตย์ 40%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="compbox">
+        <h4>ลำดับการทำงานของวงจร (สัญญาณไหลอย่างไร)</h4>
+        <div class="stepline"><span class="stepnum">1</span><span>แสงอาทิตย์ตกกระทบ LDR1 มากขึ้น &rarr; ความต้านทานของ LDR1 ลดลง</span></div>
+        <div class="stepline"><span class="stepnum">2</span><span>แรงดันที่จุดต่อระหว่าง VR2 กับ LDR1 (ตัวแบ่งแรงดัน) เปลี่ยนแปลงตาม จนข้ามจุดตั้งไวที่ปรับด้วย VR2</span></div>
+        <div class="stepline"><span class="stepnum">3</span><span>IC2 ทำหน้าที่เปรียบเทียบแรงดัน เปลี่ยนสถานะเอาต์พุตเมื่อข้ามจุดตัด</span></div>
+        <div class="stepline"><span class="stepnum">4</span><span>เอาต์พุตของ IC2 ไปเปิดการทำงานของ IC1 ซึ่งเป็นวงจรกำเนิดสัญญาณเสียงความถี่คงที่</span></div>
+        <div class="stepline"><span class="stepnum">5</span><span>สัญญาณเสียงขับผ่าน R3 เข้าเบส Q1 ทำให้ Q1 นำกระแส ขับลำโพง SP1 ผ่าน R4 ให้ส่งเสียงปลุก</span></div>
+      </div>
+
+      <div class="compbox">
+        <h4>รายการอุปกรณ์และหน้าที่</h4>
+        <table class="cmp">
+        <tr><th>อุปกรณ์</th><th>ค่า</th><th>หน้าที่ในวงจร</th></tr>
+        <tr><td>LDR1</td><td>ตัวต้านทานแปรตามแสง</td><td>ตรวจจับความสว่างของแสงอาทิตย์ ความต้านทานลดลงเมื่อแสงมากขึ้น</td></tr>
+        <tr><td>VR2</td><td>10 kΩ</td><td>ตั้งจุดไวของการปลุก (threshold) ร่วมกับ R2</td></tr>
+        <tr><td>R2</td><td>1 kΩ</td><td>ตัวต้านทานอนุกรมจำกัดกระแสของตัวแบ่งแรงดัน</td></tr>
+        <tr><td>C1</td><td>100 µF</td><td>กรองแรงดันไฟเลี้ยงให้เรียบ ลดผลของสัญญาณรบกวน</td></tr>
+        <tr><td>IC1 / IC2</td><td>ไอซีคู่</td><td>IC1 กำเนิดสัญญาณเสียง IC2 เปรียบเทียบแรงดันและเปิดการทำงานของ IC1</td></tr>
+        <tr><td>Q1</td><td>ทรานซิสเตอร์ NPN</td><td>ขยายกระแสขับลำโพงให้ดังเพียงพอ</td></tr>
+        <tr><td>R3 / R4</td><td>2 kΩ / 330 Ω</td><td>จำกัดกระแสเบสของ Q1 และกระแสลำโพงตามลำดับ</td></tr>
+        <tr><td>VR1 / LED1 / R1</td><td>10 kΩ / — / 240 Ω</td><td>วงจรไฟบอกสถานะพร้อมใช้งาน แยกอิสระจากวงจรตรวจจับแสง</td></tr>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- POSTTEST -->
+  <section class="tab" id="tab-post">
+    <div id="post-lock" class="card locked">ทดลองปรับค่าต่าง ๆ ในห้องทดลองจำลองให้ครบตามเงื่อนไขก่อน จึงจะทำแบบทดสอบหลังเรียนได้</div>
+    <div id="post-body" style="display:none;">
+      <div class="card">
+        <div class="eyebrow">ขั้นสุดท้าย · แบบทดสอบหลังเรียน · 3 ข้อ · คนละข้อกับก่อนเรียนเสมอ</div>
+        <h2>วัดความเข้าใจหลังผ่านห้องทดลองจำลอง</h2>
+        <p class="muted">ข้อสอบชุดนี้วัดผลลัพธ์การเรียนรู้เดียวกันกับก่อนเรียน แต่เป็นคนละข้อกันเสมอ
+        เพื่อยืนยันว่าความเข้าใจที่เพิ่มขึ้นมาจากหลักการจริง ไม่ใช่การจำคำตอบ</p>
+        <div id="postbox" style="margin-top:14px;"></div>
+        <div class="btnrow"><button class="btn pri" id="postsubmit">ส่งคำตอบและดูผลการเรียนรู้</button></div>
+        <div class="note" id="postmsg">ตอบให้ครบทั้ง 3 ข้อจึงจะส่งได้</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPORT -->
+  <section class="tab" id="tab-report">
+    <div class="card">
+      <div class="eyebrow">สรุปผลการเรียนรู้</div>
+      <div id="repbody"><p class="muted">ยังไม่มีข้อมูล ทำแบบทดสอบก่อนเรียนและหลังเรียนให้ครบก่อน</p></div>
+    </div>
+  </section>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- ธีมสว่าง/มืด ---------- */
+const root=document.documentElement,tbtn=document.getElementById('themebtn');
+function syncTheme(){tbtn.textContent=root.getAttribute('data-theme')==='dark'?'โหมดสว่าง':'โหมดมืด';}
+tbtn.onclick=()=>{root.setAttribute('data-theme',root.getAttribute('data-theme')==='dark'?'light':'dark');syncTheme();};
+syncTheme();
+
+let tT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),1900);}
+let XP=0;function addXP(n,m){XP+=n;document.getElementById('xp').textContent=XP;toast(m||('+'+n+' คะแนน'));}
+
+/* ---------- แท็บและการล็อกลำดับการเรียน ---------- */
+let labSeconds=0,labTimer=null,interactions=0;
+function startLabTimer(){if(!labTimer)labTimer=setInterval(()=>labSeconds++,1000);}
+function stopLabTimer(){if(labTimer){clearInterval(labTimer);labTimer=null;}}
+function lockNav(){document.querySelectorAll('nav button').forEach(b=>{
+  const openTab = b.dataset.tab==='pre';
+  b.classList.toggle('lock', !openTab && !preDone);
+});}
+document.querySelectorAll('nav button').forEach(b=>{
+  b.onclick=()=>{
+    const t=b.dataset.tab;
+    if(t!=='pre'&&!NICK){toast('กรุณาระบุชื่อเล่นที่แท็บแรกก่อนเริ่มบทเรียน');return;}
+    if(t!=='pre'&&!preDone){toast('ทำแบบทดสอบก่อนเรียนให้เสร็จก่อน');return;}
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('section.tab').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');document.getElementById('tab-'+t).classList.add('on');
+    if(t==='lab')startLabTimer();else stopLabTimer();
+    if(t==='post')checkPostGate();
+    if(t==='report')drawReport();
+  };
+});
+
+/* ---------- ลงทะเบียนชื่อเล่น ---------- */
+let NICK='', startedAt=null;
+const nickIn=document.getElementById('nick');
+function goPre(){
+  const v=(nickIn.value||'').trim().replace(/\s+/g,' ');
+  if(v.length<2){document.getElementById('nickmsg').textContent='กรุณาพิมพ์ชื่อเล่นอย่างน้อย 2 ตัวอักษรก่อนเริ่มบทเรียน';nickIn.focus();return;}
+  NICK=v; startedAt=new Date();
+  document.getElementById('whoname').textContent=NICK;
+  document.getElementById('whobox').style.display='block';
+  document.getElementById('idcard').style.display='none';
+  const pc=document.getElementById('precard');
+  pc.style.display='block';
+  if(pc.scrollIntoView)pc.scrollIntoView({behavior:'smooth',block:'start'});
+  lockNav();
+  toast('สวัสดี '+NICK+' ยินดีต้อนรับเข้าสู่บทเรียน');
+}
+document.getElementById('nickgo').onclick=goPre;
+nickIn.addEventListener('keydown',e=>{if(e.key==='Enter')goPre();});
+
+/* ===================================================================
+   คลังข้อสอบและเอนจินสุ่มแบบไม่ซ้ำ (Stratified Non-repeating Item Engine)
+   ทุก CLO มีข้อสอบอย่างน้อย 2 ข้อ ระบบจะสุ่มสับลำดับแล้วใช้ข้อแรกเป็นก่อนเรียน
+   และข้อที่สองเป็นหลังเรียนเสมอ จึงรับประกันว่าก่อนเรียนกับหลังเรียนไม่ใช้ข้อเดียวกัน
+   =================================================================== */
+
+const BANK=[
+ {code:'A',clo:'อธิบายความสัมพันธ์ระหว่างแสงกับความต้านทานของ LDR และผลต่อแรงดันจุดต่อ',
+  desc:'อธิบายได้ว่าเมื่อแสงเปลี่ยน ความต้านทานและแรงดันที่จุดต่อของตัวแบ่งแรงดันเปลี่ยนไปในทิศทางใด',
+  items:[
+  {q:'เมื่อแสงอาทิตย์ตกกระทบ LDR1 มากขึ้น ความต้านทานของ LDR1 และแรงดันที่จุดต่อ VR2/LDR1 (V_node) จะเปลี่ยนแปลงอย่างไร',
+   o:['ความต้านทานลดลง และ V_node ลดลง','ความต้านทานเพิ่มขึ้น และ V_node เพิ่มขึ้น','ความต้านทานลดลง แต่ V_node เพิ่มขึ้น','ความต้านทานและ V_node ไม่เปลี่ยนแปลง'],a:0,
+   e:'แสงมากขึ้นทำให้ LDR1 ซึ่งเป็นสารกึ่งตัวนำมีพาหะนำไฟฟ้ามากขึ้น ความต้านทานจึงลดลง เมื่อ LDR1 อยู่ด้านล่างของตัวแบ่งแรงดัน ความต้านทานที่ลดลงทำให้สัดส่วนแรงดันตกคร่อม LDR1 ลดลงตามไปด้วย จึงเป็นตัวกำหนดว่าจะปลุกเมื่อสว่างพอ'},
+  {q:'ในความมืดสนิท ความต้านทานของ LDR1 จะมีแนวโน้มเป็นอย่างไร และมีผลต่อวงจรอย่างไร',
+   o:['ต่ำมากจนเกือบลัดวงจร ทำให้ V_node สูงใกล้ V_CC','สูงมาก (หลักเมกะโอห์ม) ทำให้ V_node สูงใกล้ V_CC เพราะตัวแบ่งแรงดันเทไปทาง R2/VR2','สูงมาก ทำให้ V_node ต่ำใกล้ 0 V','ไม่มีผลใด ๆ ต่อ V_node'],a:1,
+   e:'ในที่มืด LDR1 มีความต้านทานสูงมาก เมื่อเทียบกับ R2+VR2 ที่คงที่ สัดส่วนแรงดันตกคร่อม LDR1 (ซึ่งคือ V_node) จะสูงเกือบเท่า V_CC วงจรจึงยังไม่ถึงจุดตัด และเสียงปลุกจึงยังไม่ดัง'}
+ ]},
+ {code:'B',clo:'วิเคราะห์การทำงานร่วมกันของวงจรเปรียบเทียบและวงจรกำเนิดเสียงแบบเกต',
+  desc:'อธิบายหน้าที่ของ IC2 ในฐานะตัวเปรียบเทียบ และ IC1 ในฐานะออสซิลเลเตอร์ที่ถูกเปิดใช้งานแบบมีเงื่อนไข',
+  items:[
+  {q:'เพราะเหตุใดวงจรจึงออกแบบให้ IC2 เป็นตัวเปิดการทำงาน (enable) ของ IC1 แทนที่จะให้ IC1 กำเนิดเสียงตลอดเวลา',
+   o:['เพื่อลดต้นทุนวงจร','เพื่อให้ลำโพงมีเสียงดังขึ้น','เพื่อให้เสียงปลุกดังเฉพาะเมื่อเงื่อนไขแสงเป็นจริง ประหยัดพลังงานและไม่รบกวนผู้ใช้ตลอดเวลา','เพราะ IC1 ทำงานเองไม่ได้หากไม่มี IC2'],a:2,
+   e:'หลักการ gated oscillator ทำให้วงจรกำเนิดเสียงทำงานเฉพาะเมื่อสภาวะแสงตรงตามเงื่อนไขที่ตั้งไว้ ต่างจากวงจรที่ส่งเสียงตลอดเวลาซึ่งจะกินไฟและรบกวนผู้ใช้โดยไม่จำเป็น'},
+  {q:'ถ้าปรับ VR2 ให้จุดตั้งไวสูงขึ้น (ต้องการแสงจ้ากว่าเดิมจึงจะปลุก) พฤติกรรมของวงจรที่ระดับแสงเดิมจะเป็นอย่างไร',
+   o:['ปลุกง่ายขึ้นกว่าเดิมที่แสงระดับเดียวกัน','ปลุกยากขึ้น อาจไม่ปลุกเลยที่แสงระดับเดิม เพราะต้องรอให้ V_node ข้ามจุดตัดใหม่ที่สูงขึ้น','ไม่มีผลใด ๆ เพราะ VR2 ไม่เกี่ยวกับจุดตัด','ทำให้ลำโพงเสียหาย'],a:1,
+   e:'การหมุน VR2 คือการเปลี่ยนสัดส่วนตัวแบ่งแรงดัน ซึ่งเปลี่ยนจุดตัดของ IC2 การตั้งจุดตัดให้สูงขึ้นหมายถึงต้องใช้แสงที่จ้ากว่าเดิมกว่า V_node จะข้ามจุดตัด วงจรจึงปลุกยากขึ้นที่ระดับแสงเดิม'}
+ ]},
+ {code:'C',clo:'ออกแบบภาคขับลำโพงด้วยทรานซิสเตอร์และวิเคราะห์บทบาทของตัวเก็บประจุกรองไฟ',
+  desc:'อธิบายหน้าที่ของ R3, Q1, R4 ในการขยายกระแสขับลำโพง และบทบาทของ C1 ในการกรองไฟเลี้ยง',
+  items:[
+  {q:'เพราะเหตุใดสัญญาณเสียงจาก IC1/IC2 จึงต้องผ่านทรานซิสเตอร์ Q1 ก่อนไปขับลำโพง SP1',
+   o:['เพื่อเปลี่ยนความถี่เสียงให้สูงขึ้น','เพราะขาเอาต์พุตของไอซีให้กระแสไม่มากพอจะขับลำโพงโดยตรง Q1 จึงทำหน้าที่ขยายกระแส','เพื่อป้องกันไฟฟ้าสถิต','เพราะลำโพงต้องการแรงดันสลับเฟส 3 เฟส'],a:1,
+   e:'ขาเอาต์พุตของไอซีทั่วไปจ่ายกระแสได้เพียงไม่กี่มิลลิแอมป์ ในขณะที่ลำโพงต้องการกระแสระดับหลายสิบถึงหลายร้อยมิลลิแอมป์จึงจะดังเพียงพอ ทรานซิสเตอร์ Q1 จึงทำหน้าที่เป็นสวิตช์ขยายกระแสให้เพียงพอ'},
+  {q:'ถ้าถอด C1 ออกจากวงจร ขณะลำโพงเริ่มทำงานและกินกระแสกระชาก จะเกิดผลอย่างไรต่อวงจรเปรียบเทียบ',
+   o:['ไม่มีผลใด ๆ เพราะ C1 ไม่เกี่ยวข้องกับ IC2','แรงดันไฟเลี้ยงอาจกระเพื่อม ทำให้แรงดันอ้างอิงของ IC2 คลาดเคลื่อนและอาจเกิดการปลุกซ้ำหรือเสียงสะดุด','ลำโพงจะดังขึ้นกว่าเดิม','LDR1 จะเสียหาย'],a:1,
+   e:'C1 ทำหน้าที่กรองแรงดันไฟเลี้ยงให้เรียบ เมื่อไม่มี C1 การกินกระแสกระชากของลำโพงจะทำให้แรงดันรางตกชั่วขณะ ซึ่งกระทบแรงดันอ้างอิงของวงจรเปรียบเทียบ ทำให้เกิดอาการทำงานไม่เสถียรได้'}
+ ]}
+];
+
+
+function shuf(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function pickItem(g,k){
+  const it=g.items[k];
+  const idx=shuf(it.o.map((_,i)=>i));
+  return {q:it.q,o:idx.map(i=>it.o[i]),a:idx.indexOf(it.a),e:it.e,
+          clo:g.clo,code:g.code,id:g.code+(k+1)};
+}
+let PRE=[],POST=[],preAns=[],postAns=[],SETCODE='';
+function buildSets(){
+  PRE=[];POST=[];
+  shuf(BANK.map((_,i)=>i)).forEach(gi=>{
+    const g=BANK[gi];
+    const p=shuf(g.items.map((_,i)=>i));
+    PRE.push(pickItem(g,p[0]));
+    POST.push(pickItem(g,p[1]));
+  });
+  preAns=PRE.map(()=>null); postAns=POST.map(()=>null);
+  SETCODE=PRE.map(q=>q.id).join('-')+' / '+POST.map(q=>q.id).join('-');
+  document.querySelectorAll('.setidout').forEach(el=>{
+    el.innerHTML='รหัสชุดข้อสอบรอบนี้ <b>'+SETCODE+'</b> · ก่อนเรียนและหลังเรียนไม่ใช้ข้อเดียวกัน';
+  });
+}
+function renderCLO(){
+  const el=document.getElementById('clolist'); if(!el)return;
+  el.innerHTML=BANK.map((g,i)=>
+    '<li><span class="clotag">CLO '+(i+1)+' · รหัส '+g.code+'</span><b>'+g.clo+'</b>'+g.desc+
+    ' <span class="muted">(คลังข้อสอบ '+g.items.length+' ข้อ)</span></li>').join('');
+}
+function drawTest(list,ans,boxId,locked){
+  const box=document.getElementById(boxId); if(!box)return;
+  box.innerHTML=list.map((q,i)=>{
+    const opts=q.o.map((o,j)=>{
+      let c='opt';
+      if(locked){ if(j===q.a)c+=' right'; else if(j===ans[i])c+=' wrong'; }
+      else if(ans[i]===j)c+=' pick';
+      return '<button class="'+c+'" data-q="'+i+'" data-o="'+j+'" '+(locked?'disabled':'')+'>'+o+'</button>';
+    }).join('');
+    const ex=locked?'<div class="explain"><b>'+(ans[i]===q.a?'ตอบถูก':'เฉลย')+'</b> — '+q.e+'</div>':'';
+    return '<div class="qcard"><div class="qhead">ข้อ '+(i+1)+' / '+list.length+
+           ' · วัดผลลัพธ์การเรียนรู้ '+q.clo+' · รหัสข้อ '+q.id+'</div>'+
+           '<div class="qtext">'+q.q+'</div><div class="opts">'+opts+'</div>'+ex+'</div>';
+  }).join('');
+  if(!locked){
+    box.querySelectorAll('.opt').forEach(b=>{
+      b.onclick=()=>{ans[+b.dataset.q]=+b.dataset.o;drawTest(list,ans,boxId,false);};
+    });
+  }
+}
+function cloTable(){
+  const rows=BANK.map(g=>{
+    const i=PRE.findIndex(q=>q.code===g.code), j=POST.findIndex(q=>q.code===g.code);
+    if(i<0||j<0)return '';
+    const a=preAns[i]===PRE[i].a, b=postAns[j]===POST[j].a;
+    const st=(a&&b)?['keep','ผ่านทั้งก่อนและหลัง']:((!a&&b)?['up','พัฒนาขึ้นหลังเรียน']:
+             ((a&&!b)?['down','พลาดในรอบหลัง ควรทบทวน']:['miss','ยังไม่ผ่าน ต้องทบทวนซ้ำ']));
+    return '<tr><td><b>'+g.clo+'</b><div class="muted" style="font-size:12.5px;">'+g.desc+'</div>'+
+           '<div class="clotag" style="margin-top:4px;">ข้อก่อนเรียน '+PRE[i].id+' · ข้อหลังเรียน '+POST[j].id+'</div></td>'+
+           '<td class="mk '+(a?'y':'n')+'">'+(a?'✓':'✗')+'</td>'+
+           '<td class="mk '+(b?'y':'n')+'">'+(b?'✓':'✗')+'</td>'+
+           '<td><span class="clost '+st[0]+'">'+st[1]+'</span></td></tr>';
+  }).join('');
+  const passed=BANK.filter(g=>{
+    const j=POST.findIndex(q=>q.code===g.code);
+    return j>=0&&postAns[j]===POST[j].a;
+  }).length;
+  return '<h3>ผลลัพธ์การเรียนรู้รายข้อ (Course Learning Outcomes)</h3>'+
+    '<p class="muted">แต่ละ CLO ถูกวัดด้วยข้อสอบคนละข้อในรอบก่อนและหลังเรียน โจทย์จึงไม่ซ้ำ '+
+    'แต่ยังวัดสมรรถนะเดียวกัน ผลด้านล่างจึงบอกได้ว่าผู้เรียนบรรลุผลลัพธ์ใดแล้วบ้าง</p>'+
+    '<table class="clot"><tr><th>ผลลัพธ์การเรียนรู้</th><th style="text-align:center;">ก่อน</th>'+
+    '<th style="text-align:center;">หลัง</th><th>สรุป</th></tr>'+rows+'</table>'+
+    '<div class="setid" style="margin-top:10px;">รหัสชุดข้อสอบรอบนี้ <b>'+SETCODE+'</b> · ก่อนเรียนและหลังเรียนไม่ใช้ข้อเดียวกัน</div>'+
+    '<div class="note" style="margin-top:10px;">บรรลุผลลัพธ์การเรียนรู้หลังเรียน <b>'+passed+' จาก '+BANK.length+' ข้อ</b> '+
+    (passed===BANK.length?'ครบทุกผลลัพธ์ตามที่บทเรียนกำหนด'
+      :'ผลลัพธ์ที่ยังไม่ผ่านให้กลับไปทบทวนแท็บหลักการวงจรและห้องทดลองในหัวข้อที่เกี่ยวข้อง แล้วกดสุ่มชุดใหม่เพื่อประเมินอีกครั้ง')+'</div>';
+}
+
+let preDone=false,postDone=false;
+buildSets();
+renderCLO();
+drawTest(PRE,preAns,'prebox',false);drawTest(POST,postAns,'postbox',false);
+const psBtn=document.getElementById('preshuffle');
+if(psBtn)psBtn.onclick=()=>{
+  if(preDone){toast('ส่งคำตอบก่อนเรียนไปแล้ว จึงสุ่มชุดใหม่ไม่ได้ในรอบนี้');return;}
+  buildSets();
+  drawTest(PRE,preAns,'prebox',false);
+  drawTest(POST,postAns,'postbox',false);
+  toast('สุ่มชุดข้อสอบใหม่แล้ว · '+SETCODE);
+};
+document.getElementById('presubmit').onclick=()=>{
+  if(preAns.some(a=>a===null)){toast('ยังตอบไม่ครบ');return;}
+  preDone=true;document.getElementById('presubmit').disabled=true;
+  document.getElementById('premsg').textContent='บันทึกคำตอบแล้ว ระบบยังไม่เฉลยเพื่อไม่ให้กระทบผลวัดหลังเรียน เชิญไปที่แท็บหลักการวงจร';
+  document.getElementById('theory-lock').style.display='none';
+  document.getElementById('theory-body').style.display='block';
+  document.getElementById('lab-lock').style.display='none';
+  document.getElementById('lab-body').style.display='block';
+  lockNav();addXP(10,'เริ่มบทเรียนแล้ว');
+};
+function checkPostGate(){
+  const ok=interactions>=6,l=document.getElementById('post-lock'),b=document.getElementById('post-body');
+  if(!l)return;
+  l.style.display=ok?'none':'block';b.style.display=ok?'block':'none';
+  if(!ok)l.textContent='ทดลองปรับค่าในห้องทดลองจำลองอีกสักหน่อยก่อน (ปรับแล้ว '+interactions+' จาก 6 ครั้ง)';
+}
+document.getElementById('postsubmit').onclick=()=>{
+  if(postAns.some(a=>a===null)){toast('ยังตอบไม่ครบ');return;}
+  postDone=true;drawTest(POST,postAns,'postbox',true);drawTest(PRE,preAns,'prebox',true);
+  document.getElementById('postsubmit').disabled=true;
+  document.getElementById('postmsg').textContent='ส่งคำตอบแล้ว ดูผลสรุปได้ที่แท็บผลการเรียนรู้';
+  addXP(postAns.filter((a,i)=>a===POST[i].a).length*20,'ทำแบบทดสอบหลังเรียนเสร็จ');
+  drawReport();
+};
+
+/* ---------- รหัสยืนยันเฉพาะตัวและใบสรุปผล ---------- */
+function fingerprint(pre,post){
+  const seed=[NICK,SETCODE,preAns.join(''),postAns.join(''),pre,post,interactions,labSeconds,XP,
+              startedAt?startedAt.getTime():0].join('|');
+  let h1=0x811c9dc5,h2=0x01000193;
+  for(let i=0;i<seed.length;i++){
+    const c=seed.charCodeAt(i);
+    h1=((h1^c)*16777619)>>>0;
+    h2=((h2+c*(i+7))^(h2<<5))>>>0;
+  }
+  const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let out='';let v=h1;
+  for(let i=0;i<5;i++){out+=A[v%32];v=Math.floor(v/32)||h2>>>(i*3);}
+  let out2='';v=h2;
+  for(let i=0;i<4;i++){out2+=A[v%32];v=Math.floor(v/32)||h1>>>(i*3);}
+  return out+'-'+out2;
+}
+function praiseFor(pre,post,n){
+  if(post===n&&pre===n) return {t:'แม่นยำตั้งแต่ต้นจนจบ',
+    p:'ผู้เรียนมีพื้นฐานแน่นอยู่แล้วและยังรักษาความถูกต้องไว้ได้ครบทุกข้อ ขั้นถัดไปที่ท้าทายกว่าคือการลองเปลี่ยนค่าพารามิเตอร์ของวงจรในห้องทดลองแล้วทำนายผลล่วงหน้าก่อนลงมือปรับจริง'};
+  if(post===n) return {t:'ทำได้เต็มหลังเรียน ยอดเยี่ยมมาก',
+    p:'จากที่เคยพลาดในตอนแรก ตอนนี้ตอบถูกครบทุกข้อแล้ว ทั้งที่เป็นคนละข้อกับรอบก่อนเรียน นี่คือหลักฐานว่าเข้าใจหลักการจริง ไม่ใช่การจำคำตอบ'};
+  if(post>pre) return {t:'ก้าวหน้าขึ้นชัดเจน',
+    p:'คะแนนเพิ่มขึ้นจากเดิมทั้งที่โจทย์เป็นคนละข้อ แสดงว่าแนวคิดหลักเริ่มเข้าที่แล้ว ให้กลับไปทบทวนผลลัพธ์การเรียนรู้ที่ยังไม่ผ่านในแท็บหลักการวงจร แล้วกลับมาแก้ตัวอีกรอบ'};
+  if(post===pre) return {t:'รักษาระดับไว้ได้ แต่ยังไปได้ไกลกว่านี้',
+    p:'คะแนนคงเดิม แปลว่าจุดที่ยังไม่เข้าใจน่าจะเป็นจุดเดิม ให้ดูตารางผลลัพธ์การเรียนรู้ด้านล่างว่าข้อใดยังไม่ผ่าน แล้วกลับไปที่ห้องทดลองเพื่อทดสอบสมมติฐานนั้นด้วยตนเอง'};
+  return {t:'ยังไม่เข้าที่ในรอบนี้ ไม่เป็นไรเลย',
+    p:'คะแนนรอบนี้ลดลง ซึ่งมักเกิดจากความเร่งรีบมากกว่าความไม่เข้าใจ พักสักครู่แล้วกลับไปอ่านแท็บหลักการวงจรให้จบ จากนั้นเข้าห้องทดลองอีกรอบแล้วกลับมาแก้ตัวใหม่ ผู้สอนรอดูผลรอบหน้าอยู่'};
+}
+function drawReport(){
+  const box=document.getElementById('repbody');
+  if(!preDone||!postDone){box.innerHTML='<p class="muted">ยังไม่มีข้อมูล ทำแบบทดสอบก่อนเรียนและหลังเรียนให้ครบก่อน</p>';return;}
+  const pre=preAns.filter((a,i)=>a===PRE[i].a).length;
+  const post=postAns.filter((a,i)=>a===POST[i].a).length;
+  const n=PRE.length;
+  const g=(n-pre)===0?(post===n?1:0):(post-pre)/(n-pre);
+  const lvl=g>=0.7?'สูง':(g>=0.3?'ปานกลาง':'ต่ำ');
+  const pr=praiseFor(pre,post,n);
+  const code=fingerprint(pre,post);
+  const rank=post===n?'ระดับเชี่ยวชาญ':(post>=Math.ceil(n*2/3)?'ระดับดี':(post>pre?'กำลังก้าวหน้า':'กำลังฝึกฝน'));
+  const stampT=(startedAt||new Date()).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'});
+  const dots=(ans,list)=>list.map((q,i)=>'<i class="'+(ans[i]===q.a?'hit':'miss')+'"></i>').join('');
+  const diff=post-pre;
+  const mm=Math.floor(labSeconds/60),ss=labSeconds%60;
+  const M=[['เวลาในห้องทดลอง',mm+' นาที '+ss+' วินาที'],['ปรับค่าพารามิเตอร์',interactions+' ครั้ง'],['คะแนนสะสม',String(XP)]];
+  const summary='ผู้เรียน '+NICK+' · '+'SUN CHIME'+' · ก่อนเรียน '+pre+'/'+n+' · หลังเรียน '+post+'/'+n+
+    ' · normalized gain '+g.toFixed(2)+' ('+lvl+') · '+M.map(x=>x[0]+' '+x[1]).join(' · ')+
+    ' · ชุดข้อสอบ '+SETCODE+' · รหัสยืนยัน '+code+' · เริ่มเรียน '+stampT;
+  box.innerHTML=
+    '<div class="cert"><div class="cert-top"><div>'+
+      '<div class="eyebrow" style="margin-bottom:2px;">ใบสรุปผลการเรียนรู้ · '+'SUN CHIME'+'</div>'+
+      '<div class="cert-name">'+(NICK||'ผู้เรียน')+'</div>'+
+      '<div class="cert-meta">'+'ปลุกด้วยแสงอาทิตย์ · รูปที่ 3-40'+'</div>'+
+      '<div class="cert-rank">'+rank+'</div></div>'+
+      '<div class="cert-medal"><b>'+g.toFixed(2)+'</b><small>NORMALIZED GAIN</small>'+
+      '<div class="muted" style="font-size:12px;margin-top:4px;">ระดับ'+lvl+'</div></div></div>'+
+    '<div class="scorepair">'+
+      '<div class="scorebox"><div class="cap">ก่อนเรียน</div><div class="num">'+pre+
+        '<span style="font-size:20px;color:var(--ink-faint)">/'+n+'</span></div>'+
+        '<div class="pct">'+Math.round(pre/n*100)+' เปอร์เซ็นต์</div><div class="dotrow">'+dots(preAns,PRE)+'</div></div>'+
+      '<div class="arrowcell"><b>&rarr;</b><span style="display:block;margin-top:5px;">'+
+        (diff>0?'เพิ่มขึ้น '+diff+' ข้อ':(diff<0?'ลดลง '+Math.abs(diff)+' ข้อ':'คงเดิม'))+'</span></div>'+
+      '<div class="scorebox after"><div class="cap">หลังเรียน</div><div class="num">'+post+
+        '<span style="font-size:20px;color:var(--ink-faint)">/'+n+'</span></div>'+
+        '<div class="pct">'+Math.round(post/n*100)+' เปอร์เซ็นต์</div><div class="dotrow">'+dots(postAns,POST)+'</div></div>'+
+    '</div>'+
+    '<div class="praise"><h4>'+pr.t+'</h4><p>'+pr.p+'</p></div>'+
+    '<div class="stamp">'+M.map(x=>'<span>'+x[0]+' <b>'+x[1]+'</b></span>').join('')+
+      '<span>ชุดข้อสอบ <b>'+SETCODE+'</b></span>'+
+      '<span>เริ่มเรียน <b>'+stampT+'</b></span>'+
+      '<span>รหัสยืนยัน <b class="vcode">'+code+'</b></span></div></div>'+
+    cloTable()+
+    '<h3>ความก้าวหน้าเชิงปกติ (Normalized Gain)</h3>'+
+    '<div class="eq">&lt;g&gt; = (คะแนนหลัง − คะแนนก่อน) / (คะแนนเต็ม − คะแนนก่อน) = ('+post+' − '+pre+') / ('+n+' − '+pre+') = <b>'+g.toFixed(2)+'</b> → ระดับ'+lvl+'</div>'+
+    '<p class="muted">ค่านี้เป็นดัชนีมาตรฐานในงานวิจัยการเรียนการสอนวิทยาศาสตร์ ตัดผลของพื้นฐานเดิมออกไป '+
+    'จึงเปรียบเทียบระหว่างผู้เรียนที่มีพื้นฐานต่างกันได้อย่างเป็นธรรม เกณฑ์ที่ใช้กันคือ ต่ำกว่า 0.30 ถือว่าต่ำ '+
+    'ระหว่าง 0.30 ถึง 0.70 ถือว่าปานกลาง และสูงกว่า 0.70 ถือว่าสูง เนื่องจากข้อสอบก่อนและหลังเรียนเป็นคนละข้อกัน '+
+    'ค่าที่ได้จึงสะท้อนความเข้าใจ ไม่ใช่การจำคำตอบ</p>'+
+    '<div class="note" style="border-left-color:var(--ref);"><b>สำหรับผู้สอน</b> รหัสยืนยัน <span class="vcode">'+code+
+    '</span> คำนวณจากชื่อเล่น รหัสชุดข้อสอบที่สุ่มได้ รูปแบบคำตอบทุกข้อ พฤติกรรมการใช้ห้องทดลอง และเวลาที่เริ่มบทเรียน '+
+    'ผู้เรียนสองคนที่ทำงานจริงด้วยตนเองย่อมได้รหัสไม่ซ้ำกัน หากพบรหัสซ้ำกันในชั้นเรียน แสดงว่าเป็นภาพเดียวกันที่ถูกส่งต่อ</div>'+
+    '<div class="btnrow"><button class="btn pri" id="copyrep">คัดลอกสรุปผลเพื่อส่งผู้สอน</button></div>'+
+    '<div class="eq" id="repline">'+summary+'</div>';
+  document.getElementById('copyrep').onclick=()=>{
+    const t=document.getElementById('repline').textContent;
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>toast('คัดลอกแล้ว'),()=>toast('คัดลอกไม่สำเร็จ ให้เลือกข้อความแล้วกด Ctrl+C'));}
+    else toast('เลือกข้อความในกรอบแล้วกด Ctrl+C');
+  };
+}
+
+lockNav();
+
+/* ---------- ห้องทดลองจำลองเฉพาะวงจรนี้ ---------- */
+
+document.getElementById('circuitHolder').innerHTML = "<svg width=\"0\" height=\"0\" style=\"position:absolute\" aria-hidden=\"true\"><defs>\n<marker id=\"arrow\" markerWidth=\"7\" markerHeight=\"7\" refX=\"5\" refY=\"3.5\" orient=\"auto\"><path d=\"M0,0 L7,3.5 L0,7 Z\" fill=\"var(--compstroke)\"/></marker>\n</defs></svg><svg viewBox=\"0 0 1040 430\" class=\"circuit-svg\"><line class=\"wire\" x1=\"40\" y1=\"34\" x2=\"990\" y2=\"34\"/><circle class=\"dot\" cx=\"50\" cy=\"34\" r=\"3\"/><text class=\"lbl v\" x=\"57\" y=\"28\" text-anchor=\"start\">+9V</text><line class=\"wire\" x1=\"95\" y1=\"34\" x2=\"95\" y2=\"40\"/><line class=\"wire\" x1=\"95\" y1=\"40\" x2=\"95\" y2=\"48\"/><path class=\"comp\" d=\"M95.0,48.0 L102.0,52.7 L88.0,57.3 L102.0,62.0 L88.0,66.7 L102.0,71.3 L95.0,76.0\"/><line class=\"wire\" x1=\"95\" y1=\"76\" x2=\"95\" y2=\"84\"/><line id=\"vr1wiper\" class=\"comp\" x1=\"117\" y1=\"59.2\" x2=\"103\" y2=\"59.2\" marker-end=\"url(#arrow)\"/><text class=\"lbl\" x=\"111\" y=\"97\" text-anchor=\"start\">VR1</text><text class=\"lbl\" x=\"111\" y=\"110\" text-anchor=\"start\">10 k\u03a9</text><line class=\"wire\" x1=\"95\" y1=\"84\" x2=\"95\" y2=\"96.0\"/><path id=\"led1\" class=\"led\" d=\"M87,96.0 L103,96.0 L95,112.0 Z\"/><line class=\"comp\" x1=\"87\" y1=\"112.0\" x2=\"103\" y2=\"112.0\"/><line class=\"wire\" x1=\"95\" y1=\"112.0\" x2=\"95\" y2=\"124\"/><line id=\"led1ray-4\" class=\"ray\" x1=\"103\" y1=\"90.0\" x2=\"110\" y2=\"83.0\"/><line id=\"led1ray4\" class=\"ray\" x1=\"111\" y1=\"90.0\" x2=\"118\" y2=\"83.0\"/><text class=\"lbl\" x=\"117\" y=\"108.0\" text-anchor=\"start\">LED1</text><line class=\"wire\" x1=\"95\" y1=\"124\" x2=\"95\" y2=\"132\"/><path class=\"comp\" d=\"M95.0,132.0 L103.0,136.0 L87.0,140.0 L103.0,144.0 L87.0,148.0 L103.0,152.0 L95.0,156.0\"/><line class=\"wire\" x1=\"95\" y1=\"156\" x2=\"95\" y2=\"164\"/><text class=\"lbl\" x=\"111\" y=\"140.8\" text-anchor=\"start\">R1</text><text class=\"lbl\" x=\"111\" y=\"154.8\" text-anchor=\"start\">240\u03a9</text><line class=\"wire\" x1=\"95\" y1=\"164\" x2=\"95\" y2=\"172\"/><line class=\"comp\" x1=\"85\" y1=\"172\" x2=\"105\" y2=\"172\"/><line class=\"comp\" x1=\"89\" y1=\"177\" x2=\"101\" y2=\"177\"/><line class=\"comp\" x1=\"92.5\" y1=\"182\" x2=\"97.5\" y2=\"182\"/><text class=\"lbl\" x=\"95\" y=\"194\" text-anchor=\"middle\">\u0e44\u0e1f\u0e1a\u0e2d\u0e01\u0e2a\u0e16\u0e32\u0e19\u0e30</text><text class=\"lbl\" x=\"95\" y=\"208\" text-anchor=\"middle\">\u0e1e\u0e23\u0e49\u0e2d\u0e21\u0e43\u0e0a\u0e49\u0e07\u0e32\u0e19</text><line class=\"wire\" x1=\"235\" y1=\"34\" x2=\"235\" y2=\"44\"/><line class=\"wire\" x1=\"235\" y1=\"44\" x2=\"235\" y2=\"54.0\"/><line class=\"comp\" x1=\"226\" y1=\"54.0\" x2=\"244\" y2=\"54.0\"/><path class=\"comp\" d=\"M226,64.0 Q235,68.0 244,64.0\"/><line class=\"wire\" x1=\"235\" y1=\"64.0\" x2=\"235\" y2=\"74\"/><text class=\"lbl\" x=\"222\" y=\"51.0\" text-anchor=\"start\">+</text><text class=\"lbl\" x=\"250\" y=\"61.0\" text-anchor=\"start\">C1</text><text class=\"lbl\" x=\"250\" y=\"74.0\" text-anchor=\"start\">100\u00b5F</text><line class=\"wire\" x1=\"235\" y1=\"74\" x2=\"235\" y2=\"82\"/><line class=\"comp\" x1=\"225\" y1=\"82\" x2=\"245\" y2=\"82\"/><line class=\"comp\" x1=\"229\" y1=\"87\" x2=\"241\" y2=\"87\"/><line class=\"comp\" x1=\"232.5\" y1=\"92\" x2=\"237.5\" y2=\"92\"/><text class=\"tag\" x=\"235\" y=\"108\" text-anchor=\"middle\">\u0e01\u0e23\u0e2d\u0e07\u0e44\u0e1f\u0e40\u0e25\u0e35\u0e49\u0e22\u0e07\u0e43\u0e2b\u0e49\u0e40\u0e23\u0e35\u0e22\u0e1a</text><line class=\"wire\" x1=\"335\" y1=\"34\" x2=\"335\" y2=\"40\"/><line class=\"wire\" x1=\"335\" y1=\"40\" x2=\"335\" y2=\"48\"/><path class=\"comp\" d=\"M335.0,48.0 L343.0,52.0 L327.0,56.0 L343.0,60.0 L327.0,64.0 L343.0,68.0 L335.0,72.0\"/><line class=\"wire\" x1=\"335\" y1=\"72\" x2=\"335\" y2=\"80\"/><text class=\"lbl\" x=\"351\" y=\"56.8\" text-anchor=\"start\">R2</text><text class=\"lbl\" x=\"351\" y=\"70.8\" text-anchor=\"start\">1 k\u03a9</text><line class=\"wire\" x1=\"335\" y1=\"80\" x2=\"335\" y2=\"88\"/><path class=\"comp\" d=\"M335.0,88.0 L342.0,93.0 L328.0,98.0 L342.0,103.0 L328.0,108.0 L342.0,113.0 L335.0,118.0\"/><line class=\"wire\" x1=\"335\" y1=\"118\" x2=\"335\" y2=\"126\"/><line id=\"vr2wiper\" class=\"comp\" x1=\"357\" y1=\"103.0\" x2=\"343\" y2=\"103.0\" marker-end=\"url(#arrow)\"/><text class=\"lbl\" x=\"351\" y=\"139\" text-anchor=\"start\">VR2</text><text class=\"lbl\" x=\"351\" y=\"152\" text-anchor=\"start\">10 k\u03a9 \u0e15\u0e31\u0e49\u0e07\u0e44\u0e27</text><line class=\"wire\" x1=\"335\" y1=\"126\" x2=\"335\" y2=\"164\"/><line class=\"wire\" x1=\"335\" y1=\"164\" x2=\"335\" y2=\"174\"/><circle id=\"ldrbody\" class=\"comp\" cx=\"335\" cy=\"190.0\" r=\"19\"/><path class=\"comp\" d=\"M335.0,174.0 L342.0,179.3 L328.0,184.7 L342.0,190.0 L328.0,195.3 L342.0,200.7 L335.0,206.0\"/><line class=\"wire\" x1=\"335\" y1=\"206\" x2=\"335\" y2=\"216\"/><line class=\"comp\" x1=\"321\" y1=\"168.0\" x2=\"332\" y2=\"179.0\" marker-end=\"url(#arrow)\"/><line class=\"comp\" x1=\"329\" y1=\"163.0\" x2=\"340\" y2=\"174.0\" marker-end=\"url(#arrow)\"/><text class=\"lbl\" x=\"361\" y=\"194.0\" text-anchor=\"start\">LDR1</text><line class=\"wire\" x1=\"335\" y1=\"216\" x2=\"335\" y2=\"224\"/><line class=\"comp\" x1=\"325\" y1=\"224\" x2=\"345\" y2=\"224\"/><line class=\"comp\" x1=\"329\" y1=\"229\" x2=\"341\" y2=\"229\"/><line class=\"comp\" x1=\"332.5\" y1=\"234\" x2=\"337.5\" y2=\"234\"/><circle class=\"dot\" cx=\"335\" cy=\"167\" r=\"3.4\"/><path class=\"wire\" d=\"M335,167 L430,167 L430,250.0 L478,250.0\"/><path id=\"flowSense\" class=\"flowline\" d=\"M335,167 L430,167 L430,250.0 L478,250.0\"/><rect class=\"comp icbox\" x=\"480\" y=\"70\" width=\"120\" height=\"50\" rx=\"4\"/><text class=\"tag\" x=\"540.0\" y=\"93.0\" text-anchor=\"middle\"><tspan x=\"540.0\" dy=\"0\">IC1</tspan><tspan x=\"540.0\" dy=\"14\">\u0e2d\u0e2d\u0e2a\u0e0b\u0e34\u0e25\u0e40\u0e25\u0e40\u0e15\u0e2d\u0e23\u0e4c\u0e40\u0e2a\u0e35\u0e22\u0e07</tspan></text><rect class=\"comp icbox\" x=\"480\" y=\"225\" width=\"120\" height=\"50\" rx=\"4\"/><text class=\"tag\" x=\"540.0\" y=\"248.0\" text-anchor=\"middle\"><tspan x=\"540.0\" dy=\"0\">IC2</tspan><tspan x=\"540.0\" dy=\"14\">\u0e40\u0e1b\u0e23\u0e35\u0e22\u0e1a\u0e40\u0e17\u0e35\u0e22\u0e1a\u0e41\u0e2a\u0e07</tspan></text><text class=\"lbl v\" x=\"540.0\" y=\"295\" text-anchor=\"middle\">\u0e15\u0e31\u0e49\u0e07\u0e08\u0e38\u0e14\u0e15\u0e31\u0e14\u0e23\u0e48\u0e27\u0e21\u0e01\u0e31\u0e1a VR2</text><path class=\"wire\" d=\"M510,225 L510,120\"/><path id=\"flowGate\" class=\"flowline\" d=\"M510,225 L510,120\"/><text class=\"lbl sig\" x=\"474\" y=\"172.5\" text-anchor=\"end\">\u0e40\u0e1b\u0e34\u0e14\u0e43\u0e0a\u0e49\u0e07\u0e32\u0e19</text><path class=\"wire\" d=\"M600,250.0 L636,250.0\"/><path id=\"flowDrive\" class=\"flowline\" d=\"M600,250.0 L636,250.0\"/><path class=\"comp\" d=\"M640,250.0 l7,-7 l10,14 l10,-14 l10,14 l7,-7\"/><text class=\"lbl\" x=\"642\" y=\"236.0\" text-anchor=\"start\">R3 2 k\u03a9</text><line class=\"wire\" x1=\"684\" y1=\"250.0\" x2=\"726\" y2=\"250.0\"/><circle id=\"q1circ\" class=\"comp\" cx=\"730\" cy=\"250.0\" r=\"16\"/><line class=\"wire\" x1=\"714\" y1=\"241.0\" x2=\"714\" y2=\"259.0\"/><line class=\"comp\" x1=\"714\" y1=\"241.0\" x2=\"726\" y2=\"245.0\"/><line class=\"comp\" x1=\"714\" y1=\"259.0\" x2=\"726\" y2=\"255.0\"/><line class=\"wire\" x1=\"726\" y1=\"245.0\" x2=\"726\" y2=\"230.0\"/><line class=\"wire\" x1=\"726\" y1=\"255.0\" x2=\"726\" y2=\"270.0\"/><line class=\"comp\" x1=\"721\" y1=\"257.0\" x2=\"726\" y2=\"255.0\" marker-end=\"url(#arrow)\"/><text class=\"tag\" x=\"750\" y=\"255.0\" text-anchor=\"start\">Q1</text><line class=\"wire\" x1=\"726\" y1=\"230.0\" x2=\"726\" y2=\"34\"/><circle class=\"dot\" cx=\"726\" cy=\"34\" r=\"3.4\"/><line class=\"wire\" x1=\"726\" y1=\"270.0\" x2=\"726\" y2=\"292.0\"/><line class=\"wire\" x1=\"726\" y1=\"292.0\" x2=\"726\" y2=\"300.0\"/><line class=\"comp\" x1=\"716\" y1=\"300.0\" x2=\"736\" y2=\"300.0\"/><line class=\"comp\" x1=\"720\" y1=\"305.0\" x2=\"732\" y2=\"305.0\"/><line class=\"comp\" x1=\"723.5\" y1=\"310.0\" x2=\"728.5\" y2=\"310.0\"/><line class=\"wire\" x1=\"880\" y1=\"34\" x2=\"880\" y2=\"42\"/><line class=\"wire\" x1=\"880\" y1=\"42\" x2=\"880\" y2=\"50\"/><path class=\"comp\" d=\"M880.0,50.0 L888.0,54.0 L872.0,58.0 L888.0,62.0 L872.0,66.0 L888.0,70.0 L880.0,74.0\"/><line class=\"wire\" x1=\"880\" y1=\"74\" x2=\"880\" y2=\"82\"/><text class=\"lbl\" x=\"896\" y=\"58.8\" text-anchor=\"start\">R4</text><text class=\"lbl\" x=\"896\" y=\"72.8\" text-anchor=\"start\">330\u03a9</text><line class=\"wire\" x1=\"880\" y1=\"82\" x2=\"880\" y2=\"88\"/><rect id=\"sp1box\" class=\"comp\" x=\"871\" y=\"103\" width=\"14\" height=\"18\" rx=\"1\"/><path id=\"sp1cone\" class=\"comp\" d=\"M885,97 L902,88 L902,136 L885,127 Z\"/><line class=\"wire\" x1=\"871\" y1=\"103\" x2=\"871\" y2=\"88\"/><line class=\"wire\" x1=\"871\" y1=\"121\" x2=\"871\" y2=\"136\"/><path id=\"sp1snd0\" class=\"soundwave\" d=\"M910,98 Q920,112 910,126\"/><path id=\"sp1snd1\" class=\"soundwave\" d=\"M918,95 Q928,112 918,129\"/><path id=\"sp1snd2\" class=\"soundwave\" d=\"M926,92 Q936,112 926,132\"/><text class=\"tag\" x=\"871\" y=\"150\" text-anchor=\"middle\">SP1</text><line class=\"wire\" x1=\"871\" y1=\"136\" x2=\"871\" y2=\"167\"/><line class=\"wire\" x1=\"871\" y1=\"167\" x2=\"726\" y2=\"167\"/><line class=\"wire\" x1=\"726\" y1=\"167\" x2=\"726\" y2=\"232.0\"/><text class=\"lbl\" x=\"500\" y=\"410\" text-anchor=\"middle\">\u0e27\u0e32\u0e14\u0e43\u0e2b\u0e21\u0e48\u0e41\u0e1a\u0e1a\u0e22\u0e48\u0e2d\u0e08\u0e32\u0e01\u0e23\u0e39\u0e1b\u0e17\u0e35\u0e48 3-40 \u0e43\u0e19\u0e15\u0e33\u0e23\u0e32 \u00b7 \u0e40\u0e14\u0e34\u0e19\u0e2a\u0e32\u0e22\u0e41\u0e1a\u0e1a\u0e02\u0e31\u0e49\u0e19\u0e1a\u0e31\u0e19\u0e44\u0e14\u0e08\u0e32\u0e01\u0e23\u0e32\u0e07\u0e1a\u0e27\u0e01\u0e25\u0e07\u0e01\u0e23\u0e32\u0e27\u0e14\u0e4c</text></svg>";
+const sldLight=document.getElementById('sldLight'), sldThresh=document.getElementById('sldThresh'), sldPilot=document.getElementById('sldPilot');
+function rLdrOf(pct){ const rk = 500*Math.pow(10, 2*(1-pct/100)); return rk; }
+function fmtR(rOhm){ return rOhm>=1000? (rOhm/1000).toFixed(rOhm>=100000?0:1)+' kΩ' : Math.round(rOhm)+' Ω'; }
+let lastAlarm=false;
+function updateSim(commit){
+  const light=+sldLight.value, thresh=+sldThresh.value, pilot=+sldPilot.value;
+  document.getElementById('lv-light').textContent=light+'%';
+  document.getElementById('lv-thresh').textContent=thresh+'%';
+  document.getElementById('lv-pilot').textContent=pilot+'%';
+  const rLdr=rLdrOf(light);
+  const R2=1000, RVR2=10000*(0.15+0.85*(1-thresh/100));
+  const vNode = 9 * rLdr/(R2+RVR2+rLdr);
+  const vThresh = 9*0.30 + 9*0.55*(thresh/100);
+  const alarm = light>thresh;
+  document.getElementById('ro-rldr').textContent=fmtR(rLdr);
+  document.getElementById('ro-vnode').textContent=vNode.toFixed(2)+' V';
+  document.getElementById('ro-vthresh').textContent=vThresh.toFixed(2)+' V (อ้างอิง)';
+  document.getElementById('ro-ic2').textContent= alarm? 'สลับสถานะ (เปิดใช้งาน IC1)':'สถานะปกติ (ยังไม่เปิด)';
+  document.getElementById('ro-ic1').textContent= alarm? 'กำเนิดเสียงความถี่คงที่':'หยุดนิ่ง (ไม่ได้รับอนุญาตให้ทำงาน)';
+  document.getElementById('ro-sp1').textContent= alarm? 'ดังต่อเนื่อง':'เงียบ';
+  document.getElementById('railFill').style.width=light+'%';
+  document.getElementById('railNotch').style.left=thresh+'%';
+  document.getElementById('railVal').textContent='แสงอาทิตย์ '+light+'%';
+
+  const pill=document.getElementById('statusPill'), txt=document.getElementById('statusTxt');
+  pill.classList.toggle('live',alarm);
+  txt.textContent = alarm? 'ถึงจุดตั้งไวแล้ว — เสียงปลุกกำลังดัง' : 'ยังไม่ถึงเวลาปลุก — วงจรเงียบ';
+
+  document.querySelectorAll('#flowSense,#flowGate,#flowDrive').forEach(el=>el.classList.toggle('live',alarm));
+  const led1=document.getElementById('led1'); if(led1){led1.classList.toggle('on',pilot>8); led1.style.opacity=0.35+0.65*(pilot/100);}
+  document.querySelectorAll('[id^=led1ray]').forEach(el=>el.classList.toggle('on',pilot>40));
+  const spbox=document.getElementById('sp1box'), spcone=document.getElementById('sp1cone');
+  if(spbox){spbox.classList.toggle('on',alarm);} if(spcone){spcone.classList.toggle('on',alarm);}
+  document.querySelectorAll('[id^=sp1snd]').forEach(el=>el.classList.toggle('on',alarm));
+  const q1c=document.getElementById('q1circ'); if(q1c) q1c.classList.toggle('on',alarm);
+
+  if(commit){
+    interactions++;
+    checkPostGate();
+  }
+  if(alarm && !lastAlarm) addXP(2,'เสียงปลุกดังแล้ว');
+  lastAlarm=alarm;
+}
+[sldLight,sldThresh,sldPilot].forEach(el=>{
+  el.addEventListener('input',()=>updateSim(false));
+  el.addEventListener('change',()=>updateSim(true));
+});
+updateSim(false);
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAINBOARD — GNR2022 · GNR2024 Basic Electronics Lab Series</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#08120c; --bg2:#0c1a11; --panel:#0f2117; --panel2:#132a1d;
+  --copper:#c98a3d; --copper-hi:#e8b45c; --copper-dim:#6b4f27;
+  --silk:#eef3ea; --silk-dim:#9fb3a4; --silk-faint:#5d7267;
+  --mask:rgba(201,138,61,.28); --via:#1a3624;
+  --ok:#4ade80; --danger:#ff6b6b;
+  --mono:'IBM Plex Mono',monospace; --body:'IBM Plex Sans Thai','IBM Plex Mono',sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(900px 500px at 15% -8%, rgba(201,138,61,.07), transparent 60%),
+    radial-gradient(700px 460px at 100% 10%, rgba(74,222,128,.05), transparent 55%),
+    linear-gradient(180deg, var(--bg2), var(--bg) 380px);
+  color:var(--silk); font-family:var(--body); font-size:15px; line-height:1.6;
+  min-height:100vh;
+}
+/* faint PCB grid + via dots */
+.board{position:relative;}
+.board::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;
+  background-image:
+    linear-gradient(var(--mask) 1px, transparent 1px),
+    linear-gradient(90deg, var(--mask) 1px, transparent 1px);
+  background-size:42px 42px;
+  mask-image:radial-gradient(1100px 700px at 50% 0%, black, transparent 75%);
+}
+a{color:inherit;text-decoration:none;}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+
+/* ============ GATE ============ */
+#gate{
+  position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(1000px 600px at 50% 30%, #0d2116 0%, #060d09 75%);
+  padding:20px; transition:opacity .5s ease, visibility .5s;
+}
+#gate.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.gatecard{
+  width:100%;max-width:420px;background:var(--panel);border:1px solid var(--copper-dim);
+  border-radius:10px;padding:34px 30px 28px;text-align:center;
+  box-shadow:0 30px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.03);
+  position:relative;overflow:hidden;
+}
+.gatecard::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--copper),transparent);}
+.gate-chip{width:52px;height:52px;margin:0 auto 16px;border:2px solid var(--copper);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;position:relative;}
+.gate-chip::before,.gate-chip::after{content:"";position:absolute;top:50%;width:10px;height:2px;background:var(--copper);}
+.gate-chip::before{left:-10px;} .gate-chip::after{right:-10px;}
+.gate-chip b{font-family:var(--mono);color:var(--copper-hi);font-size:11px;}
+.gatecard h1{font-family:var(--mono);font-weight:700;font-size:22px;letter-spacing:.14em;margin:0 0 6px;color:var(--silk);}
+.gatecard h1 span{color:var(--copper-hi);}
+.gatecard p{color:var(--silk-dim);font-size:13.5px;margin:0 0 22px;}
+.gate-field{text-align:left;margin-bottom:14px;}
+.gate-field label{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--silk-faint);
+  margin-bottom:6px;text-transform:uppercase;}
+.gate-field input{width:100%;background:#081209;border:1px solid var(--copper-dim);border-radius:6px;
+  color:var(--copper-hi);font-family:var(--mono);font-size:18px;letter-spacing:.12em;padding:12px 14px;text-align:center;}
+.gate-field input:focus{outline:none;border-color:var(--copper);box-shadow:0 0 0 3px rgba(201,138,61,.18);}
+#gateBtn{width:100%;background:var(--copper);color:#0c1a11;border:none;border-radius:6px;padding:12px 14px;
+  font-family:var(--mono);font-weight:700;font-size:13.5px;letter-spacing:.1em;cursor:pointer;transition:.15s;}
+#gateBtn:hover{background:var(--copper-hi);}
+.gate-msg{min-height:18px;font-size:12.5px;color:var(--danger);margin-top:10px;font-family:var(--mono);}
+.gate-hint{margin-top:18px;padding-top:16px;border-top:1px dashed var(--copper-dim);
+  font-size:11.5px;color:var(--silk-faint);font-family:var(--mono);line-height:1.7;}
+
+/* ============ HEADER ============ */
+header{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:54px 22px 10px;text-align:center;}
+.badges{display:flex;gap:8px;justify-content:center;margin-bottom:18px;}
+.badge{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--copper-hi);
+  border:1px solid var(--copper-dim);border-radius:20px;padding:4px 13px;background:rgba(201,138,61,.08);}
+.wordmark{font-family:var(--mono);font-weight:700;font-size:clamp(38px,7vw,64px);letter-spacing:.04em;
+  margin:0;color:var(--silk);}
+.wordmark span{color:var(--copper-hi);}
+header .tagline{color:var(--silk-dim);font-size:15.5px;max-width:560px;margin:14px auto 0;}
+.course-line{font-family:var(--mono);font-size:12px;color:var(--silk-faint);margin-top:10px;letter-spacing:.05em;}
+
+/* power meter */
+.powerbar{max-width:420px;margin:26px auto 0;background:var(--panel);border:1px solid var(--copper-dim);
+  border-radius:8px;padding:12px 16px;}
+.powerbar .pbtop{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;
+  color:var(--silk-faint);letter-spacing:.08em;margin-bottom:8px;}
+.pbtop b{color:var(--copper-hi);}
+.segs{display:flex;gap:5px;}
+.seg{flex:1;height:8px;border-radius:2px;background:var(--via);border:1px solid var(--copper-dim);transition:.3s;}
+.seg.on{background:var(--ok);border-color:var(--ok);box-shadow:0 0 8px rgba(74,222,128,.6);}
+
+/* ============ TRACE / MODULE LIST ============ */
+main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:50px 22px 90px;}
+.trace-wrap{position:relative;}
+.trace-line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:
+  repeating-linear-gradient(180deg,var(--copper) 0 6px, transparent 6px 12px);
+  opacity:.55;transform:translateX(-50%);}
+@media(max-width:760px){.trace-line{left:26px;}}
+
+.section-tag{position:relative;text-align:center;margin:46px 0 26px;}
+.section-tag:first-child{margin-top:0;}
+.section-tag span{background:var(--bg);position:relative;z-index:1;padding:0 16px;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;color:var(--copper-hi);text-transform:uppercase;}
+
+.row{position:relative;display:flex;margin-bottom:34px;}
+.row .stub{position:absolute;top:50%;height:2px;background:var(--copper);opacity:.55;}
+.row.left{justify-content:flex-start;}
+.row.right{justify-content:flex-end;}
+.row.left .stub{left:50%;width:calc(50% - 210px);}
+.row.right .stub{right:50%;width:calc(50% - 210px);}
+@media(max-width:760px){
+  .row, .row.left, .row.right{justify-content:flex-start;padding-left:52px;}
+  .row .stub{left:26px;width:26px;}
+}
+
+.via{position:absolute;left:50%;top:50%;width:9px;height:9px;border-radius:50%;background:var(--copper);
+  transform:translate(-50%,-50%);box-shadow:0 0 0 3px var(--bg);}
+@media(max-width:760px){.via{left:26px;}}
+
+.chip{
+  width:420px;max-width:calc(100vw - 60px);background:var(--panel);border:1px solid var(--copper-dim);
+  border-radius:8px;padding:18px 20px;display:block;position:relative;transition:transform .15s,border-color .15s,box-shadow .15s;
+}
+.chip::before,.chip::after{content:"";position:absolute;top:22px;bottom:22px;width:2px;background:var(--copper-dim);}
+.chip::before{left:-2px;} .chip::after{right:-2px;}
+.chip:hover, .chip:focus-visible{border-color:var(--accent,var(--copper));transform:translateY(-2px);
+  box-shadow:0 14px 30px rgba(0,0,0,.4), 0 0 0 1px var(--accent,var(--copper)) inset;}
+.chip-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.chip-id{font-family:var(--mono);font-size:11px;color:var(--silk-faint);letter-spacing:.08em;}
+.led{width:9px;height:9px;border-radius:50%;background:var(--via);border:1px solid var(--copper-dim);margin-left:auto;transition:.3s;}
+.led.visited{background:var(--accent,var(--ok));border-color:var(--accent,var(--ok));box-shadow:0 0 8px var(--accent,var(--ok));}
+.chip-name{font-family:var(--mono);font-weight:700;font-size:19px;color:var(--silk);letter-spacing:.02em;}
+.chip-name b{color:var(--accent,var(--copper-hi));}
+.chip-fig{font-family:var(--mono);font-size:11px;color:var(--accent,var(--copper-hi));margin-top:2px;}
+.chip-desc{font-size:13.5px;color:var(--silk-dim);margin-top:9px;line-height:1.6;}
+.chip-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;
+  padding-top:12px;border-top:1px dashed var(--copper-dim);}
+.chip-cat{font-family:var(--mono);font-size:10.5px;color:var(--silk-faint);letter-spacing:.06em;}
+.chip-go{font-family:var(--mono);font-size:11.5px;color:var(--accent,var(--copper-hi));font-weight:600;}
+
+footer{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:0 22px 50px;text-align:center;}
+footer p{font-family:var(--mono);font-size:11.5px;color:var(--silk-faint);line-height:1.8;}
+</style>
+</head>
+<body class="board">
+
+<div id="gate">
+  <div class="gatecard">
+    <div class="gate-chip"><b>PWR</b></div>
+    <h1>MAIN<span>BOARD</span></h1>
+    <p>ป้อนรหัสเพื่อจ่ายไฟเข้าระบบห้องทดลอง</p>
+    <div class="gate-field">
+      <label>รหัสนักศึกษา (10 หลัก) หรือรหัสรายวิชา</label>
+      <input id="gateInput" type="text" inputmode="text" autocomplete="off" maxlength="20" placeholder="6800000000">
+    </div>
+    <button id="gateBtn">จ่ายไฟเข้าระบบ</button>
+    <div class="gate-msg" id="gateMsg"></div>
+    <div class="gate-hint">รับรหัสนักศึกษา 10 หลักของทุกคน หรือรหัสรายวิชา</div>
+  </div>
+</div>
+
+<header>
+  <div class="badges"><span class="badge">GNR2022</span><span class="badge">GNR2024</span><span class="badge">BASIC ELECTRONICS</span></div>
+  <h1 class="wordmark">MAIN<span>BOARD</span></h1>
+  <p class="tagline">ห้องทดลองอิเล็กทรอนิกส์เสมือนทั้ง 7 โมดูล ต่อกันเป็นวงจรเดียว
+  เลือกชิปที่ต้องการ กดเข้าไปทดลอง แล้วกลับมาเก็บโมดูลที่เหลือให้ครบ</p>
+  <div class="course-line">คณะวิศวกรรมศาสตร์ · มหาวิทยาลัยรามคำแหง</div>
+
+  <div class="powerbar">
+    <div class="pbtop"><span>ระบบพร้อมใช้งาน</span><b id="pbCount">0 / 7</b></div>
+    <div class="segs" id="segs"></div>
+  </div>
+</header>
+
+<main>
+<div class="trace-wrap">
+  <div class="trace-line"></div>
+
+  <div class="section-tag"><span>หมวดที่ 1 — ตัวแสดงผลดิจิทัล</span></div>
+  <div class="row left" data-row>
+    <div class="stub"></div><div class="via"></div>
+    <a class="chip" data-id="digitforge" data-accent="#f2a541" href="Content_1_digit_forge_7segment_lab5.html">
+      <div class="chip-top"><span class="chip-id">U1</span><span class="led" id="led-digitforge"></span></div>
+      <div class="chip-name">DIGIT <b>FORGE</b></div>
+      <div class="chip-fig">LAB 5 — ตัวแสดงผล 7 ส่วน</div>
+      <div class="chip-desc">ต่อขาแอโนดร่วม/แคโทดร่วมเอง เห็นเซกเมนต์ติดจริงตามระดับสัญญาณที่ป้อน</div>
+      <div class="chip-foot"><span class="chip-cat">ดิจิทัลพื้นฐาน</span><span class="chip-go">เข้าห้องทดลอง →</span></div>
+    </a>
+  </div>
+
+  <div class="section-tag"><span>หมวดที่ 2 — เซนเซอร์แสงและอินฟราเรด</span></div>
+
+  <div class="row right" data-row>
+    <div class="stub"></div><div class="via"></div>
+    <a class="chip" data-id="sunchime" data-accent="#ff8a3d" href="Lab_3_4_sun_chime_light_alarm_3_40.html">
+      <div class="chip-top"><span class="chip-id">U2</span><span class="led" id="led-sunchime"></span></div>
+      <div class="chip-name">SUN <b>CHIME</b></div>
+      <div class="chip-fig">รูปที่ 3-40 — ปลุกด้วยแสงอาทิตย์</div>
+      <div class="chip-desc">LDR จับแสงแดด ปรับจุดตั้งไว แล้วฟังว่าออสซิลเลเตอร์เสียงเปิดเมื่อไร</div>
+      <div class="chip-foot"><span class="chip-cat">LDR · เสียงเตือน</span><span class="chip-go">เข้าห้องทดลอง →</span></div>
+    </a>
+  </div>
+
+  <div class="row left" data-row>
+    <div class="stub"></div><div class="via"></div>
+    <a class="chip" data-id="duskguard" data-accent="#6ea8ff" href="Lab_3_5_dusk_guard_night_light_3_44.html">
+      <div class="chip-top"><span class="chip-id">U3</span><span class="led" id="led-duskguard"></span></div>
+      <div class="chip-name">DUSK <b>GUARD</b></div>
+      <div class="chip-fig">รูปที่ 3-44 — ไฟกลางคืนอัตโนมัติ</div>
+      <div class="chip-desc">คอมพาราเตอร์เอาต์พุตแบบโอเพนคอลเลกเตอร์ เปิดไฟเองเมื่อฟ้ามืด</div>
+      <div class="chip-foot"><span class="chip-cat">LDR · โอเพนคอลเลกเตอร์</span><span class="chip-go">เข้าห้องทดลอง →</span></div>
+    </a>
+  </div>
+
+  <div class="row right" data-row>
+    <div class="stub"></div><div class="via"></div>
+    <a class="chip" data-id="beamsentry" data-accent="#ff3b3b" href="Lab_3_6_beam_sentry_intruder_alarm_3_47.html">
+      <div class="chip-top"><span class="chip-id">U4</span><span class="led" id="led-beamsentry"></span></div>
+      <div class="chip-name">BEAM <b>SENTRY</b></div>
+      <div class="chip-fig">รูปที่ 3-47 — กันขโมยตัดผ่านลำแสง</div>
+      <div class="chip-desc">ตัดลำแสงแล้วดูวงจร latch ค้างเสียงเตือนไว้ จนกว่าจะกด Reset เอง</div>
+      <div class="chip-foot"><span class="chip-cat">ลำแสง · หน่วยความจำ</span><span class="chip-go">เข้าห้องทดลอง →</span></div>
+    </a>
+  </div>
+
+  <div class="row left" data-row>
+    <div class="stub"></div><div class="via"></div>
+    <a class="chip" data-id="pulseeye" data-accent="#00e5a0" href="Lab_3_7_pulse_eye_reflective_object_3_50.html">
+      <div class="chip-top"><span class="chip-id">U5</span><span class="led" id="led-pulseeye"></span></div>
+      <div class="chip-name">PULSE <b>EYE</b></div>
+      <div class="chip-fig">รูปที่ 3-50 — เซนเซอร์สะท้อนวัตถุ</div>
+      <div class="chip-desc">เลื่อนวัตถุเข้าใกล้-ออกห่าง เห็นเซนเซอร์ IR ตอบสนองแบบเรียลไทม์ ไม่มีการค้างสถานะ</div>
+      <div class="chip-foot"><span class="chip-cat">อินฟราเรด · เรียลไทม์</span><span class="chip-go">เข้าห้องทดลอง →</span></div>
+    </a>
+  </div>
+
+  <div class="section-tag"><span>หมวดที่ 3 — คอมพาราเตอร์และโปรเจกต์รวบยอด</span></div>
+
+  <div class="row right" data-row>
+    <div class="stub"></div><div class="via"></div>
+    <a class="chip" data-id="trippoint" data-accent="#f2a541" href="Lab_1_3_trip_point_level_detector_sim.html">
+      <div class="chip-top"><span class="chip-id">U6</span><span class="led" id="led-trippoint"></span></div>
+      <div class="chip-name">TRIP <b>POINT</b></div>
+      <div class="chip-fig">วงจรตรวจจับระดับแรงดัน</div>
+      <div class="chip-desc">หมุนตัวแบ่งแรงดันหาว่าคอมพาราเตอร์ตัวเดียว (IC1A) พลิกสถานะที่จุดใด</div>
+      <div class="chip-foot"><span class="chip-cat">คอมพาราเตอร์เดี่ยว</span><span class="chip-go">เข้าห้องทดลอง →</span></div>
+    </a>
+  </div>
+
+  <div class="row left" data-row>
+    <div class="stub"></div><div class="via"></div>
+    <a class="chip" data-id="barranger" data-accent="#f2a541" href="Proj_1_bar_ranger_led_ruler_sim.html">
+      <div class="chip-top"><span class="chip-id">U7</span><span class="led" id="led-barranger"></span></div>
+      <div class="chip-name">BAR <b>RANGER</b></div>
+      <div class="chip-fig">โปรเจกต์รวบยอด — ไม้บรรทัดอิเล็กทรอนิกส์</div>
+      <div class="chip-desc">รวมความรู้ทุกโมดูลไว้ใน LM339 สี่ตัวพร้อมกัน หลักการเดียวกับ Flash ADC 2 บิต</div>
+      <div class="chip-foot"><span class="chip-cat">ควอดคอมพาราเตอร์</span><span class="chip-go">เข้าห้องทดลอง →</span></div>
+    </a>
+  </div>
+
+</div>
+</main>
+
+<footer>
+  <p>MAINBOARD · ชุดสื่อการสอนวิชาพื้นฐานอิเล็กทรอนิกส์ GNR2022 / GNR2024<br>
+  วางไฟล์นี้ไว้โฟลเดอร์เดียวกับไฟล์ห้องทดลองทั้ง 7 ไฟล์ จึงจะเปิดใช้งานได้ครบ</p>
+</footer>
+
+<script>
+const MODULES=['digitforge','sunchime','duskguard','beamsentry','pulseeye','trippoint','barranger'];
+const KEY_AUTH='mainboard_auth', KEY_VISITED='mainboard_visited';
+
+function getVisited(){
+  try{ return JSON.parse(localStorage.getItem(KEY_VISITED)||'[]'); }catch(e){ return []; }
+}
+function setVisited(arr){
+  try{ localStorage.setItem(KEY_VISITED, JSON.stringify(arr)); }catch(e){}
+}
+function paintProgress(){
+  const visited=getVisited();
+  document.getElementById('pbCount').textContent=visited.length+' / '+MODULES.length;
+  const segs=document.getElementById('segs');
+  segs.innerHTML='';
+  MODULES.forEach(id=>{
+    const seg=document.createElement('div');
+    seg.className='seg'+(visited.includes(id)?' on':'');
+    segs.appendChild(seg);
+  });
+  MODULES.forEach(id=>{
+    const led=document.getElementById('led-'+id);
+    if(led) led.classList.toggle('visited', visited.includes(id));
+  });
+}
+document.querySelectorAll('.chip[data-id]').forEach(chip=>{
+  const accent=chip.getAttribute('data-accent');
+  if(accent) chip.style.setProperty('--accent',accent);
+  const led=chip.querySelector('.led');
+  if(led && accent) led.style.setProperty('--accent',accent);
+  chip.addEventListener('click',()=>{
+    const id=chip.getAttribute('data-id');
+    const v=getVisited();
+    if(!v.includes(id)){ v.push(id); setVisited(v); }
+  });
+});
+paintProgress();
+
+/* ---------- gate ---------- */
+const gate=document.getElementById('gate'), gateInput=document.getElementById('gateInput'),
+      gateBtn=document.getElementById('gateBtn'), gateMsg=document.getElementById('gateMsg');
+function checkCode(v){
+  v=(v||'').trim();
+  if(/^\d{10}$/.test(v)) return true;
+  if(v.toLowerCase()==='ru2569') return true;
+  return false;
+}
+function openBoard(){
+  gate.classList.add('hide');
+  try{ localStorage.setItem(KEY_AUTH,'1'); }catch(e){}
+}
+function tryEnter(){
+  if(checkCode(gateInput.value)){ openBoard(); }
+  else{ gateMsg.textContent='รหัสไม่ถูกต้อง — ใช้รหัสนักศึกษา 10 หลัก หรือรหัสรายวิชา'; gateInput.focus(); gateInput.select(); }
+}
+gateBtn.addEventListener('click',tryEnter);
+gateInput.addEventListener('keydown',e=>{ if(e.key==='Enter') tryEnter(); });
+gateInput.addEventListener('input',()=>{ gateMsg.textContent=''; });
+try{ if(localStorage.getItem(KEY_AUTH)==='1') gate.classList.add('hide'); }catch(e){}
+setTimeout(()=>gateInput.focus(),400);
+</script>
+
+</body>
+</html>
