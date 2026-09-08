@@ -146,9 +146,50 @@ main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:50px 22px
 
 footer{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:0 22px 50px;text-align:center;}
 footer p{font-family:var(--mono);font-size:11.5px;color:var(--silk-faint);line-height:1.8;}
+
+/* ============ ACHIEVEMENT TOAST ============ */
+.ach-toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-30px);z-index:80;
+  background:var(--panel);border:1px solid var(--ok);color:var(--silk);font-family:var(--mono);font-size:12.5px;
+  padding:11px 22px;border-radius:24px;opacity:0;transition:.35s;letter-spacing:.03em;display:flex;gap:8px;align-items:center;
+  box-shadow:0 14px 34px rgba(0,0,0,.5), 0 0 0 1px rgba(74,222,128,.25);white-space:nowrap;}
+.ach-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.ach-toast b{color:var(--ok);}
+
+/* ============ CONFETTI ============ */
+#confettiLayer{position:fixed;inset:0;pointer-events:none;z-index:90;overflow:hidden;}
+.confetti-bit{position:absolute;top:-14px;width:8px;height:14px;opacity:.95;
+  animation:fall linear forwards;border-radius:1px;}
+@keyframes fall{ to{ transform:translateY(108vh) rotate(540deg); opacity:.15; } }
+
+/* ============ BOSS BATTLE SECTION ============ */
+.boss-wrap{max-width:640px;margin:0 auto;}
+.boss-card{position:relative;background:linear-gradient(160deg,#210f0f,#1a0c0c);
+  border:1px solid var(--copper-dim);border-radius:12px;padding:26px 24px;display:block;overflow:hidden;
+  transition:transform .2s,border-color .2s,box-shadow .2s;}
+.boss-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,#ff3b3b,transparent);}
+.boss-card.unlocked{border-color:#7a1f1f;cursor:pointer;}
+.boss-card.unlocked:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(255,59,59,.25), 0 0 0 1px #ff3b3b inset;}
+.boss-card.locked{cursor:not-allowed;filter:grayscale(.7);opacity:.72;}
+.boss-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.boss-badge{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:#ff6b6b;
+  border:1px solid #7a1f1f;border-radius:20px;padding:3px 11px;background:rgba(255,59,59,.1);}
+.boss-badge.glow{animation:bossglow 1.6s ease-in-out infinite;}
+@keyframes bossglow{0%,100%{box-shadow:0 0 0 rgba(255,59,59,0);}50%{box-shadow:0 0 14px rgba(255,59,59,.55);}}
+.boss-name{font-family:var(--mono);font-weight:700;font-size:24px;color:var(--silk);letter-spacing:.02em;}
+.boss-name b{color:#ff6b6b;}
+.boss-desc{font-size:13.5px;color:var(--silk-dim);margin-top:8px;line-height:1.7;}
+.boss-lockline{font-family:var(--mono);font-size:12px;color:var(--silk-faint);margin-top:14px;
+  padding-top:14px;border-top:1px dashed #4a2323;display:flex;justify-content:space-between;align-items:center;}
+.boss-cta{font-family:var(--mono);font-size:12px;color:#ff6b6b;font-weight:600;margin-top:14px;
+  padding-top:14px;border-top:1px dashed #4a2323;text-align:right;}
+.lock-icon{font-size:15px;}
 </style>
 </head>
 <body class="board">
+
+<div id="confettiLayer"></div>
+<div class="ach-toast" id="achToast"></div>
 
 <div id="gate">
   <div class="gatecard">
@@ -167,9 +208,9 @@ footer p{font-family:var(--mono);font-size:11.5px;color:var(--silk-faint);line-h
 
 <header>
   <div class="badges"><span class="badge">GNR2022</span><span class="badge">GNR2024</span><span class="badge">BASIC ELECTRONICS</span></div>
-  <h1 class="wordmark">MAIN<span>BOARD</span></h1>
-  <p class="tagline">ห้องทดลองอิเล็กทรอนิกส์เสมือนทั้ง 7 โมดูล ต่อกันเป็นวงจรเดียว
-  เลือกชิปที่ต้องการ กดเข้าไปทดลอง แล้วกลับมาเก็บโมดูลที่เหลือให้ครบ</p>
+  <h1 class="wordmark" id="secretWordmark" style="cursor:default;user-select:none;">MAIN<span>BOARD</span></h1>
+  <p class="tagline">จ่ายไฟให้เมนบอร์ดติดครบทั้ง 7 ดวง ปลดล็อกภารกิจสุดท้าย <b style="color:var(--copper-hi)">BOSS BATTLE</b> —
+  ห้องทดลองอิเล็กทรอนิกส์เสมือนที่เล่นได้จริง กดชิปไหนก่อนก็ได้ แล้วมาเก็บให้ครบ!</p>
   <div class="course-line">คณะวิศวกรรมศาสตร์ · มหาวิทยาลัยรามคำแหง</div>
 
   <div class="powerbar">
@@ -264,6 +305,22 @@ footer p{font-family:var(--mono);font-size:11.5px;color:var(--silk-faint);line-h
     </a>
   </div>
 
+  <div class="section-tag"><span>หมวดที่ 4 — ภารกิจสุดท้าย</span></div>
+
+  <div class="boss-wrap">
+    <a class="boss-card locked" id="bossCard" href="Boss_Battle_Exam_Simulator.html">
+      <div class="boss-top">
+        <span class="boss-badge" id="bossBadge">🔒 ล็อกอยู่</span>
+      </div>
+      <div class="boss-name">BOSS <b>BATTLE</b></div>
+      <div class="boss-desc" id="bossDesc">แบบฝึกซ้อมสอบจับเวลา 20 ข้อ คละทุกหัวข้อที่เรียนมา สะสมคอมโบ ลุ้นแรงก์ S
+        เก็บโมดูลทดลองให้ครบ 7/7 ก่อน เพื่อปลดล็อกด่านนี้</div>
+      <div class="boss-lockline" id="bossLockLine">
+        <span><span class="lock-icon">🔒</span> ต้องเก็บให้ครบ <b id="bossNeed">7</b>/7 โมดูลก่อน</span>
+      </div>
+    </a>
+  </div>
+
 </div>
 </main>
 
@@ -297,6 +354,88 @@ function paintProgress(){
     if(led) led.classList.toggle('visited', visited.includes(id));
   });
 }
+/* ---------- achievement toast ---------- */
+const achToast=document.getElementById('achToast');
+let achTimer=null;
+function showAch(text){
+  clearTimeout(achTimer);
+  achToast.innerHTML=text;
+  achToast.classList.add('show');
+  achTimer=setTimeout(()=>achToast.classList.remove('show'), 2200);
+}
+
+/* ---------- confetti ---------- */
+function burstConfetti(n){
+  n = n || 60;
+  const colors=['#c98a3d','#e8b45c','#4ade80','#6ea8ff','#ff3b3b','#00e5a0'];
+  const layer=document.getElementById('confettiLayer');
+  for(let i=0;i<n;i++){
+    const bit=document.createElement('div');
+    bit.className='confetti-bit';
+    bit.style.left=(Math.random()*100)+'vw';
+    bit.style.background=colors[Math.floor(Math.random()*colors.length)];
+    bit.style.animationDuration=(2.2+Math.random()*1.6)+'s';
+    bit.style.animationDelay=(Math.random()*0.4)+'s';
+    bit.style.transform='rotate('+Math.floor(Math.random()*360)+'deg)';
+    layer.appendChild(bit);
+    setTimeout(()=>bit.remove(), 4500);
+  }
+}
+
+/* ---------- boss battle unlock ---------- */
+const bossCard=document.getElementById('bossCard'), bossBadge=document.getElementById('bossBadge'),
+      bossDesc=document.getElementById('bossDesc'), bossLockLine=document.getElementById('bossLockLine');
+const KEY_CHEAT='mainboard_cheat_unlock';
+function cheatActive(){ try{ return localStorage.getItem(KEY_CHEAT)==='1'; }catch(e){ return false; } }
+function paintBoss(){
+  const visited=getVisited();
+  const need=MODULES.length - visited.filter(id=>MODULES.includes(id)).length;
+  const doneCount = MODULES.length - need;
+  const unlocked = need<=0 || cheatActive();
+  if(unlocked){
+    if(bossCard.classList.contains('locked')){
+      bossCard.classList.remove('locked'); bossCard.classList.add('unlocked');
+      bossBadge.textContent='🔥 ปลดล็อกแล้ว!'; bossBadge.classList.add('glow');
+      bossDesc.textContent='แบบฝึกซ้อมสอบจับเวลา 20 ข้อ คละทุกหัวข้อที่เรียนมา สะสมคอมโบ ลุ้นแรงก์ S — พร้อมลุยได้เลย!';
+      bossLockLine.innerHTML='<span></span><span class="boss-cta" style="margin:0;padding:0;border:none;">เข้าสู่ภารกิจ →</span>';
+      if(need<=0){ burstConfetti(90); showAch('🎉 <b>ปลดล็อก BOSS BATTLE!</b> เก็บครบ 7/7 โมดูลแล้ว ลุยด่านสุดท้ายได้เลย'); }
+    }
+  } else {
+    bossCard.classList.add('locked'); bossCard.classList.remove('unlocked');
+    document.getElementById('bossNeed').textContent = doneCount;
+  }
+}
+function guardBoss(e){
+  if(bossCard.classList.contains('locked')){
+    e.preventDefault();
+    const visited=getVisited().filter(id=>MODULES.includes(id));
+    showAch('🔒 เก็บโมดูลอีก <b>'+(MODULES.length-visited.length)+'</b> ชิ้นเพื่อปลดล็อก BOSS BATTLE');
+  }
+}
+bossCard.addEventListener('click', guardBoss);
+
+/* ---------- secret shortcut: click "MAINBOARD" wordmark 5x fast to unlock ---------- */
+(function(){
+  const wm = document.getElementById('secretWordmark');
+  let clicks = 0, clickTimer = null;
+  wm.addEventListener('click', ()=>{
+    clicks++;
+    clearTimeout(clickTimer);
+    clickTimer = setTimeout(()=>{ clicks = 0; }, 4000);
+    if(clicks >= 5){
+      clicks = 0; clearTimeout(clickTimer);
+      if(!cheatActive()){
+        try{ localStorage.setItem(KEY_CHEAT,'1'); }catch(e){}
+        burstConfetti(70);
+        showAch('🎮 <b>โค้ดลับปลดล็อก!</b> เข้า BOSS BATTLE ได้ทันทีโดยไม่ต้องเก็บโมดูลครบ');
+        paintBoss();
+      } else {
+        showAch('🎮 โค้ดลับเปิดใช้งานอยู่แล้ว — เข้า BOSS BATTLE ได้เลย');
+      }
+    }
+  });
+})();
+
 document.querySelectorAll('.chip[data-id]').forEach(chip=>{
   const accent=chip.getAttribute('data-accent');
   if(accent) chip.style.setProperty('--accent',accent);
@@ -305,10 +444,18 @@ document.querySelectorAll('.chip[data-id]').forEach(chip=>{
   chip.addEventListener('click',()=>{
     const id=chip.getAttribute('data-id');
     const v=getVisited();
-    if(!v.includes(id)){ v.push(id); setVisited(v); }
+    if(!v.includes(id)){
+      v.push(id); setVisited(v);
+      const name=chip.querySelector('.chip-name').textContent.trim();
+      showAch('⚡ <b>ปลดล็อกโมดูล:</b> '+name+' ('+v.filter(x=>MODULES.includes(x)).length+'/'+MODULES.length+')');
+      burstConfetti(28);
+      paintProgress();
+      paintBoss();
+    }
   });
 });
 paintProgress();
+paintBoss();
 
 /* ---------- gate ---------- */
 const gate=document.getElementById('gate'), gateInput=document.getElementById('gateInput'),

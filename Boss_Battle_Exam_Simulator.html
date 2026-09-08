@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOSS BATTLE — GNR2022 Exam Simulator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#1a120d; --bg2:#241a12; --panel:#2c2015; --panel2:#362819;
+  --copper:#e0a555; --copper-hi:#f2c274;
+  --red:#e2704f; --red-hi:#ef8d68; --red-dim:#6b4a34;
+  --silk:#f6ece0; --silk-dim:#e0c6ab; --silk-faint:#b8977a;
+  --mask:rgba(224,165,85,.16); --via:#3d2c1c;
+  --ok:#7bc47f; --bad:#e2704f;
+  --mono:'IBM Plex Mono',monospace; --body:'IBM Plex Sans Thai','IBM Plex Mono',sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(900px 500px at 15% -8%, rgba(226,112,79,.09), transparent 60%),
+    radial-gradient(700px 460px at 100% 10%, rgba(224,165,85,.07), transparent 55%),
+    linear-gradient(180deg, var(--bg2), var(--bg) 380px);
+  color:var(--silk); font-family:var(--body); font-size:15px; line-height:1.6;
+  min-height:100vh;
+}
+.board{position:relative;}
+.board::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.3;
+  background-image:
+    linear-gradient(var(--mask) 1px, transparent 1px),
+    linear-gradient(90deg, var(--mask) 1px, transparent 1px);
+  background-size:42px 42px;
+  mask-image:radial-gradient(1100px 700px at 50% 0%, black, transparent 75%);
+}
+a{color:inherit;}
+button{font-family:var(--mono);cursor:pointer;}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+
+.wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:40px 20px 70px;}
+
+.backlink{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;
+  color:var(--silk-faint);text-decoration:none;margin-bottom:22px;}
+.backlink:hover{color:var(--copper-hi);}
+
+header{text-align:center;margin-bottom:26px;}
+.badges{display:flex;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;}
+.badge{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--red-hi);
+  border:1px solid var(--red-dim);border-radius:20px;padding:4px 13px;background:rgba(226,112,79,.10);}
+.wordmark{font-family:var(--mono);font-weight:700;font-size:clamp(30px,7vw,50px);letter-spacing:.03em;
+  margin:0;color:var(--silk);}
+.wordmark span{color:var(--red-hi);}
+header p.tagline{color:var(--silk-dim);font-size:14.5px;max-width:520px;margin:12px auto 0;}
+
+/* ============ CARD ============ */
+.card{background:var(--panel);border:1px solid var(--red-dim);border-radius:10px;
+  padding:26px 24px;position:relative;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.03);}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--red),transparent);}
+
+/* ============ START SCREEN ============ */
+#screen-start .stat-row{display:flex;gap:10px;margin:22px 0;flex-wrap:wrap;}
+.stat-chip{flex:1;min-width:130px;background:var(--panel2);border:1px solid var(--red-dim);border-radius:8px;
+  padding:12px 14px;text-align:center;}
+.stat-chip .n{font-family:var(--mono);font-weight:700;font-size:22px;color:var(--red-hi);}
+.stat-chip .l{font-family:var(--mono);font-size:10.5px;color:var(--silk-faint);letter-spacing:.06em;margin-top:2px;}
+.rules{font-size:13.5px;color:var(--silk-dim);margin:18px 0;line-height:1.85;}
+.rules b{color:var(--copper-hi);}
+#nameField{width:100%;background:#100707;border:1px solid var(--red-dim);border-radius:6px;
+  color:var(--silk);font-family:var(--body);font-size:14px;padding:11px 14px;margin-bottom:14px;}
+#nameField:focus{outline:none;border-color:var(--red);}
+.big-btn{width:100%;background:var(--red);color:#241a12;border:none;border-radius:8px;padding:15px 14px;
+  font-weight:700;font-size:15px;letter-spacing:.06em;transition:.15s;}
+.big-btn:hover{background:var(--red-hi);transform:translateY(-1px);}
+.best-score{margin-top:16px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--silk-faint);}
+.best-score b{color:var(--copper-hi);}
+
+/* ============ QUIZ SCREEN ============ */
+#screen-quiz{display:none;}
+.hud{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px;flex-wrap:wrap;}
+.hud-item{font-family:var(--mono);font-size:12px;color:var(--silk-dim);}
+.hud-item b{color:var(--red-hi);font-size:15px;}
+#timer.low{color:var(--bad);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.progress-track{height:8px;background:var(--via);border-radius:4px;overflow:hidden;margin-bottom:20px;
+  border:1px solid var(--red-dim);}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--copper),var(--red));width:0%;transition:width .3s;}
+.qtag{font-family:var(--mono);font-size:11px;color:var(--copper-hi);letter-spacing:.1em;margin-bottom:8px;}
+.qtext{font-size:17px;font-weight:600;color:var(--silk);margin-bottom:20px;line-height:1.6;}
+.choices{display:flex;flex-direction:column;gap:10px;}
+.choice{background:var(--panel2);border:1px solid var(--red-dim);border-radius:8px;padding:13px 16px;
+  text-align:left;color:var(--silk);font-size:14px;transition:.15s;display:flex;gap:10px;align-items:flex-start;}
+.choice:hover:not(:disabled){border-color:var(--red);background:#2a1616;}
+.choice b{font-family:var(--mono);color:var(--copper-hi);flex-shrink:0;}
+.choice.correct{background:rgba(74,222,128,.14);border-color:var(--ok);}
+.choice.correct b{color:var(--ok);}
+.choice.wrong{background:rgba(226,112,79,.14);border-color:var(--bad);}
+.choice.wrong b{color:var(--bad);}
+.choice:disabled{cursor:default;}
+.fb{margin-top:16px;padding:13px 15px;border-radius:8px;font-size:13.5px;line-height:1.6;display:none;}
+.fb.show{display:block;}
+.fb.ok{background:rgba(74,222,128,.1);border:1px solid var(--ok);color:#c8f5d8;}
+.fb.bad{background:rgba(226,112,79,.12);border:1px solid var(--bad);color:#f7ded2;}
+.next-btn{margin-top:16px;width:100%;background:var(--copper);color:#241a12;border:none;border-radius:8px;
+  padding:13px;font-weight:700;font-size:14px;display:none;}
+.next-btn.show{display:block;}
+.next-btn:hover{background:var(--copper-hi);}
+.combo-toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:99;
+  background:var(--red);color:#241a12;font-family:var(--mono);font-weight:700;font-size:13px;
+  padding:9px 20px;border-radius:20px;opacity:0;transition:.3s;letter-spacing:.05em;
+  box-shadow:0 10px 30px rgba(226,112,79,.35);}
+.combo-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ============ RESULT SCREEN ============ */
+#screen-result{display:none;text-align:center;}
+.result-rank{font-family:var(--mono);font-weight:700;font-size:64px;margin:6px 0;
+  background:linear-gradient(180deg,var(--copper-hi),var(--red));-webkit-background-clip:text;
+  background-clip:text;-webkit-text-fill-color:transparent;}
+.result-line{color:var(--silk-dim);font-size:14.5px;margin-bottom:20px;}
+.result-score{font-family:var(--mono);font-size:34px;font-weight:700;color:var(--silk);}
+.result-score span{font-size:16px;color:var(--silk-faint);}
+.bar-list{margin:22px 0;text-align:left;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.bar-row .lab{font-family:var(--mono);font-size:11.5px;color:var(--silk-faint);width:120px;flex-shrink:0;}
+.bar-outer{flex:1;height:10px;background:var(--via);border-radius:5px;overflow:hidden;border:1px solid var(--red-dim);}
+.bar-inner{height:100%;border-radius:5px;}
+.bar-row .val{font-family:var(--mono);font-size:11px;color:var(--silk-dim);width:44px;text-align:right;flex-shrink:0;}
+.result-btns{display:flex;gap:10px;margin-top:22px;}
+.result-btns button, .result-btns a{flex:1;border-radius:8px;padding:13px;font-weight:700;font-size:13.5px;
+  text-align:center;text-decoration:none;display:block;border:none;}
+#retryBtn{background:var(--red);color:#241a12;}
+#retryBtn:hover{background:var(--red-hi);}
+#homeBtn{background:var(--panel2);color:var(--silk);border:1px solid var(--red-dim)!important;}
+#homeBtn:hover{border-color:var(--copper)!important;}
+
+footer{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 20px 40px;text-align:center;}
+footer p{font-family:var(--mono);font-size:11px;color:var(--silk-faint);line-height:1.8;}
+</style>
+</head>
+<body class="board">
+<div class="wrap">
+
+  <a class="backlink" href="index.html">← กลับสู่ MAINBOARD</a>
+
+  <header>
+    <div class="badges"><span class="badge">GNR2022</span><span class="badge">BOSS BATTLE</span><span class="badge">EXAM SIMULATOR</span></div>
+    <h1 class="wordmark">BOSS <span>BATTLE</span></h1>
+    <p class="tagline">ภารกิจสุดท้ายก่อนสอบจริง — เผชิญคำถามคละหัวข้อ 20 ข้อ จับเวลาแข่งกับตัวเอง
+    เอาชนะให้ได้แล้วไปสอบจริงอย่างมั่นใจ</p>
+  </header>
+
+  <!-- ============ START ============ -->
+  <div class="card" id="screen-start">
+    <div class="stat-row">
+      <div class="stat-chip"><div class="n">20</div><div class="l">คำถาม</div></div>
+      <div class="stat-chip"><div class="n">08:00</div><div class="l">เวลาทั้งหมด</div></div>
+      <div class="stat-chip"><div class="n">5</div><div class="l">หัวข้อคละกัน</div></div>
+    </div>
+    <div class="rules">
+      <b>กติกาภารกิจ:</b> ตอบให้เร็วและแม่นเพื่อสะสม<b>คอมโบ</b> — ตอบถูกติดกันจะได้โบนัสคะแนน
+      หมดเวลาเมื่อไรระบบจะปิดภารกิจทันที ไม่ต้องกังวลถ้าตอบผิด ระบบจะอธิบายเฉลยให้ทุกข้อ
+      เพื่อให้พร้อมเต็มที่ก่อนเข้าห้องสอบจริง
+    </div>
+    <input id="nameField" type="text" placeholder="ใส่ชื่อเล่นของคุณ (ไม่บังคับ)" maxlength="24">
+    <button class="big-btn" id="startBtn">⚡ เริ่มภารกิจ</button>
+    <div class="best-score" id="bestScoreLine"></div>
+  </div>
+
+  <!-- ============ QUIZ ============ -->
+  <div class="card" id="screen-quiz">
+    <div class="hud">
+      <div class="hud-item">คะแนน <b id="scoreNow">0</b></div>
+      <div class="hud-item">คอมโบ <b id="comboNow">0</b>🔥</div>
+      <div class="hud-item" id="timer">08:00</div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progFill"></div></div>
+    <div class="qtag" id="qtag">ข้อ 1 / 20 · หัวข้อ</div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="choices" id="choices"></div>
+    <div class="fb" id="fb"></div>
+    <button class="next-btn" id="nextBtn">ข้อถัดไป →</button>
+  </div>
+
+  <!-- ============ RESULT ============ -->
+  <div class="card" id="screen-result">
+    <div class="result-rank" id="rankLetter">A</div>
+    <div class="result-line" id="rankLine">ยอดเยี่ยม!</div>
+    <div class="result-score"><span id="scoreFinal">0</span> <span>/ 20 ข้อ</span></div>
+    <div class="bar-list" id="topicBars"></div>
+    <div class="result-btns">
+      <button id="retryBtn">🔁 ลองอีกครั้ง</button>
+      <a id="homeBtn" href="index.html">🏠 กลับ MAINBOARD</a>
+    </div>
+  </div>
+
+  <div class="combo-toast" id="comboToast"></div>
+
+</div>
+
+<footer>
+  <p>BOSS BATTLE · แบบฝึกซ้อมก่อนสอบกลางภาค GNR2022 Fundamental Electronics<br>
+  ผลคะแนนนี้ไม่มีผลต่อคะแนนจริง ใช้เพื่อประเมินความพร้อมของตนเองเท่านั้น</p>
+</footer>
+
+<script>
+/* ================= QUESTION BANK ================= */
+const BANK = [
+  {topic:"ตัวต้านทาน", q:"แถบสีทองบนตัวต้านทาน หมายถึงค่าความคลาดเคลื่อนเท่าใด", c:["±1%","±5%","±10%","±20%"], a:1, e:"ทอง = ±5% เป็นค่าคลาดเคลื่อนมาตรฐานที่พบบ่อยที่สุด"},
+  {topic:"ตัวต้านทาน", q:"แถบสีเงินบนตัวต้านทาน หมายถึงค่าความคลาดเคลื่อนเท่าใด", c:["±1%","±5%","±10%","±20%"], a:2, e:"เงิน = ±10% กว้างกว่าทองหนึ่งระดับ"},
+  {topic:"ตัวต้านทาน", q:"ตัวต้านทานแถบสี น้ำตาล-ดำ-แดง-ทอง มีค่าเท่าใด", c:["1 kΩ ±5%","10 kΩ ±5%","100 Ω ±5%","1 kΩ ±10%"], a:0, e:"1(น้ำตาล) 0(ดำ) ×100(แดง) = 1000Ω = 1kΩ, ทอง=±5%"},
+  {topic:"ตัวต้านทาน", q:"สีใดแทนตัวเลข 7 ในรหัสสีตัวต้านทาน", c:["เทา","ม่วง","ขาว","น้ำเงิน"], a:1, e:"ลำดับสี: ดำ0 น้ำตาล1 แดง2 ส้ม3 เหลือง4 เขียว5 น้ำเงิน6 ม่วง7 เทา8 ขาว9"},
+  {topic:"ไดโอด", q:"แรงดันตกคร่อมไดโอดซิลิคอนขณะนำกระแส (Forward Bias) มีค่าประมาณเท่าใด", c:["0.3 V","0.5 V","0.7 V","1.2 V"], a:2, e:"ไดโอดซิลิคอนทั่วไปมีแรงดันตกคร่อมประมาณ 0.7V เมื่อไบอัสตรง"},
+  {topic:"ไดโอด", q:"ไดโอดจะนำกระแสได้เมื่อไบอัสในลักษณะใด", c:["ไบอัสตรง (Forward Bias)","ไบอัสกลับ (Reverse Bias)","ไบอัสศูนย์","ไม่ต้องไบอัส"], a:0, e:"ไบอัสตรงคือต่อขา P เข้าขั้วบวก N เข้าขั้วลบ ทำให้กระแสไหลผ่านได้"},
+  {topic:"ไดโอด", q:"วงจร Rectifier มีหน้าที่หลักคืออะไร", c:["ขยายสัญญาณ","กรองสัญญาณรบกวน","แปลงไฟสลับ (AC) เป็นไฟตรง (DC)","เพิ่มความถี่สัญญาณ"], a:2, e:"Rectifier คือวงจรเรียงกระแส แปลง AC ให้เป็น DC"},
+  {topic:"ไดโอด", q:"LED, Zener และ LDR ต่างก็เป็นอุปกรณ์ในตระกูลใด", c:["ทรานซิสเตอร์", "ตัวต้านทานปรับค่าได้", "ไดโอด/สารกึ่งตัวนำ", "ตัวเก็บประจุ"], a:2, e:"ทั้งสามตัวสร้างจากรอยต่อสารกึ่งตัวนำ จัดอยู่ในตระกูลไดโอดหรืออุปกรณ์กึ่งตัวนำที่เกี่ยวข้อง"},
+  {topic:"ทรานซิสเตอร์", q:"ขาทั้งสามของทรานซิสเตอร์ BJT เรียกว่าอะไร", c:["เกต เดรน ซอร์ส","เบส อิมิตเตอร์ คอลเลกเตอร์","แอโนด เกท แคโถด","อินพุต เอาต์พุต กราวด์"], a:1, e:"BJT มีขา Base, Emitter, Collector — ต่างจาก MOSFET ที่ใช้ Gate-Drain-Source"},
+  {topic:"ทรานซิสเตอร์", q:"ข้อใดคือสูตรความสัมพันธ์ของกระแสในทรานซิสเตอร์ที่ถูกต้อง", c:["IE = IB × IC","IE = IB + IC","IE = IB / IC","IE = IC − IB"], a:1, e:"กระแสอิมิตเตอร์เท่ากับผลรวมของกระแสเบสและกระแสคอลเลกเตอร์เสมอ"},
+  {topic:"ทรานซิสเตอร์", q:"ค่าเบต้า (β) ของทรานซิสเตอร์คำนวณได้จากสูตรใด", c:["β = IC / IB","β = IB / IC","β = IE / IC","β = IC × IB"], a:0, e:"β = IC หารด้วย IB และมีค่าเดียวกันกับ hFE"},
+  {topic:"ทรานซิสเตอร์", q:"ค่าเบต้า (β หรือ hFE) ของทรานซิสเตอร์ทั่วไปมักอยู่ในช่วงใด", c:["0.95 – 0.99","0 – 99","20 – 200","1000 – 5000"], a:2, e:"ค่าทั่วไปของอัตราขยายกระแสอยู่ในช่วงประมาณ 20-200"},
+  {topic:"ทรานซิสเตอร์", q:"หากกระแสเบส (IB) = 75 µA และกระแสคอลเลกเตอร์ (IC) = 15 mA ค่าเบต้า (β) เท่ากับเท่าใด", c:["60","100","200","600"], a:2, e:"แปลงหน่วยก่อน: 15mA = 15000µA แล้ว β = 15000/75 = 200"},
+  {topic:"ทรานซิสเตอร์", q:"ทรานซิสเตอร์เกิดจากสารกึ่งตัวนำมาต่อกันกี่รอยต่อ (Junction)", c:["1 รอยต่อ","2 รอยต่อ","3 รอยต่อ","4 รอยต่อ"], a:1, e:"โครงสร้าง NPN หรือ PNP มี 2 รอยต่อ (Base-Emitter และ Base-Collector)"},
+  {topic:"ทรานซิสเตอร์", q:"เมื่อใช้ทรานซิสเตอร์ BJT เป็นวงจรขยายสัญญาณ คุณลักษณะใดสำคัญที่สุด", c:["แรงดันสัญญาณ","ตัวขยายกำลัง","กระแสสัญญาณ","ความถี่สัญญาณ"], a:2, e:"BJT เป็นอุปกรณ์ควบคุมด้วยกระแส กระแสเบสเล็กควบคุมกระแสคอลเลกเตอร์ใหญ่กว่ามาก"},
+  {topic:"สัญลักษณ์วงจร", q:"สัญลักษณ์ทรานซิสเตอร์ NPN ต่างจาก PNP ตรงจุดใด", c:["ทิศทางลูกศรที่ขา Emitter","จำนวนขา","สีของสัญลักษณ์","ขนาดของวงกลม"], a:0, e:"NPN ลูกศรชี้ออกจากฐาน ส่วน PNP ลูกศรชี้เข้าหาฐาน"},
+  {topic:"สัญลักษณ์วงจร", q:"อุปกรณ์ใดมีสัญลักษณ์เป็นตัวต้านทานที่มีลูกศรทแยงพาดผ่าน", c:["ตัวต้านทานปรับค่าได้ (Variable Resistor)","LDR","Zener Diode","Photo Transistor"], a:0, e:"ลูกศรทแยงพาดตัวต้านทานหมายถึงสามารถปรับค่าได้ (Potentiometer/Variable Resistor)"},
+  {topic:"สัญลักษณ์วงจร", q:"7-Segment Display ชนิด Common Anode ต่างจาก Common Cathode อย่างไร", c:["ขา Comm ต่อกับขั้วบวกหรือขั้วลบต่างกัน","จำนวนเซกเมนต์ต่างกัน","สีของ LED ต่างกัน","ไม่มีความแตกต่างกันเลย"], a:0, e:"Common Anode ต่อขา Comm เข้าขั้วบวก ส่วน Common Cathode ต่อเข้าขั้วลบ"},
+  {topic:"วงจร RC", q:"ในวงจร RC หน่วงเวลา ตัวเก็บประจุทำหน้าที่ใดเมื่อกดสวิตช์ครั้งแรก", c:["คายประจุทันที","ชาร์จประจุสะสมพลังงาน","ลัดวงจร","ไม่มีผลใดๆ"], a:1, e:"เมื่อกดสวิตช์ ตัวเก็บประจุจะเริ่มชาร์จ สะสมพลังงานไว้ก่อนปล่อยออกภายหลัง"},
+  {topic:"วงจร RC", q:"หากเพิ่มค่าตัวต้านทาน R ในวงจร RC หน่วงเวลา ผลที่เกิดขึ้นคือข้อใด", c:["เวลาหน่วงสั้นลง","เวลาหน่วงนานขึ้น","วงจรไม่ทำงาน","ไม่มีผลต่อเวลาหน่วง"], a:1, e:"ค่าคงที่เวลา τ = R×C เมื่อ R เพิ่มขึ้น เวลาในการชาร์จ/คายประจุจะนานขึ้นตามไปด้วย"}
+];
+
+/* ================= STATE ================= */
+let order = [], idx = 0, score = 0, combo = 0, maxCombo = 0, answered = false;
+let timeLeft = 8*60, timerId = null;
+let topicStats = {};
+const scoreNow=document.getElementById('scoreNow'), comboNow=document.getElementById('comboNow'),
+      timerEl=document.getElementById('timer'), progFill=document.getElementById('progFill'),
+      qtag=document.getElementById('qtag'), qtext=document.getElementById('qtext'),
+      choicesEl=document.getElementById('choices'), fbEl=document.getElementById('fb'),
+      nextBtn=document.getElementById('nextBtn'), comboToast=document.getElementById('comboToast');
+
+function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function fmtTime(s){ const m=Math.floor(s/60), sec=s%60; return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0'); }
+
+function loadBest(){
+  try{
+    const b = localStorage.getItem('bossbattle_best');
+    if(b){
+      const d = JSON.parse(b);
+      document.getElementById('bestScoreLine').innerHTML = 'สถิติสูงสุดของคุณ: <b>'+d.score+'/20</b> (คอมโบสูงสุด '+d.combo+')';
+    }
+  }catch(e){}
+}
+function saveBest(finalScore, finalCombo){
+  try{
+    const b = localStorage.getItem('bossbattle_best');
+    const prev = b ? JSON.parse(b) : {score:-1,combo:0};
+    if(finalScore > prev.score){ localStorage.setItem('bossbattle_best', JSON.stringify({score:finalScore, combo:finalCombo})); }
+  }catch(e){}
+}
+
+document.getElementById('startBtn').addEventListener('click', startGame);
+document.getElementById('retryBtn').addEventListener('click', startGame);
+
+function startGame(){
+  order = shuffle(BANK.map((_,i)=>i)).slice(0,20);
+  idx=0; score=0; combo=0; maxCombo=0; topicStats={};
+  timeLeft = 8*60;
+  document.getElementById('screen-start').style.display='none';
+  document.getElementById('screen-result').style.display='none';
+  document.getElementById('screen-quiz').style.display='block';
+  scoreNow.textContent='0'; comboNow.textContent='0';
+  clearInterval(timerId);
+  timerId = setInterval(tick, 1000);
+  renderQ();
+}
+
+function tick(){
+  timeLeft--;
+  timerEl.textContent = fmtTime(Math.max(timeLeft,0));
+  timerEl.classList.toggle('low', timeLeft<=30);
+  if(timeLeft<=0){ clearInterval(timerId); endGame(); }
+}
+
+function renderQ(){
+  answered=false;
+  const qi = order[idx];
+  const item = BANK[qi];
+  qtag.textContent = 'ข้อ '+(idx+1)+' / 20 · '+item.topic;
+  qtext.textContent = item.q;
+  progFill.style.width = ((idx)/order.length*100)+'%';
+  choicesEl.innerHTML='';
+  const letters=['ก','ข','ค','ง'];
+  const choiceOrder = shuffle(item.c.map((t,i)=>({t,correct:i===item.a})));
+  choiceOrder.forEach((c,i)=>{
+    const btn=document.createElement('button');
+    btn.className='choice';
+    btn.innerHTML='<b>'+letters[i]+'</b><span>'+c.t+'</span>';
+    btn.addEventListener('click', ()=>selectAnswer(btn, c.correct, item, choiceOrder));
+    choicesEl.appendChild(btn);
+  });
+  fbEl.className='fb'; fbEl.textContent='';
+  nextBtn.classList.remove('show');
+}
+
+function selectAnswer(btn, isCorrect, item, choiceOrder){
+  if(answered) return;
+  answered=true;
+  const allBtns = choicesEl.querySelectorAll('.choice');
+  allBtns.forEach((b,i)=>{
+    b.disabled=true;
+    if(choiceOrder[i].correct) b.classList.add('correct');
+  });
+  if(!isCorrect) btn.classList.add('wrong');
+
+  if(!topicStats[item.topic]) topicStats[item.topic]={correct:0,total:0};
+  topicStats[item.topic].total++;
+
+  if(isCorrect){
+    combo++; maxCombo=Math.max(maxCombo,combo);
+    const bonus = combo>=5?3:combo>=3?2:1;
+    score += bonus;
+    topicStats[item.topic].correct++;
+    fbEl.className='fb ok show'; fbEl.textContent='✅ ถูกต้อง! '+item.e;
+    if(combo>=3){ showCombo(combo); }
+  } else {
+    combo=0;
+    fbEl.className='fb bad show'; fbEl.textContent='❌ ยังไม่ถูก — '+item.e;
+  }
+  scoreNow.textContent=score;
+  comboNow.textContent=combo;
+  nextBtn.classList.add('show');
+}
+
+function showCombo(n){
+  comboToast.textContent = '🔥 คอมโบ '+n+' ติดต่อกัน!';
+  comboToast.classList.add('show');
+  setTimeout(()=>comboToast.classList.remove('show'), 1200);
+}
+
+nextBtn.addEventListener('click', ()=>{
+  idx++;
+  if(idx>=order.length){ clearInterval(timerId); endGame(); }
+  else renderQ();
+});
+
+function endGame(){
+  progFill.style.width='100%';
+  document.getElementById('screen-quiz').style.display='none';
+  document.getElementById('screen-result').style.display='block';
+
+  const correctCount = Object.values(topicStats).reduce((s,t)=>s+t.correct,0);
+  document.getElementById('scoreFinal').textContent = correctCount;
+  saveBest(correctCount, maxCombo);
+
+  const pct = correctCount/20;
+  let rank='D', line='ลองอีกครั้งนะ ทบทวนหัวข้อที่พลาดแล้วมาสู้ใหม่';
+  if(pct>=0.9){ rank='S'; line='สุดยอด! พร้อมลุยข้อสอบจริงเต็มที่'; }
+  else if(pct>=0.75){ rank='A'; line='เยี่ยมมาก ใกล้พร้อมสอบจริงแล้ว'; }
+  else if(pct>=0.6){ rank='B'; line='ดีทีเดียว ทบทวนอีกนิดจะแม่นขึ้น'; }
+  else if(pct>=0.4){ rank='C'; line='พอใช้ได้ ควรกลับไปอ่านสรุปเนื้อหาอีกรอบ'; }
+  document.getElementById('rankLetter').textContent = rank;
+  document.getElementById('rankLine').textContent = line;
+
+  const barsEl = document.getElementById('topicBars');
+  barsEl.innerHTML='';
+  Object.keys(topicStats).forEach(topic=>{
+    const st = topicStats[topic];
+    const p = Math.round(st.correct/st.total*100);
+    const color = p>=70?'#4ade80':p>=40?'#f2c274':'#e2704f';
+    const row=document.createElement('div');
+    row.className='bar-row';
+    row.innerHTML='<div class="lab">'+topic+'</div><div class="bar-outer"><div class="bar-inner" style="width:'+p+'%;background:'+color+'"></div></div><div class="val">'+st.correct+'/'+st.total+'</div>';
+    barsEl.appendChild(row);
+  });
+}
+
+loadBest();
+</script>
+</body>
+</html>
