@@ -4,7 +4,7 @@
    ----------------------------------------------------------------
    ผู้สอน: วาง URL ของ Web app ที่ได้จากการ Deploy Apps Script ไว้ในบรรทัดด้านล่าง
    ================================================================ */
-var GNR_FEEDBACK_URL = '';
+var GNR_FEEDBACK_URL = 'https://script.google.com/macros/s/AKfycbxXhTl10qLftSW5SybBhXeE7tyR5PVnal4JQyAO_1u9tN7NOG1BAvKA3Ho8zpHCRM_xCQ/exec';
 
 (function(){
   'use strict';
