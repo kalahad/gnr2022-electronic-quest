@@ -56,6 +56,13 @@ def stub(target):
             '<script>location.replace(%r + location.search + location.hash);</script></head>'
             '<body style="font-family:sans-serif;padding:24px">หน้านี้ย้ายแล้ว <a href="%s">ไปที่หน้าใหม่</a></body></html>\n') % (target, target, target, target)
 
+FB = '<script src="%sfeedback.js" defer></script>\n'
+
+def inject_fb(s, prefix='../'):
+    s = re.sub(r'<script src="(\.\./)?feedback\.js" defer></script>\n', '', s)
+    i = s.rindex('</body>')
+    return s[:i] + FB % prefix + s[i:]
+
 def inject_back(s):
     s = re.sub(r'<a href="\.\./index\.html" class="gnr-back".*?</a>\n', '', s, flags=re.S)
     i = s.rindex('</body>')
@@ -73,24 +80,27 @@ def main(old_site, legacy_dir, out):
     for src, dst in PLAY.items():
         p = os.path.join(ROOT, src)
         if os.path.exists(p):
-            shutil.copy(p, os.path.join(out, 'play', dst)); built.add(dst)
+            s = open(p, encoding='utf-8').read()
+            open(os.path.join(out, 'play', dst), 'w', encoding='utf-8').write(inject_fb(s)); built.add(dst)
             print('play  ', dst, '(ระบบใหม่)')
     for src, dst in LEGACY.items():
         if dst in built: continue
         p = os.path.join(legacy_dir, src)
         if os.path.exists(p):
             s = open(p, encoding='utf-8').read()
-            open(os.path.join(out, 'play', dst), 'w', encoding='utf-8').write(inject_back(s))
+            open(os.path.join(out, 'play', dst), 'w', encoding='utf-8').write(inject_fb(inject_back(s)))
             print('play  ', dst, '(ฉบับเดิมชั่วคราว)')
     for src, dst in LABS.items():
         s = open(os.path.join(old_site, src), encoding='utf-8').read()
         s = s.replace('href="index.html"', 'href="../index.html"')
-        open(os.path.join(out, dst), 'w', encoding='utf-8').write(inject_back(s))
+        open(os.path.join(out, dst), 'w', encoding='utf-8').write(inject_fb(inject_back(s)))
         open(os.path.join(out, src), 'w', encoding='utf-8').write(stub(dst))
         print('lab   ', dst, '<-', src)
     for src, dst in EXTRA_REDIRECT.items():
         open(os.path.join(out, src), 'w', encoding='utf-8').write(stub(dst))
-    shutil.copy(os.path.join(HERE, 'hub', 'index.html'), os.path.join(out, 'index.html'))
+    hub = open(os.path.join(HERE, 'hub', 'index.html'), encoding='utf-8').read()
+    open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(inject_fb(hub, ''))
+    shutil.copy(os.path.join(HERE, 'hub', 'feedback.js'), os.path.join(out, 'feedback.js'))
     shutil.copy(os.path.join(ROOT, 'README.md'), os.path.join(out, 'README.md'))
     open(os.path.join(out, '.nojekyll'), 'w').close()
     skip = shutil.ignore_patterns('__pycache__', '*.pyc', '*.png', 'make_index.py', 'template_index.html', 'index_neo.css',

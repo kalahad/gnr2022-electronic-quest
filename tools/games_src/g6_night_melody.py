@@ -440,6 +440,22 @@ B['district3'] = [
   'เมื่อแบ่งเป็นบล็อก เราทดสอบได้ทีละจุด เช่น ลัดขา C–E เพื่อตรวจส่วนเพลง หรือวัด VB เพื่อตรวจส่วนตัวรับรู้'),
 ]
 
+
+# ---------- รูปวงจรประกอบโจทย์ (ต่อท้ายโจทย์เดิม ไม่ลบข้อความ) ----------
+from qfig import divider, bjt, proj6, led_collector, base_drive, pin1_node
+AUG = {
+ 'district1': {2: divider('9 V', 'R 10 kΩ', 'LDR 10 kΩ', ldr_bot=True), 3: divider('9 V', 'R 10 kΩ', 'LDR 100 kΩ', ldr_bot=True),
+               4: divider('9 V', 'R 10 kΩ', 'LDR 1 kΩ', ldr_bot=True), 5: divider('Vs', 'R', 'LDR', ldr_bot=True),
+               10: divider('5 V', 'R 10 kΩ', 'LDR = ?', out='2.5 V', ldr_bot=True), 12: divider('5 V', 'R 10 kΩ', 'LDR 40 kΩ', ldr_bot=True)},
+ 'district2': {2: bjt('40 µA', 'IC = ?', 'IE', 'β = 100'), 3: bjt('75 µA', '15 mA', 'IE', 'β = ?'), 4: bjt('40 µA', '4 mA', 'IE = ?'),
+               8: proj6(), 9: proj6(), 10: proj6(), 11: led_collector(), 12: base_drive()},
+ 'district3': {0: pin1_node(), 1: pin1_node(), 4: pin1_node('? (แทน S1)'), 5: pin1_node('ทรานซิสเตอร์ (แทน S1)'),
+               8: pin1_node('ทรานซิสเตอร์ (แทน S1)')},
+}
+for _d, _m in AUG.items():
+    for _i, _fig in _m.items():
+        _q, _c, _e = B[_d][_i]; B[_d][_i] = (_q + _fig, _c, _e)
+
 STAR = star_table([
  ('NIGHT MAESTRO', 'ประกอบระบบได้ครบทุกบล็อก พร้อมตอบข้อเขียนออกแบบวงจรใน Final แล้ว ลองช่วยอธิบายให้คู่ของคุณ'),
  ('MELODY MAKER', 'เกือบสมบูรณ์ ทบทวนข้อที่พลาดอีกครั้ง แล้วลองต่อวงจรจริงบนโปรโตบอร์ด'),

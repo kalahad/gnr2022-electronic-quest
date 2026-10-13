@@ -331,6 +331,7 @@
   window.addEventListener('resize',function(){ setTbh(); var a=q('.screen.active'), m=a&&/^scr-lesson(\d)$/.exec(a.id); if(m&&decks[+m[1]]){ var st=decks[+m[1]]; fit(st.slides[st.i]); } else fitPanel(); });
 
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ setTimeout(fitPanel,50); });
+  (function(){ if(q('.neo-foot')) return; var f=h('div','neo-foot','<b>GNR2022 อิเล็กทรอนิกส์พื้นฐาน</b><span>·</span><span>ผศ.ดร.กุลวลัญช์ วรุณสิน</span><span class="fx">·</span><span class="fx">คณะวิศวกรรมศาสตร์ มหาวิทยาลัยรามคำแหง</span><span class="fx">·</span><span class="fx">© 2569</span>'); f.setAttribute('role','contentinfo'); D.body.appendChild(f); })();
   welcome(); brief('pre'); brief('post'); [1,2,3].forEach(deckify); try{ pinButtons(); }catch(e){ console.warn('neo pin',e); } setTbh();
   if(window.MutationObserver){ var tb=q('#topbar'); if(tb) new MutationObserver(setTbh).observe(tb,{attributes:true,attributeFilter:['class']}); }
 })();

@@ -604,7 +604,7 @@ input[type=range].rng{width:100%;accent-color:var(--ember);margin:8px 0}
       <span class="sp" style="width:10px"></span>
       <button class="btn sm" data-led="red">แดง</button><button class="btn sm" data-led="green">เขียว</button><button class="btn sm" data-led="blue">น้ำเงิน</button>
     </div>
-    <label class="muted" for="ledR" style="display:block;font-size:.85rem">ค่า R (ค่ามาตรฐาน E12): <b id="ledRt">390 Ω</b></label>
+    <label class="muted" for="ledR" style="display:block;font-size:.85rem">ค่า R: <b id="ledRt">390 Ω</b> · แถบเลื่อนนี้ให้เฉพาะค่ามาตรฐาน E12 ที่หาซื้อได้จริง (รายละเอียดในย่าน 3)</label>
     <input type="range" class="rng" id="ledR" min="0" max="24" value="11" aria-label="ค่าตัวต้านทาน">
     <div class="labrow">
       <div class="ledbulb" id="ledBulb"></div>
@@ -714,7 +714,7 @@ input[type=range].rng{width:100%;accent-color:var(--ember);margin:8px 0}
     <div class="keyfact">จำให้ขึ้นใจ: <b>ค่าที่คำนวณได้ ปัดขึ้นเป็นค่ามาตรฐาน</b> · <b>พิกัดวัตต์ ≥ 2 × P</b> · 1 kΩ ±5% = 950 ถึง 1,050 Ω</div>
 
     <h3 style="margin-top:18px">ห้องทดลอง: เลือกตัวต้านทานที่หาซื้อได้จริง</h3>
-    <p class="muted">กด "งานใหม่" ระบบจะให้แหล่งจ่าย สี LED และกระแสเป้าหมาย เลือกค่า E12 และพิกัดวัตต์ แล้วกดส่งงาน ทำให้ผ่าน 3 งาน</p>
+    <p class="muted">กด "งานใหม่" ระบบจะให้แหล่งจ่าย สี LED และกระแสเป้าหมาย คำนวณ R = (Vs − Vf) / I แล้วเลือก<b>ค่ามาตรฐาน E12 ที่สูงกว่าและใกล้ที่สุด</b> (ปุ่มแถวแรก) กับพิกัดวัตต์ที่ไม่น้อยกว่า 2 × P (แถวที่สอง) ทำให้ผ่าน 3 งาน</p>
     <div class="status-line" id="pkJob">กด "งานใหม่" เพื่อรับงาน</div>
     <div class="epick" id="pkR"></div>
     <div class="epick" id="pkW"></div>
@@ -895,7 +895,7 @@ function confetti(ms){
 const BANK = {
  "district1": [
   {
-   "q": "ตัวต้านทาน 1 kΩ ต่อกับแหล่งจ่าย 5 V กระแสที่ไหลผ่านมีค่าเท่าใด",
+   "q": "ตัวต้านทาน 1 kΩ ต่อกับแหล่งจ่าย 5 V กระแสที่ไหลผ่านมีค่าเท่าใด<svg class=\"qfig\" viewBox=\"0 0 360 112\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M30 26 V52 M30 60 V92 H330 V26\" /><path d=\"M18 52 H42 M24 60 H36\" stroke-width=\"2.6\"/><text x=\"12\" y=\"48\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+</text><text x=\"40\" y=\"80\" text-anchor=\"start\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">5 V</text><path d=\"M30 26 H178\"/><path d=\"M222 26 H330\"/><rect x=\"178\" y=\"19\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"200\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">1 kΩ</text></g></svg>",
    "c": [
     "5 mA",
     "5 A",
@@ -906,7 +906,7 @@ const BANK = {
    "e": "I = V / R = 5 / 1,000 = 0.005 A = 5 mA"
   },
   {
-   "q": "มีกระแส 20 mA ไหลผ่านตัวต้านทาน 470 Ω แรงดันตกคร่อมตัวต้านทานเท่าใด",
+   "q": "มีกระแส 20 mA ไหลผ่านตัวต้านทาน 470 Ω แรงดันตกคร่อมตัวต้านทานเท่าใด<svg class=\"qfig\" viewBox=\"0 0 360 112\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M30 26 V52 M30 60 V92 H330 V26\" /><path d=\"M18 52 H42 M24 60 H36\" stroke-width=\"2.6\"/><text x=\"12\" y=\"48\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+</text><text x=\"40\" y=\"80\" text-anchor=\"start\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">V = ?</text><path d=\"M30 26 H178\"/><path d=\"M222 26 H330\"/><rect x=\"178\" y=\"19\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"200\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">470 Ω</text><text x=\"330\" y=\"106\" text-anchor=\"end\" font-size=\"11\" fill=\"var(--gold,#b8860b)\" stroke=\"none\" font-family=\"inherit\">I = 20 mA</text></g></svg>",
    "c": [
     "9.4 V",
     "23.5 V",
@@ -928,7 +928,7 @@ const BANK = {
    "e": "กำลังไฟฟ้า P = V × I และแทน V = IR จะได้ I²R หรือแทน I = V/R จะได้ V²/R ส่วน V / I คือความต้านทาน ไม่ใช่กำลัง"
   },
   {
-   "q": "ตัวต้านทาน 100 Ω มีกระแส 50 mA ไหลผ่าน กำลังที่กลายเป็นความร้อนเท่าใด",
+   "q": "ตัวต้านทาน 100 Ω มีกระแส 50 mA ไหลผ่าน กำลังที่กลายเป็นความร้อนเท่าใด<svg class=\"qfig\" viewBox=\"0 0 360 112\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M30 26 V52 M30 60 V92 H330 V26\" /><path d=\"M18 52 H42 M24 60 H36\" stroke-width=\"2.6\"/><text x=\"12\" y=\"48\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+</text><text x=\"40\" y=\"80\" text-anchor=\"start\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">V</text><path d=\"M30 26 H178\"/><path d=\"M222 26 H330\"/><rect x=\"178\" y=\"19\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"200\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">100 Ω</text><text x=\"330\" y=\"106\" text-anchor=\"end\" font-size=\"11\" fill=\"var(--gold,#b8860b)\" stroke=\"none\" font-family=\"inherit\">I = 50 mA</text></g></svg>",
    "c": [
     "0.25 W",
     "5 W",
@@ -961,7 +961,7 @@ const BANK = {
    "e": "LED เป็นไดโอด เมื่อแรงดันถึงแรงดันไปหน้า Vf กระแสจะพุ่งขึ้นอย่างรวดเร็ว ตัวต้านทานรับแรงดันส่วนเกินและกำหนดกระแสให้อยู่ในย่านใช้งาน"
   },
   {
-   "q": "แหล่งจ่าย 5 V ขับ LED แดง Vf = 2 V ที่กระแส 20 mA ต้องใช้ตัวต้านทานกี่โอห์ม",
+   "q": "แหล่งจ่าย 5 V ขับ LED แดง Vf = 2 V ที่กระแส 20 mA ต้องใช้ตัวต้านทานกี่โอห์ม<svg class=\"qfig\" viewBox=\"0 0 360 112\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M30 26 V52 M30 60 V92 H330 V26\" /><path d=\"M18 52 H42 M24 60 H36\" stroke-width=\"2.6\"/><text x=\"12\" y=\"48\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+</text><text x=\"40\" y=\"80\" text-anchor=\"start\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">5 V</text><path d=\"M30 26 H93\"/><path d=\"M137 26 H253\"/><path d=\"M297 26 H330\"/><rect x=\"93\" y=\"19\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"115\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">R = ?</text><path d=\"M263 15 L287 26 L263 37 Z\" stroke=\"var(--ember,#c2410c)\" fill=\"var(--ember,#c2410c)\" fill-opacity=\".25\"/><path d=\"M287 14 V38\" stroke=\"var(--ember,#c2410c)\"/><path d=\"M253 26 H263 M287 26 H297\" /><path d=\"M277 12 l7 -8 M284 14 l7 -8\" stroke=\"var(--gold,#b8860b)\"/><text x=\"275\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">แดง Vf 2 V</text><text x=\"330\" y=\"106\" text-anchor=\"end\" font-size=\"11\" fill=\"var(--gold,#b8860b)\" stroke=\"none\" font-family=\"inherit\">I = 20 mA</text></g></svg>",
    "c": [
     "150 Ω",
     "250 Ω",
@@ -972,7 +972,7 @@ const BANK = {
    "e": "R = (Vs − Vf) / I = (5 − 2) / 0.020 = 150 Ω"
   },
   {
-   "q": "แหล่งจ่าย 9 V ขับ LED แดง Vf = 2 V ที่ 20 mA คำนวณ R ได้ 350 Ω ควรเลือกค่ามาตรฐาน E12 ค่าใด",
+   "q": "แหล่งจ่าย 9 V ขับ LED แดง Vf = 2 V ที่ 20 mA คำนวณ R ได้ 350 Ω ควรเลือกค่ามาตรฐาน E12 ค่าใด<svg class=\"qfig\" viewBox=\"0 0 360 112\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M30 26 V52 M30 60 V92 H330 V26\" /><path d=\"M18 52 H42 M24 60 H36\" stroke-width=\"2.6\"/><text x=\"12\" y=\"48\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+</text><text x=\"40\" y=\"80\" text-anchor=\"start\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">9 V</text><path d=\"M30 26 H93\"/><path d=\"M137 26 H253\"/><path d=\"M297 26 H330\"/><rect x=\"93\" y=\"19\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"115\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">R = 350 Ω (คำนวณ)</text><path d=\"M263 15 L287 26 L263 37 Z\" stroke=\"var(--ember,#c2410c)\" fill=\"var(--ember,#c2410c)\" fill-opacity=\".25\"/><path d=\"M287 14 V38\" stroke=\"var(--ember,#c2410c)\"/><path d=\"M253 26 H263 M287 26 H297\" /><path d=\"M277 12 l7 -8 M284 14 l7 -8\" stroke=\"var(--gold,#b8860b)\"/><text x=\"275\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">แดง Vf 2 V</text></g></svg><div class=\"qnote\">ค่ามาตรฐาน E12 คือชุดค่าที่ผู้ผลิตทำขาย ในหลักร้อยโอห์มมี <b>270 · 330 · 390 · 470 · 560 Ω</b></div>",
    "c": [
     "390 Ω",
     "330 Ω",
@@ -983,7 +983,7 @@ const BANK = {
    "e": "ปัดขึ้นเป็นค่ามาตรฐานที่ใกล้สุดเพื่อให้กระแสไม่เกินที่ออกแบบ ในอนุกรม E12 ค่าถัดจาก 330 คือ 390 Ω (300 และ 360 อยู่ใน E24 ไม่ใช่ E12)"
   },
   {
-   "q": "ใช้ตัวต้านทาน 390 Ω กับแหล่งจ่าย 9 V และ LED แดง Vf = 2 V กระแสจริงประมาณเท่าใด",
+   "q": "ใช้ตัวต้านทาน 390 Ω กับแหล่งจ่าย 9 V และ LED แดง Vf = 2 V กระแสจริงประมาณเท่าใด<svg class=\"qfig\" viewBox=\"0 0 360 112\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M30 26 V52 M30 60 V92 H330 V26\" /><path d=\"M18 52 H42 M24 60 H36\" stroke-width=\"2.6\"/><text x=\"12\" y=\"48\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+</text><text x=\"40\" y=\"80\" text-anchor=\"start\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">9 V</text><path d=\"M30 26 H93\"/><path d=\"M137 26 H253\"/><path d=\"M297 26 H330\"/><rect x=\"93\" y=\"19\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"115\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">390 Ω</text><path d=\"M263 15 L287 26 L263 37 Z\" stroke=\"var(--ember,#c2410c)\" fill=\"var(--ember,#c2410c)\" fill-opacity=\".25\"/><path d=\"M287 14 V38\" stroke=\"var(--ember,#c2410c)\"/><path d=\"M253 26 H263 M287 26 H297\" /><path d=\"M277 12 l7 -8 M284 14 l7 -8\" stroke=\"var(--gold,#b8860b)\"/><text x=\"275\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">แดง Vf 2 V</text></g></svg>",
    "c": [
     "17.9 mA",
     "23.1 mA",
@@ -1005,7 +1005,7 @@ const BANK = {
    "e": "R = (Vs − Vf) / I เมื่อ Vf สูงขึ้น ตัวตั้ง (Vs − Vf) ลดลง R ที่ต้องใช้จึงน้อยลง"
   },
   {
-   "q": "ถ้าเพิ่มค่าตัวต้านทานที่ต่ออนุกรมกับ LED จาก 220 Ω เป็น 1 kΩ โดยแหล่งจ่ายเท่าเดิม จะเกิดอะไรขึ้น",
+   "q": "ถ้าเพิ่มค่าตัวต้านทานที่ต่ออนุกรมกับ LED จาก 220 Ω เป็น 1 kΩ โดยแหล่งจ่ายเท่าเดิม จะเกิดอะไรขึ้น<svg class=\"qfig\" viewBox=\"0 0 360 112\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M30 26 V52 M30 60 V92 H330 V26\" /><path d=\"M18 52 H42 M24 60 H36\" stroke-width=\"2.6\"/><text x=\"12\" y=\"48\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+</text><text x=\"40\" y=\"80\" text-anchor=\"start\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">Vs</text><path d=\"M30 26 H93\"/><path d=\"M137 26 H253\"/><path d=\"M297 26 H330\"/><rect x=\"93\" y=\"19\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"115\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">220 Ω → 1 kΩ</text><path d=\"M263 15 L287 26 L263 37 Z\" stroke=\"var(--ember,#c2410c)\" fill=\"var(--ember,#c2410c)\" fill-opacity=\".25\"/><path d=\"M287 14 V38\" stroke=\"var(--ember,#c2410c)\"/><path d=\"M253 26 H263 M287 26 H297\" /><path d=\"M277 12 l7 -8 M284 14 l7 -8\" stroke=\"var(--gold,#b8860b)\"/><text x=\"275\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">LED</text></g></svg>",
    "c": [
     "กระแสลดลง LED หรี่ลง",
     "กระแสเพิ่มขึ้น LED สว่างขึ้น",
@@ -1027,7 +1027,7 @@ const BANK = {
    "e": "m = 10⁻³ ดังนั้น 20 mA = 20 × 0.001 = 0.020 A"
   },
   {
-   "q": "ตัวต้านทาน 1 kΩ ต่อตรงกับแหล่งจ่าย 12 V ใช้ตัวพิกัด ¼ W ได้หรือไม่",
+   "q": "ตัวต้านทาน 1 kΩ ต่อตรงกับแหล่งจ่าย 12 V ใช้ตัวพิกัด ¼ W ได้หรือไม่<svg class=\"qfig\" viewBox=\"0 0 360 112\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M30 26 V52 M30 60 V92 H330 V26\" /><path d=\"M18 52 H42 M24 60 H36\" stroke-width=\"2.6\"/><text x=\"12\" y=\"48\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+</text><text x=\"40\" y=\"80\" text-anchor=\"start\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">12 V</text><path d=\"M30 26 H178\"/><path d=\"M222 26 H330\"/><rect x=\"178\" y=\"19\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"200\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">1 kΩ พิกัด ¼ W</text></g></svg>",
    "c": [
     "ไม่ได้ เพราะ P = 12² / 1,000 = 0.144 W เกินครึ่งของพิกัด ควรใช้ ½ W",
     "ได้ เพราะ P = 0.012 W",
@@ -1040,7 +1040,7 @@ const BANK = {
  ],
  "district2": [
   {
-   "q": "ตัวต้านทาน 4 แถบ สี น้ำตาล ดำ แดง ทอง มีค่าเท่าใด",
+   "q": "ตัวต้านทาน 4 แถบ สี น้ำตาล ดำ แดง ทอง มีค่าเท่าใด<svg class=\"qfig\" viewBox=\"0 0 360 94\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 45 H90 M270 45 H340\" stroke-width=\"4\"/><rect x=\"90\" y=\"20\" width=\"180\" height=\"50\" rx=\"20\" fill=\"#d6b48a\" stroke=\"#a0825c\"/><rect x=\"114\" y=\"20\" width=\"12\" height=\"50\" fill=\"#7c4a1e\" stroke=\"none\"/><text x=\"120\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">น้ำตาล</text><rect x=\"140\" y=\"20\" width=\"12\" height=\"50\" fill=\"#111\" stroke=\"none\"/><text x=\"146\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ดำ</text><rect x=\"166\" y=\"20\" width=\"12\" height=\"50\" fill=\"#ef4444\" stroke=\"none\"/><text x=\"172\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">แดง</text><rect x=\"246\" y=\"20\" width=\"12\" height=\"50\" fill=\"#c9a227\" stroke=\"none\"/><text x=\"252\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ทอง</text></g></svg>",
    "c": [
     "1 kΩ ± 5%",
     "102 Ω ± 5%",
@@ -1051,7 +1051,7 @@ const BANK = {
    "e": "น้ำตาล = 1, ดำ = 0 ได้ 10 แดงเป็นตัวคูณ × 100 = 1,000 Ω ทองคือ ± 5%"
   },
   {
-   "q": "ตัวต้านทาน 4 แถบ สี เหลือง ม่วง ส้ม ทอง มีค่าเท่าใด",
+   "q": "ตัวต้านทาน 4 แถบ สี เหลือง ม่วง ส้ม ทอง มีค่าเท่าใด<svg class=\"qfig\" viewBox=\"0 0 360 94\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 45 H90 M270 45 H340\" stroke-width=\"4\"/><rect x=\"90\" y=\"20\" width=\"180\" height=\"50\" rx=\"20\" fill=\"#d6b48a\" stroke=\"#a0825c\"/><rect x=\"114\" y=\"20\" width=\"12\" height=\"50\" fill=\"#facc15\" stroke=\"none\"/><text x=\"120\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">เหลือง</text><rect x=\"140\" y=\"20\" width=\"12\" height=\"50\" fill=\"#8b5cf6\" stroke=\"none\"/><text x=\"146\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ม่วง</text><rect x=\"166\" y=\"20\" width=\"12\" height=\"50\" fill=\"#f97316\" stroke=\"none\"/><text x=\"172\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ส้ม</text><rect x=\"246\" y=\"20\" width=\"12\" height=\"50\" fill=\"#c9a227\" stroke=\"none\"/><text x=\"252\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ทอง</text></g></svg>",
    "c": [
     "47 kΩ ± 5%",
     "473 Ω ± 5%",
@@ -1062,7 +1062,7 @@ const BANK = {
    "e": "เหลือง 4 ม่วง 7 ได้ 47 ส้มคือ × 1 k จึงได้ 47 kΩ"
   },
   {
-   "q": "ตัวต้านทาน 4 แถบ สี แดง แดง น้ำตาล ทอง มีค่าเท่าใด",
+   "q": "ตัวต้านทาน 4 แถบ สี แดง แดง น้ำตาล ทอง มีค่าเท่าใด<svg class=\"qfig\" viewBox=\"0 0 360 94\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 45 H90 M270 45 H340\" stroke-width=\"4\"/><rect x=\"90\" y=\"20\" width=\"180\" height=\"50\" rx=\"20\" fill=\"#d6b48a\" stroke=\"#a0825c\"/><rect x=\"114\" y=\"20\" width=\"12\" height=\"50\" fill=\"#ef4444\" stroke=\"none\"/><text x=\"120\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">แดง</text><rect x=\"140\" y=\"20\" width=\"12\" height=\"50\" fill=\"#ef4444\" stroke=\"none\"/><text x=\"146\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">แดง</text><rect x=\"166\" y=\"20\" width=\"12\" height=\"50\" fill=\"#7c4a1e\" stroke=\"none\"/><text x=\"172\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">น้ำตาล</text><rect x=\"246\" y=\"20\" width=\"12\" height=\"50\" fill=\"#c9a227\" stroke=\"none\"/><text x=\"252\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ทอง</text></g></svg>",
    "c": [
     "220 Ω ± 5%",
     "22 Ω ± 5%",
@@ -1095,7 +1095,7 @@ const BANK = {
    "e": "ในตำแหน่งตัวคูณ ทองคือ × 0.1 และเงินคือ × 0.01 ใช้กับตัวต้านทานที่มีค่าต่ำกว่า 10 Ω"
   },
   {
-   "q": "ตัวต้านทาน 4 แถบ สี น้ำตาล ดำ ทอง ทอง มีค่าเท่าใด",
+   "q": "ตัวต้านทาน 4 แถบ สี น้ำตาล ดำ ทอง ทอง มีค่าเท่าใด<svg class=\"qfig\" viewBox=\"0 0 360 94\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 45 H90 M270 45 H340\" stroke-width=\"4\"/><rect x=\"90\" y=\"20\" width=\"180\" height=\"50\" rx=\"20\" fill=\"#d6b48a\" stroke=\"#a0825c\"/><rect x=\"114\" y=\"20\" width=\"12\" height=\"50\" fill=\"#7c4a1e\" stroke=\"none\"/><text x=\"120\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">น้ำตาล</text><rect x=\"140\" y=\"20\" width=\"12\" height=\"50\" fill=\"#111\" stroke=\"none\"/><text x=\"146\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ดำ</text><rect x=\"166\" y=\"20\" width=\"12\" height=\"50\" fill=\"#c9a227\" stroke=\"none\"/><text x=\"172\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ทอง</text><rect x=\"246\" y=\"20\" width=\"12\" height=\"50\" fill=\"#c9a227\" stroke=\"none\"/><text x=\"252\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ทอง</text></g></svg>",
    "c": [
     "1.0 Ω ± 5%",
     "10 Ω ± 5%",
@@ -1117,7 +1117,7 @@ const BANK = {
    "e": "ทอง ± 5% และเงิน ± 10% ถ้าไม่มีแถบค่าคลาดเคลื่อนเลยคือ ± 20%"
   },
   {
-   "q": "ตัวต้านทาน 5 แถบ สี น้ำตาล ดำ ดำ แดง น้ำตาล มีค่าเท่าใด",
+   "q": "ตัวต้านทาน 5 แถบ สี น้ำตาล ดำ ดำ แดง น้ำตาล มีค่าเท่าใด<svg class=\"qfig\" viewBox=\"0 0 360 94\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 45 H90 M270 45 H340\" stroke-width=\"4\"/><rect x=\"90\" y=\"20\" width=\"180\" height=\"50\" rx=\"20\" fill=\"#d6b48a\" stroke=\"#a0825c\"/><rect x=\"114\" y=\"20\" width=\"12\" height=\"50\" fill=\"#7c4a1e\" stroke=\"none\"/><text x=\"120\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">น้ำตาล</text><rect x=\"140\" y=\"20\" width=\"12\" height=\"50\" fill=\"#111\" stroke=\"none\"/><text x=\"146\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ดำ</text><rect x=\"166\" y=\"20\" width=\"12\" height=\"50\" fill=\"#111\" stroke=\"none\"/><text x=\"172\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ดำ</text><rect x=\"192\" y=\"20\" width=\"12\" height=\"50\" fill=\"#ef4444\" stroke=\"none\"/><text x=\"198\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">แดง</text><rect x=\"246\" y=\"20\" width=\"12\" height=\"50\" fill=\"#7c4a1e\" stroke=\"none\"/><text x=\"252\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">น้ำตาล</text></g></svg>",
    "c": [
     "10 kΩ ± 1%",
     "1 kΩ ± 1%",
@@ -1161,7 +1161,7 @@ const BANK = {
    "e": "1 kΩ = 10 × 100 จึงเป็น น้ำตาล (1) ดำ (0) แดง (× 100) ทอง (± 5%)"
   },
   {
-   "q": "ตัวต้านทาน 4 แถบ สี ส้ม ส้ม ดำ ทอง มีค่าเท่าใด",
+   "q": "ตัวต้านทาน 4 แถบ สี ส้ม ส้ม ดำ ทอง มีค่าเท่าใด<svg class=\"qfig\" viewBox=\"0 0 360 94\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 45 H90 M270 45 H340\" stroke-width=\"4\"/><rect x=\"90\" y=\"20\" width=\"180\" height=\"50\" rx=\"20\" fill=\"#d6b48a\" stroke=\"#a0825c\"/><rect x=\"114\" y=\"20\" width=\"12\" height=\"50\" fill=\"#f97316\" stroke=\"none\"/><text x=\"120\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ส้ม</text><rect x=\"140\" y=\"20\" width=\"12\" height=\"50\" fill=\"#f97316\" stroke=\"none\"/><text x=\"146\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ส้ม</text><rect x=\"166\" y=\"20\" width=\"12\" height=\"50\" fill=\"#111\" stroke=\"none\"/><text x=\"172\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ดำ</text><rect x=\"246\" y=\"20\" width=\"12\" height=\"50\" fill=\"#c9a227\" stroke=\"none\"/><text x=\"252\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ทอง</text></g></svg>",
    "c": [
     "33 Ω ± 5%",
     "330 Ω ± 5%",
@@ -1172,7 +1172,7 @@ const BANK = {
    "e": "ส้ม 3 ส้ม 3 ได้ 33 ดำคือ × 1 จึงได้ 33 Ω"
   },
   {
-   "q": "ตัวต้านทาน 4 แถบ สี น้ำเงิน เทา แดง ทอง มีค่าเท่าใด",
+   "q": "ตัวต้านทาน 4 แถบ สี น้ำเงิน เทา แดง ทอง มีค่าเท่าใด<svg class=\"qfig\" viewBox=\"0 0 360 94\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 45 H90 M270 45 H340\" stroke-width=\"4\"/><rect x=\"90\" y=\"20\" width=\"180\" height=\"50\" rx=\"20\" fill=\"#d6b48a\" stroke=\"#a0825c\"/><rect x=\"114\" y=\"20\" width=\"12\" height=\"50\" fill=\"#3b82f6\" stroke=\"none\"/><text x=\"120\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">น้ำเงิน</text><rect x=\"140\" y=\"20\" width=\"12\" height=\"50\" fill=\"#9ca3af\" stroke=\"none\"/><text x=\"146\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">เทา</text><rect x=\"166\" y=\"20\" width=\"12\" height=\"50\" fill=\"#ef4444\" stroke=\"none\"/><text x=\"172\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">แดง</text><rect x=\"246\" y=\"20\" width=\"12\" height=\"50\" fill=\"#c9a227\" stroke=\"none\"/><text x=\"252\" y=\"86\" text-anchor=\"middle\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ทอง</text></g></svg>",
    "c": [
     "6.8 kΩ ± 5%",
     "68 kΩ ± 5%",
@@ -1229,7 +1229,7 @@ const BANK = {
    "e": "ค่าใน E-series เพิ่มขึ้นด้วยอัตราส่วนคงที่ (ราก 12 ของ 10 สำหรับ E12) ช่วง ± 10% ของแต่ละค่าจึงครอบคลุมทุกค่าความต้านทานโดยไม่มีช่องว่าง"
   },
   {
-   "q": "คำนวณตัวต้านทาน LED ได้ 350 Ω ทำไมควรเลือก 390 Ω แทน 330 Ω",
+   "q": "คำนวณตัวต้านทาน LED ได้ 350 Ω ทำไมควรเลือก 390 Ω แทน 330 Ω<svg class=\"qfig\" viewBox=\"0 0 360 112\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M30 26 V52 M30 60 V92 H330 V26\" /><path d=\"M18 52 H42 M24 60 H36\" stroke-width=\"2.6\"/><text x=\"12\" y=\"48\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+</text><text x=\"40\" y=\"80\" text-anchor=\"start\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">9 V</text><path d=\"M30 26 H93\"/><path d=\"M137 26 H253\"/><path d=\"M297 26 H330\"/><rect x=\"93\" y=\"19\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"115\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">330 หรือ 390 Ω</text><path d=\"M263 15 L287 26 L263 37 Z\" stroke=\"var(--ember,#c2410c)\" fill=\"var(--ember,#c2410c)\" fill-opacity=\".25\"/><path d=\"M287 14 V38\" stroke=\"var(--ember,#c2410c)\"/><path d=\"M253 26 H263 M287 26 H297\" /><path d=\"M277 12 l7 -8 M284 14 l7 -8\" stroke=\"var(--gold,#b8860b)\"/><text x=\"275\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">แดง Vf 2 V</text></g></svg><div class=\"qnote\">ค่ามาตรฐาน E12 คือชุดค่าที่ผู้ผลิตทำขาย ในหลักร้อยโอห์มมี <b>270 · 330 · 390 · 470 · 560 Ω</b></div>",
    "c": [
     "เลือกค่าที่สูงกว่า ทำให้กระแสไม่เกินที่ออกแบบ",
     "เพราะ 390 Ω ราคาถูกกว่า",
@@ -1251,7 +1251,7 @@ const BANK = {
    "e": "0.2 W ใกล้พิกัด 0.25 W มาก ตัวต้านทานจะร้อนจัดและอายุสั้น แนวปฏิบัติคือเลือกพิกัดไม่น้อยกว่า 2 เท่าของกำลังจริง คือ ≥ 0.4 W จึงใช้ ½ W"
   },
   {
-   "q": "12 V ขับ LED น้ำเงิน Vf = 3.2 V ที่ 20 mA ควรเลือกค่ามาตรฐาน E12 ค่าใด",
+   "q": "12 V ขับ LED น้ำเงิน Vf = 3.2 V ที่ 20 mA ควรเลือกค่ามาตรฐาน E12 ค่าใด<svg class=\"qfig\" viewBox=\"0 0 360 112\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M30 26 V52 M30 60 V92 H330 V26\" /><path d=\"M18 52 H42 M24 60 H36\" stroke-width=\"2.6\"/><text x=\"12\" y=\"48\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+</text><text x=\"40\" y=\"80\" text-anchor=\"start\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">12 V</text><path d=\"M30 26 H93\"/><path d=\"M137 26 H253\"/><path d=\"M297 26 H330\"/><rect x=\"93\" y=\"19\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"115\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">R = ?</text><path d=\"M263 15 L287 26 L263 37 Z\" stroke=\"var(--ember,#c2410c)\" fill=\"var(--ember,#c2410c)\" fill-opacity=\".25\"/><path d=\"M287 14 V38\" stroke=\"var(--ember,#c2410c)\"/><path d=\"M253 26 H263 M287 26 H297\" /><path d=\"M277 12 l7 -8 M284 14 l7 -8\" stroke=\"var(--gold,#b8860b)\"/><text x=\"275\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">น้ำเงิน Vf 3.2 V</text><text x=\"330\" y=\"106\" text-anchor=\"end\" font-size=\"11\" fill=\"var(--gold,#b8860b)\" stroke=\"none\" font-family=\"inherit\">I = 20 mA</text></g></svg><div class=\"qnote\">ค่ามาตรฐาน E12 คือชุดค่าที่ผู้ผลิตทำขาย ในหลักร้อยโอห์มมี <b>270 · 330 · 390 · 470 · 560 Ω</b></div>",
    "c": [
     "470 Ω",
     "390 Ω",
@@ -1262,7 +1262,7 @@ const BANK = {
    "e": "R = (12 − 3.2) / 0.020 = 440 Ω ไม่มีในอนุกรม ค่า E12 ที่สูงกว่าและใกล้สุดคือ 470 Ω"
   },
   {
-   "q": "ใช้ 470 Ω กับ 12 V และ LED น้ำเงิน Vf 3.2 V กำลังที่ตกบนตัวต้านทานประมาณเท่าใด",
+   "q": "ใช้ 470 Ω กับ 12 V และ LED น้ำเงิน Vf 3.2 V กำลังที่ตกบนตัวต้านทานประมาณเท่าใด<svg class=\"qfig\" viewBox=\"0 0 360 112\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M30 26 V52 M30 60 V92 H330 V26\" /><path d=\"M18 52 H42 M24 60 H36\" stroke-width=\"2.6\"/><text x=\"12\" y=\"48\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+</text><text x=\"40\" y=\"80\" text-anchor=\"start\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">12 V</text><path d=\"M30 26 H93\"/><path d=\"M137 26 H253\"/><path d=\"M297 26 H330\"/><rect x=\"93\" y=\"19\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"115\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">470 Ω</text><path d=\"M263 15 L287 26 L263 37 Z\" stroke=\"var(--ember,#c2410c)\" fill=\"var(--ember,#c2410c)\" fill-opacity=\".25\"/><path d=\"M287 14 V38\" stroke=\"var(--ember,#c2410c)\"/><path d=\"M253 26 H263 M287 26 H297\" /><path d=\"M277 12 l7 -8 M284 14 l7 -8\" stroke=\"var(--gold,#b8860b)\"/><text x=\"275\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">น้ำเงิน Vf 3.2 V</text></g></svg>",
    "c": [
     "0.165 W",
     "0.306 W",
@@ -1284,7 +1284,7 @@ const BANK = {
    "e": "ตัวต้านทานความแม่นยำสูงต้องการเลข 3 หลัก จึงใช้ 5 แถบ และแถบน้ำตาลคือ ± 1% ซึ่งพบมากในฟิล์มโลหะ"
   },
   {
-   "q": "ค่าใดต่อไปนี้ \"ไม่มี\" ในอนุกรม E12 แต่มีใน E24",
+   "q": "ค่าใดต่อไปนี้ \"ไม่มี\" ในอนุกรม E12 แต่มีใน E24<div class=\"qnote\">ค่ามาตรฐาน E12 (±10%) คือชุดค่าที่ผู้ผลิตทำขาย ซ้ำทุกหลักสิบ: <b>10 12 15 18 22 27 33 39 47 56 68 82</b> × 1, × 10, × 100 ...</div><div class=\"qnote\">E24 (±5%) ละเอียดกว่า มีค่า E12 ทั้งหมด และเพิ่ม <b>11 13 16 20 24 30 36 43 51 62 75 91</b></div>",
    "c": [
     "51",
     "47",
@@ -1295,7 +1295,7 @@ const BANK = {
    "e": "51 อยู่ในอนุกรม E24 (± 5%) ส่วน 47 68 82 อยู่ใน E12"
   },
   {
-   "q": "ถ้าต่อตัวต้านทาน 220 Ω สองตัวอนุกรมกัน ความต้านทานรวมเท่าใด",
+   "q": "ถ้าต่อตัวต้านทาน 220 Ω สองตัวอนุกรมกัน ความต้านทานรวมเท่าใด<svg class=\"qfig\" viewBox=\"0 0 360 84\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M40 40 H108\"/><path d=\"M152 40 H208\"/><path d=\"M252 40 H320\"/><rect x=\"108\" y=\"33\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"130\" y=\"70\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">220 Ω</text><rect x=\"208\" y=\"33\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"230\" y=\"70\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">220 Ω</text><text x=\"40\" y=\"30\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">A</text><text x=\"320\" y=\"30\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">B</text></g></svg>",
    "c": [
     "440 Ω",
     "110 Ω",
@@ -1306,7 +1306,7 @@ const BANK = {
    "e": "อนุกรมนำค่ามาบวกกัน 220 + 220 = 440 Ω ใช้เทคนิคนี้เมื่อต้องการค่าที่ไม่มีในอนุกรมมาตรฐาน"
   },
   {
-   "q": "ถ้าต่อตัวต้านทาน 1 kΩ สองตัวขนานกัน ความต้านทานรวมเท่าใด",
+   "q": "ถ้าต่อตัวต้านทาน 1 kΩ สองตัวขนานกัน ความต้านทานรวมเท่าใด<svg class=\"qfig\" viewBox=\"0 0 360 106\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M40 50 H110 M110 22 V78 M250 22 V78 M250 50 H320 M110 22 H158 M202 22 H250 M110 78 H158 M202 78 H250\"/><rect x=\"158\" y=\"15\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><rect x=\"158\" y=\"71\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"180\" y=\"10\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">1 kΩ</text><text x=\"180\" y=\"100\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">1 kΩ</text><text x=\"40\" y=\"44\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">A</text><text x=\"320\" y=\"44\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">B</text></g></svg>",
    "c": [
     "500 Ω",
     "2 kΩ",
@@ -1317,7 +1317,7 @@ const BANK = {
    "e": "ตัวต้านทานค่าเท่ากัน n ตัวต่อขนาน ได้ R / n = 1,000 / 2 = 500 Ω"
   },
   {
-   "q": "การปัดค่าตัวต้านทานจำกัดกระแส LED ขึ้นเป็นค่ามาตรฐาน มีผลต่อกระแสอย่างไร",
+   "q": "การปัดค่าตัวต้านทานจำกัดกระแส LED ขึ้นเป็นค่ามาตรฐาน มีผลต่อกระแสอย่างไร<svg class=\"qfig\" viewBox=\"0 0 360 112\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M30 26 V52 M30 60 V92 H330 V26\" /><path d=\"M18 52 H42 M24 60 H36\" stroke-width=\"2.6\"/><text x=\"12\" y=\"48\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+</text><text x=\"40\" y=\"80\" text-anchor=\"start\" font-size=\"12\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">Vs</text><path d=\"M30 26 H93\"/><path d=\"M137 26 H253\"/><path d=\"M297 26 H330\"/><rect x=\"93\" y=\"19\" width=\"44\" height=\"14\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"115\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ปัดขึ้นเป็นค่ามาตรฐาน</text><path d=\"M263 15 L287 26 L263 37 Z\" stroke=\"var(--ember,#c2410c)\" fill=\"var(--ember,#c2410c)\" fill-opacity=\".25\"/><path d=\"M287 14 V38\" stroke=\"var(--ember,#c2410c)\"/><path d=\"M253 26 H263 M287 26 H297\" /><path d=\"M277 12 l7 -8 M284 14 l7 -8\" stroke=\"var(--gold,#b8860b)\"/><text x=\"275\" y=\"56\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">LED</text></g></svg>",
    "c": [
     "กระแสลดลงเล็กน้อยจากค่าที่ออกแบบ",
     "กระแสเพิ่มขึ้นเล็กน้อย",
@@ -3148,6 +3148,19 @@ body.neo-labfocus .neo-lab .neo-slabel{margin-bottom:2px}
   .neo-lab .neo-in>p.muted{font-size:.8em;margin:2px 0 4px}
 }
 
+/* ---------- รูปวงจรและหมายเหตุในโจทย์ ---------- */
+.qfig{display:block;width:100%;max-width:400px;height:auto;max-height:min(150px,19vh);margin:8px auto 2px;color:var(--text,currentColor)}
+.qnote{font-size:.78em;font-weight:400;line-height:1.45;margin-top:8px;padding:6px 10px;border-left:3px solid var(--gold);background:var(--ember-dim);border-radius:0 8px 8px 0;color:var(--text)}
+.qnote b{color:var(--gold);font-family:var(--mono)}
+/* ---------- แถบท้ายหน้า (เครดิตผู้สอน) ---------- */
+.neo-foot{position:fixed;left:0;right:0;bottom:0;height:var(--fth,24px);z-index:40;display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:11px;line-height:1;color:var(--n-mute);background:color-mix(in srgb,var(--n-bg) 82%,transparent);border-top:1px solid var(--n-edge);
+  backdrop-filter:blur(8px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 10px}
+.neo-foot b{color:var(--n-text);font-weight:600}
+.wrap{height:calc(100dvh - var(--tbh) - var(--fth,24px)) !important}
+body.neo-wel .wrap{height:calc(100dvh - var(--fth,24px)) !important}
+@media (max-width:560px){ .neo-foot .fx{display:none} }
+
 </style>
 <script>window.NEO_CARDS={"stage": "S1 · โซน 1", "z1": {"big": "V = I × R · LED ต้องมี R อนุกรมเสมอ: R = (Vs − Vf) / I", "nums": [["10 – 20 mA", "กระแสใช้งาน LED 5 มม. ทั่วไป"], ["≈ 2.0 V", "Vf ของ LED แดง"], ["≈ 3.2 V", "Vf ของ LED น้ำเงิน/ขาว"], ["P = I² × R", "ความร้อนบนตัวต้านทาน"]], "traps": [["LED ต่อตรงกับแบตเตอรี่ได้ถ้าแรงดันไม่สูง", "เมื่อถึง Vf กระแสพุ่งเร็วมาก ต้องมีตัวต้านทานจำกัดกระแสเสมอ"], ["Vf สูงขึ้นต้องใช้ R ค่ามากขึ้น", "Vf สูงขึ้น แรงดันเหลือคร่อม R น้อยลง จึงใช้ R ค่าน้อยลง"], ["P = V / I", "P = V × I = I² × R = V² / R ส่วน V / I คือความต้านทาน"]]}, "z2": {"big": "แถบ 1–2 = ตัวเลข · แถบ 3 = ตัวคูณ · แถบ 4 = ค่าคลาดเคลื่อน", "nums": [["0 – 9", "ดำ น้ำตาล แดง ส้ม เหลือง เขียว น้ำเงิน ม่วง เทา ขาว"], ["× 0.1", "ทองในตำแหน่งตัวคูณ"], ["± 5%", "ทองในตำแหน่งค่าคลาดเคลื่อน"], ["± 10%", "เงิน"]], "traps": [["อ่านจากฝั่งไหนก็ได้", "วางแถบค่าคลาดเคลื่อน (ทอง/เงิน ที่แยกห่าง) ไว้ทางขวาก่อนอ่านเสมอ"], ["แถบที่สามคือเลขหลักที่สาม", "แบบ 4 แถบ แถบที่สามคือตัวคูณ เลข 3 หลักมีเฉพาะแบบ 5 แถบ"], ["ทองหมายถึง ± 5% เสมอ", "ทองในตำแหน่งตัวคูณหมายถึง × 0.1"]]}, "z3": {"big": "ค่าที่คำนวณได้ ปัดขึ้นเป็นค่ามาตรฐาน แล้วเลือกพิกัดวัตต์ ≥ 2 × P", "nums": [["E12", "10 12 15 18 22 27 33 39 47 56 68 82"], ["950 – 1,050 Ω", "1 kΩ ± 5%"], ["¼ W", "พิกัดตัวต้านทานทั่วไปใน LAB"], ["× 2", "ระยะเผื่อพิกัดกำลัง"]], "traps": [["ปัดลงให้ใกล้ค่าคำนวณก็ได้", "ปัดลงทำให้กระแสเกินที่ออกแบบ สำหรับ LED ให้ปัดขึ้น"], ["P ไม่เกินพิกัดก็ใช้ได้สบาย", "ใกล้พิกัดจะร้อนจัดและอายุสั้น ควรเผื่ออย่างน้อย 2 เท่า"], ["ร้านมีตัวต้านทานทุกค่า", "มีเฉพาะค่ามาตรฐาน E-series ค่าอื่นต้องต่ออนุกรมหรือขนาน"]]}};</script>
 <script id="neo-js">
@@ -3484,11 +3497,13 @@ body.neo-labfocus .neo-lab .neo-slabel{margin-bottom:2px}
   window.addEventListener('resize',function(){ setTbh(); var a=q('.screen.active'), m=a&&/^scr-lesson(\d)$/.exec(a.id); if(m&&decks[+m[1]]){ var st=decks[+m[1]]; fit(st.slides[st.i]); } else fitPanel(); });
 
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ setTimeout(fitPanel,50); });
+  (function(){ if(q('.neo-foot')) return; var f=h('div','neo-foot','<b>GNR2022 อิเล็กทรอนิกส์พื้นฐาน</b><span>·</span><span>ผศ.ดร.กุลวลัญช์ วรุณสิน</span><span class="fx">·</span><span class="fx">คณะวิศวกรรมศาสตร์ มหาวิทยาลัยรามคำแหง</span><span class="fx">·</span><span class="fx">© 2569</span>'); f.setAttribute('role','contentinfo'); D.body.appendChild(f); })();
   welcome(); brief('pre'); brief('post'); [1,2,3].forEach(deckify); try{ pinButtons(); }catch(e){ console.warn('neo pin',e); } setTbh();
   if(window.MutationObserver){ var tb=q('#topbar'); if(tb) new MutationObserver(setTbh).observe(tb,{attributes:true,attributeFilter:['class']}); }
 })();
 
 </script>
 <!-- NEO:END -->
+<script src="../feedback.js" defer></script>
 </body>
 </html>

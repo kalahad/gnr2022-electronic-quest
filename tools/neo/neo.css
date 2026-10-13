@@ -372,3 +372,16 @@ body.neo-labfocus .neo-lab .neo-slabel{margin-bottom:2px}
   .neo-deck.lab-on .neo-dhead h2{display:none}
   .neo-lab .neo-in>p.muted{font-size:.8em;margin:2px 0 4px}
 }
+
+/* ---------- รูปวงจรและหมายเหตุในโจทย์ ---------- */
+.qfig{display:block;width:100%;max-width:400px;height:auto;max-height:min(150px,19vh);margin:8px auto 2px;color:var(--text,currentColor)}
+.qnote{font-size:.78em;font-weight:400;line-height:1.45;margin-top:8px;padding:6px 10px;border-left:3px solid var(--gold);background:var(--ember-dim);border-radius:0 8px 8px 0;color:var(--text)}
+.qnote b{color:var(--gold);font-family:var(--mono)}
+/* ---------- แถบท้ายหน้า (เครดิตผู้สอน) ---------- */
+.neo-foot{position:fixed;left:0;right:0;bottom:0;height:var(--fth,24px);z-index:40;display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:11px;line-height:1;color:var(--n-mute);background:color-mix(in srgb,var(--n-bg) 82%,transparent);border-top:1px solid var(--n-edge);
+  backdrop-filter:blur(8px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 10px}
+.neo-foot b{color:var(--n-text);font-weight:600}
+.wrap{height:calc(100dvh - var(--tbh) - var(--fth,24px)) !important}
+body.neo-wel .wrap{height:calc(100dvh - var(--fth,24px)) !important}
+@media (max-width:560px){ .neo-foot .fx{display:none} }

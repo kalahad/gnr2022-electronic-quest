@@ -110,7 +110,7 @@ ZONES = """
       <span class="sp" style="width:10px"></span>
       <button class="btn sm" data-led="red">แดง</button><button class="btn sm" data-led="green">เขียว</button><button class="btn sm" data-led="blue">น้ำเงิน</button>
     </div>
-    <label class="muted" for="ledR" style="display:block;font-size:.85rem">ค่า R (ค่ามาตรฐาน E12): <b id="ledRt">390 Ω</b></label>
+    <label class="muted" for="ledR" style="display:block;font-size:.85rem">ค่า R: <b id="ledRt">390 Ω</b> · แถบเลื่อนนี้ให้เฉพาะค่ามาตรฐาน E12 ที่หาซื้อได้จริง (รายละเอียดในย่าน 3)</label>
     <input type="range" class="rng" id="ledR" min="0" max="24" value="11" aria-label="ค่าตัวต้านทาน">
     <div class="labrow">
       <div class="ledbulb" id="ledBulb"></div>
@@ -206,7 +206,7 @@ ZONES = """
     <div class="keyfact">จำให้ขึ้นใจ: <b>ค่าที่คำนวณได้ ปัดขึ้นเป็นค่ามาตรฐาน</b> · <b>พิกัดวัตต์ ≥ 2 × P</b> · 1 kΩ ±5% = 950 ถึง 1,050 Ω</div>
 
     <h3 style="margin-top:18px">ห้องทดลอง: เลือกตัวต้านทานที่หาซื้อได้จริง</h3>
-    <p class="muted">กด "งานใหม่" ระบบจะให้แหล่งจ่าย สี LED และกระแสเป้าหมาย เลือกค่า E12 และพิกัดวัตต์ แล้วกดส่งงาน ทำให้ผ่าน 3 งาน</p>
+    <p class="muted">กด "งานใหม่" ระบบจะให้แหล่งจ่าย สี LED และกระแสเป้าหมาย คำนวณ R = (Vs − Vf) / I แล้วเลือก<b>ค่ามาตรฐาน E12 ที่สูงกว่าและใกล้ที่สุด</b> (ปุ่มแถวแรก) กับพิกัดวัตต์ที่ไม่น้อยกว่า 2 × P (แถวที่สอง) ทำให้ผ่าน 3 งาน</p>
     <div class="status-line" id="pkJob">กด "งานใหม่" เพื่อรับงาน</div>
     <div class="epick" id="pkR"></div>
     <div class="epick" id="pkW"></div>
@@ -442,6 +442,34 @@ B['district3'] = [
   ['กระแสลดลงเล็กน้อยจากค่าที่ออกแบบ', 'กระแสเพิ่มขึ้นเล็กน้อย', 'กระแสเท่าเดิมทุกกรณี', 'LED จะไม่ติด'],
   'R จริงสูงกว่าค่าคำนวณ กระแส I = (Vs − Vf) / R จึงต่ำกว่าที่ออกแบบเล็กน้อย ซึ่งเป็นด้านที่ปลอดภัย'),
 ]
+
+
+# ---------- รูปวงจรและคำอธิบายประกอบโจทย์ (ให้ทำได้แม้ยังไม่เรียน) ----------
+from qfig import series, bands, chain, parallel, E12_NOTE, E24_NOTE
+E12_HUND = '<div class="qnote">ค่ามาตรฐาน E12 คือชุดค่าที่ผู้ผลิตทำขาย ในหลักร้อยโอห์มมี <b>270 · 330 · 390 · 470 · 560 Ω</b></div>'
+AUG = {
+ 'district1': {0: series('5 V', [('R', '1 kΩ')]),
+               1: series('V = ?', [('R', '470 Ω')], current='I = 20 mA'),
+               3: series('V', [('R', '100 Ω')], current='I = 50 mA'),
+               6: series('5 V', [('R', 'R = ?'), ('LED', 'แดง Vf 2 V')], current='I = 20 mA'),
+               7: series('9 V', [('R', 'R = 350 Ω (คำนวณ)'), ('LED', 'แดง Vf 2 V')]) + E12_HUND,
+               8: series('9 V', [('R', '390 Ω'), ('LED', 'แดง Vf 2 V')]),
+               10: series('Vs', [('R', '220 Ω → 1 kΩ'), ('LED', 'LED')]),
+               12: series('12 V', [('R', '1 kΩ พิกัด ¼ W')])},
+ 'district2': {0: bands('น้ำตาล ดำ แดง ทอง'), 1: bands('เหลือง ม่วง ส้ม ทอง'), 2: bands('แดง แดง น้ำตาล ทอง'),
+               5: bands('น้ำตาล ดำ ทอง ทอง'), 7: bands('น้ำตาล ดำ ดำ แดง น้ำตาล'), 11: bands('ส้ม ส้ม ดำ ทอง'),
+               12: bands('น้ำเงิน เทา แดง ทอง')},
+ 'district3': {4: series('9 V', [('R', '330 หรือ 390 Ω'), ('LED', 'แดง Vf 2 V')]) + E12_HUND,
+               6: series('12 V', [('R', 'R = ?'), ('LED', 'น้ำเงิน Vf 3.2 V')], current='I = 20 mA') + E12_HUND,
+               7: series('12 V', [('R', '470 Ω'), ('LED', 'น้ำเงิน Vf 3.2 V')]),
+               9: E12_NOTE + E24_NOTE,
+               10: chain([('R', '220 Ω'), ('R', '220 Ω')]),
+               11: parallel('1 kΩ', '1 kΩ'),
+               12: series('Vs', [('R', 'ปัดขึ้นเป็นค่ามาตรฐาน'), ('LED', 'LED')])},
+}
+for _d, _m in AUG.items():
+    for _i, _fig in _m.items():
+        _q, _c, _e = B[_d][_i]; B[_d][_i] = (_q + _fig, _c, _e)
 
 STAR = star_table([
  ('CITY ARCHITECT', 'อ่านรหัสสีและเลือกตัวต้านทานได้ถูกต้องทุกขั้น พร้อมออกแบบวงจรจริงแล้ว'),

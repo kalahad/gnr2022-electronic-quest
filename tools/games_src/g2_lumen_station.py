@@ -2,6 +2,7 @@
 """SEASON 1 · ZONE 2 — LUMEN STATION : สถานีตรวจวัดแสงอัตโนมัติ
 ย้ายจากเกมฉบับเดิม (gnr2022_game2_lumen_station.html) เข้าเอนจินมาตรฐาน: เนื้อหา คลังข้อสอบ 36 ข้อ และห้องทดลอง 3 ห้องคงเดิม"""
 from legacy_port import port, zone_theme
+from qfig import divider, pot_two_legs
 
 TH = zone_theme('#38bdf8', '#facc15', '#a3e635', '#f87171', '#0369a1', '#8a6a00', '#4d7c0f', '#b91c1c', bg='#06111d')
 CFG = port('gnr2022_game2_lumen_station.html', {
@@ -17,5 +18,11 @@ CFG = port('gnr2022_game2_lumen_station.html', {
     'go_first': 'เข้าสถานีแรก',
     # R = 10 kΩ × (300/10)^-0.7 = 0.925 kΩ (ฉบับเดิมเขียน 0.87 kΩ ซึ่งตรงกับราว 330 lx)
     'fixes': [('<td>ประมาณ 0.87 kΩ</td>', '<td>ประมาณ 0.93 kΩ</td>')],
+    # รูปวงจรประกอบโจทย์ (ต่อท้ายโจทย์เดิม ไม่ลบข้อความ)
+    'aug': {
+        'district1': {9: pot_two_legs('5 V')},
+        'district2': {11: divider('+5 V', 'LDR', '10 kΩ', out='จุดวัด', ldr_top=True)},
+        'district3': {0: divider('Vin', 'R1', 'R2'), 1: divider('Vin', 'R1', 'R2', load='RL'),
+                      9: divider('Vin', 'R1', 'R2', load='อุปกรณ์ Zin ต่ำ')}},
     'avatar_cols': ['#38bdf8', '#facc15', '#a3e635', '#f87171', '#7dd3fc', '#fde047'],
 })
