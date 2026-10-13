@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRIP POINT — ห้องทดลองวงจรตรวจจับระดับแรงดัน</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+:root{
+  --deck:#0e1317; --panel:#171e25; --panel-2:#1f2831; --rail:#2b3742; --edge:#3a4753;
+  --ink:#e8eef4; --ink-dim:#8fa0b0; --ink-faint:#5f7080;
+  --signal:#f2a541; --ref:#7fb9cd; --ok:#4ade80; --bad:#f43f5e;
+  --board:#0b1015; --shade:rgba(255,255,255,.05);
+  --mono:'IBM Plex Mono','Courier New',monospace;
+  --disp:'Bai Jamjuree','IBM Plex Sans Thai',sans-serif;
+  --body:'IBM Plex Sans Thai','Bai Jamjuree',sans-serif;
+  --wirecol:#7d8b98; --compstroke:#9fb0bd;
+}
+html[data-theme="light"]{
+  --deck:#eef1f5; --panel:#ffffff; --panel-2:#f5f8fa; --rail:#cdd7e0; --edge:#d7dfe6;
+  --ink:#16202a; --ink-dim:#4d5f6e; --ink-faint:#7b8b98;
+  --signal:#b96c12; --ref:#1f6f8c; --ok:#15803d; --bad:#be123c;
+  --board:#f8fafc; --shade:rgba(0,0,0,.04);
+  --wirecol:#44515c; --compstroke:#34414c;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:radial-gradient(1200px 600px at 50% -10%, var(--panel-2) 0%, var(--deck) 62%);
+  color:var(--ink); font-family:var(--body); font-size:15px; line-height:1.6;
+  min-height:100vh; padding-bottom:60px; transition:background .3s,color .3s;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px;}
+
+.plate{
+  margin-top:22px;border:1px solid var(--edge);border-radius:14px;
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  box-shadow:0 18px 40px rgba(0,0,0,.28), inset 0 1px 0 var(--shade);
+  padding:18px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+}
+.plate h1{font-family:var(--disp);font-weight:700;font-size:25px;letter-spacing:.06em;margin:0;line-height:1.15;}
+.plate h1 span{color:var(--signal);}
+.plate .sub{color:var(--ink-dim);font-size:13.5px;margin-top:2px;}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:16px;}
+.score{text-align:right;border-left:1px solid var(--edge);padding-left:18px;}
+.score b{font-family:var(--mono);font-size:24px;color:var(--signal);display:block;line-height:1;}
+.score small{color:var(--ink-faint);letter-spacing:.14em;font-size:11px;}
+#themebtn{
+  font-family:var(--disp);font-weight:600;font-size:13px;background:var(--panel-2);
+  color:var(--ink-dim);border:1px solid var(--edge);border-radius:20px;padding:7px 14px;cursor:pointer;
+}
+#themebtn:hover{border-color:var(--signal);color:var(--signal);}
+
+nav{display:flex;gap:6px;margin:20px 0 16px;flex-wrap:wrap;}
+nav button{
+  font-family:var(--disp);font-weight:600;font-size:13.5px;background:var(--panel);color:var(--ink-dim);
+  border:1px solid var(--edge);border-radius:9px 9px 0 0;padding:9px 15px;cursor:pointer;transition:.16s;
+}
+nav button:hover{color:var(--ink);background:var(--panel-2);}
+nav button.on{background:var(--panel-2);color:var(--signal);border-color:var(--signal);box-shadow:inset 0 -3px 0 var(--signal);}
+nav button.lock{opacity:.45;}
+nav button:focus-visible{outline:2px solid var(--signal);outline-offset:2px;}
+
+section.tab{display:none;} section.tab.on{display:block;animation:fade .25s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+.card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:18px 20px;margin-bottom:16px;
+  box-shadow:0 10px 26px rgba(0,0,0,.16), inset 0 1px 0 var(--shade);}
+.card h2{font-family:var(--disp);font-size:17px;font-weight:700;margin:0 0 4px;}
+.card h3{font-family:var(--disp);font-size:15px;font-weight:600;margin:18px 0 6px;color:var(--ref);}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--ink-faint);text-transform:uppercase;margin-bottom:8px;}
+.muted{color:var(--ink-dim);font-size:14px;}
+.grid2{display:grid;grid-template-columns:320px 1fr;gap:16px;}
+@media(max-width:860px){.grid2{grid-template-columns:1fr;}}
+
+.faceplate{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--edge);
+  border-radius:14px;padding:20px;box-shadow:inset 0 1px 0 var(--shade),0 14px 34px rgba(0,0,0,.2);margin-bottom:16px;}
+.railwrap{position:relative;height:58px;border:1px solid var(--rail);border-radius:10px;background:var(--board);overflow:hidden;}
+.railfill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,rgba(242,165,65,.14),rgba(242,165,65,.55));border-right:2px solid var(--signal);transition:width .06s linear;}
+.notch{position:absolute;top:0;bottom:0;width:1px;background:var(--ref);opacity:.7;}
+.notch b{position:absolute;top:4px;left:5px;font-family:var(--mono);font-size:10.5px;color:var(--ref);font-weight:400;white-space:nowrap;}
+.railval{position:absolute;bottom:6px;font-family:var(--mono);font-size:13px;color:var(--signal);white-space:nowrap;}
+
+.readout{font-family:var(--mono);background:var(--board);border:1px solid var(--rail);border-radius:8px;padding:10px 12px;width:100%;}
+.readout .row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;}
+.readout .row span:first-child{color:var(--ink-faint);}
+.btn{font-family:var(--disp);font-weight:600;font-size:13.5px;background:var(--panel-2);color:var(--ink);
+  border:1px solid var(--edge);border-radius:8px;padding:8px 14px;cursor:pointer;transition:.15s;}
+.btn:hover{border-color:var(--signal);color:var(--signal);}
+.btn.pri{background:var(--signal);color:#12181d;border-color:var(--signal);}
+html[data-theme="light"] .btn.pri{color:#fff;}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.knobbox{display:flex;flex-direction:column;align-items:center;gap:10px;}
+#knob{cursor:grab;touch-action:none;} #knob:active{cursor:grabbing;}
+
+.scope{background:var(--board);border:1px solid var(--rail);border-radius:12px;padding:10px;overflow-x:auto;}
+svg{display:block;max-width:100%;height:auto;}
+.wire{stroke:var(--wirecol);stroke-width:2;fill:none;stroke-linecap:round;}
+.wire.hot{stroke:var(--signal);}
+.comp{fill:none;stroke:var(--compstroke);stroke-width:2;}
+.lbl{font-family:var(--mono);font-size:11px;fill:var(--ink-dim);}
+.lbl.v{fill:var(--ref);font-size:11.5px;}
+.lbl.sig{fill:var(--signal);}
+.tag{font-family:var(--disp);font-size:12px;font-weight:600;fill:var(--ink);}
+.dot{fill:var(--wirecol);}
+.flowline{stroke:var(--signal);stroke-width:2.6;fill:none;opacity:0;stroke-dasharray:6 12;}
+.flowline.live{opacity:.95;animation:flow .55s linear infinite;}
+@keyframes flow{to{stroke-dashoffset:-18;}}
+
+.pad{fill:var(--board);stroke:var(--ink-faint);stroke-width:2;cursor:pointer;transition:.12s;}
+.pad:hover{stroke:var(--signal);}
+.pad.sel{stroke:var(--signal);fill:var(--signal);}
+.pad.done{stroke:var(--ok);}
+.padlbl{font-family:var(--mono);font-size:10.5px;fill:var(--ink-dim);pointer-events:none;}
+.jw{stroke:var(--ok);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.checklist{list-style:none;padding:0;margin:10px 0 0;}
+.checklist li{padding:6px 10px;border-left:3px solid var(--rail);color:var(--ink-dim);font-size:13.5px;margin-bottom:4px;background:var(--panel-2);}
+.checklist li.done{border-left-color:var(--ok);color:var(--ink);}
+.checklist li.done::before{content:"✓ ";color:var(--ok);font-weight:700;}
+
+.qcard{background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;padding:16px;margin-bottom:12px;}
+.qhead{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--ink-faint);}
+.qtext{font-family:var(--disp);font-size:16px;font-weight:600;margin:6px 0 14px;line-height:1.5;}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+@media(max-width:620px){.opts{grid-template-columns:1fr;}}
+.opt{text-align:left;background:var(--panel);border:1px solid var(--edge);border-radius:9px;padding:11px 13px;
+  cursor:pointer;color:var(--ink);font-family:var(--body);font-size:14px;transition:.14s;}
+.opt:hover{border-color:var(--ref);}
+.opt.pick{border-color:var(--signal);background:var(--shade);}
+.opt.right{border-color:var(--ok);background:rgba(74,222,128,.13);}
+.opt.wrong{border-color:var(--bad);background:rgba(244,63,94,.12);}
+.explain{margin-top:13px;padding:12px 14px;border-left:3px solid var(--ref);background:var(--panel);border-radius:0 8px 8px 0;font-size:14px;}
+.explain b{color:var(--ref);}
+.note{font-size:13.5px;color:var(--ink-dim);border-left:3px solid var(--signal);padding:8px 12px;background:var(--panel-2);border-radius:0 8px 8px 0;margin-top:12px;}
+.eq{font-family:var(--mono);font-size:13.5px;background:var(--board);border:1px solid var(--rail);border-radius:8px;padding:11px 14px;margin:10px 0;color:var(--ref);overflow-x:auto;}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;}
+.field label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-faint);margin-bottom:4px;}
+.field input{width:100%;background:var(--board);border:1px solid var(--rail);border-radius:7px;color:var(--signal);
+  font-family:var(--mono);font-size:14px;padding:8px 10px;}
+.field input:focus{outline:none;border-color:var(--signal);}
+input[type="range"]{width:100%;accent-color:var(--signal);height:22px;cursor:pointer;}
+.simctrl{margin-top:14px;padding:14px 16px;background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;}
+.simctrl .field{margin-bottom:10px;}
+.simctrl .capline{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-faint);margin-top:8px;}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.chip{font-size:12.5px;font-family:var(--disp);font-weight:600;background:var(--panel-2);border:1px solid var(--edge);
+  color:var(--ink-dim);border-radius:20px;padding:5px 13px;cursor:pointer;}
+.chip:hover{border-color:var(--ref);color:var(--ref);}
+ul.tight{margin:6px 0;padding-left:20px;} ul.tight li{margin-bottom:5px;}
+table.cmp{width:100%;border-collapse:collapse;font-size:13.5px;}
+table.cmp th{font-family:var(--disp);font-size:12px;color:var(--ink-faint);text-align:left;padding:6px 8px;border-bottom:1px solid var(--rail);font-weight:600;}
+table.cmp td{padding:8px;border-bottom:1px solid var(--edge);font-family:var(--mono);font-size:13px;}
+.pill{display:inline-block;padding:1px 9px;border-radius:20px;font-size:11.5px;font-family:var(--disp);font-weight:600;}
+.pill.on{background:rgba(74,222,128,.16);color:var(--ok);border:1px solid rgba(74,222,128,.4);}
+.pill.off{background:var(--shade);color:var(--ink-faint);border:1px solid var(--edge);}
+.gaugebar{height:26px;background:var(--board);border:1px solid var(--rail);border-radius:6px;overflow:hidden;margin:4px 0 12px;}
+.gaugebar i{display:block;height:100%;background:var(--ref);transition:width .5s;}
+.gaugebar i.post{background:var(--signal);}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--panel-2);
+  border:1px solid var(--signal);color:var(--ink);padding:10px 18px;border-radius:9px;font-family:var(--disp);
+  font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:99;}
+.toast.show{opacity:1;transform:translateX(-50%);}
+.locked{text-align:center;padding:50px 20px;color:var(--ink-dim);}
+
+/* ===== มิเตอร์เปรียบเทียบแรงดันขาเข้า ===== */
+.pinlbl{font-family:var(--mono);font-size:10px;fill:var(--ink-faint);}
+.pinval{font-family:var(--mono);font-size:15px;font-weight:600;}
+.pinsym{font-family:var(--mono);font-size:15px;font-weight:600;fill:var(--ink);}
+.leader{stroke:var(--ink-faint);stroke-width:1;stroke-dasharray:3 3;}
+.vmeter{display:grid;gap:15px;margin-top:14px;}
+.vhead{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:5px;gap:10px;}
+.vhead span{color:var(--ink-dim);}
+.vhead b{font-family:var(--mono);font-size:18px;white-space:nowrap;}
+.vtrack{position:relative;height:28px;background:var(--board);border:1px solid var(--rail);border-radius:7px;}
+.vtrack i{position:absolute;left:0;top:0;bottom:0;border-radius:6px 0 0 6px;transition:width .06s linear;}
+.vtrack i.p{background:linear-gradient(90deg,rgba(127,185,205,.22),rgba(127,185,205,.85));}
+.vtrack i.n{background:linear-gradient(90deg,rgba(242,165,65,.20),rgba(242,165,65,.88));}
+.vtrack u{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--ref);text-decoration:none;transition:left .06s linear;}
+.vtrack u::after{content:attr(data-t);position:absolute;top:-15px;left:4px;font-family:var(--mono);font-size:10px;color:var(--ref);white-space:nowrap;}
+.vscale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-top:4px;}
+.dwrap{position:relative;height:34px;background:var(--board);border:1px solid var(--rail);border-radius:7px;overflow:hidden;}
+.dzero{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--ink-faint);opacity:.8;}
+.dfill{position:absolute;top:7px;bottom:7px;border-radius:4px;transition:.06s linear;}
+.dfill.pos{background:rgba(74,222,128,.75);}
+.dfill.neg{background:rgba(244,63,94,.75);}
+.dval{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:var(--mono);
+  font-size:14px;font-weight:600;color:var(--ink);text-shadow:0 0 8px var(--board),0 0 4px var(--board);}
+.logicline{font-family:var(--mono);font-size:13px;background:var(--board);border:1px solid var(--rail);
+  border-radius:8px;padding:12px 14px;margin-top:16px;line-height:2;overflow-x:auto;}
+.logicline em{font-style:normal;color:var(--ink-faint);letter-spacing:.06em;}
+.tcwrap{display:grid;grid-template-columns:1fr 290px;gap:16px;align-items:center;margin-top:16px;}
+@media(max-width:900px){.tcwrap{grid-template-columns:1fr;}}
+
+/* ===== หน้าลงทะเบียนชื่อเล่น ===== */
+.gate{max-width:560px;margin:26px auto;text-align:center;}
+.gate .idin{width:100%;background:var(--board);border:1px solid var(--rail);border-radius:10px;
+  color:var(--signal);font-family:var(--mono);font-size:19px;padding:13px 15px;text-align:center;letter-spacing:.04em;}
+.gate .idin:focus{outline:none;border-color:var(--signal);box-shadow:0 0 0 3px rgba(242,165,65,.16);}
+.gate .hint{font-size:12.5px;color:var(--ink-faint);margin-top:9px;}
+
+/* ===== แผงสรุปผลแบบใบประกาศ ===== */
+.cert{position:relative;border:1px solid var(--edge);border-radius:16px;padding:26px 26px 22px;
+  background:
+    radial-gradient(700px 220px at 12% -20%, rgba(242,165,65,.14), transparent 65%),
+    radial-gradient(600px 220px at 92% 120%, rgba(127,185,205,.13), transparent 65%),
+    linear-gradient(180deg,var(--panel-2),var(--panel));
+  box-shadow:0 20px 46px rgba(0,0,0,.30), inset 0 1px 0 var(--shade);overflow:hidden;}
+.cert::before{content:"";position:absolute;inset:7px;border:1px solid var(--edge);border-radius:11px;
+  pointer-events:none;opacity:.65;}
+.cert-top{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;position:relative;}
+.cert-name{font-family:var(--disp);font-weight:700;font-size:32px;line-height:1.2;letter-spacing:.01em;margin:2px 0 0;}
+.cert-name span{color:var(--signal);}
+.cert-meta{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);letter-spacing:.1em;margin-top:6px;}
+.cert-medal{margin-left:auto;text-align:center;min-width:112px;}
+.cert-medal b{display:block;font-family:var(--mono);font-size:34px;line-height:1;color:var(--signal);}
+.cert-medal small{display:block;font-size:11px;letter-spacing:.14em;color:var(--ink-faint);margin-top:5px;}
+.cert-rank{display:inline-block;margin-top:9px;padding:4px 14px;border-radius:20px;font-family:var(--disp);
+  font-weight:600;font-size:12.5px;border:1px solid var(--signal);color:var(--signal);background:var(--shade);}
+.scorepair{display:grid;grid-template-columns:1fr 74px 1fr;gap:14px;align-items:center;margin:22px 0 6px;position:relative;}
+@media(max-width:640px){.scorepair{grid-template-columns:1fr;} .arrowcell{transform:rotate(90deg);}}
+.scorebox{background:var(--board);border:1px solid var(--rail);border-radius:12px;padding:16px 18px;text-align:center;}
+.scorebox.after{border-color:var(--signal);box-shadow:0 0 0 1px rgba(242,165,65,.22) inset;}
+.scorebox .cap{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--ink-faint);}
+.scorebox .num{font-family:var(--mono);font-size:40px;font-weight:600;line-height:1.1;margin:4px 0 2px;color:var(--ref);}
+.scorebox.after .num{color:var(--signal);}
+.scorebox .pct{font-size:12.5px;color:var(--ink-dim);}
+.dotrow{display:flex;gap:6px;justify-content:center;margin-top:10px;}
+.dotrow i{width:13px;height:13px;border-radius:50%;border:1px solid var(--rail);background:transparent;display:block;}
+.dotrow i.hit{background:var(--ok);border-color:var(--ok);}
+.dotrow i.miss{background:var(--bad);border-color:var(--bad);opacity:.5;}
+.arrowcell{text-align:center;font-family:var(--mono);font-size:13px;color:var(--ink-faint);}
+.arrowcell b{display:block;font-size:22px;color:var(--signal);line-height:1;}
+.praise{margin-top:18px;border-left:3px solid var(--signal);background:var(--panel-2);border-radius:0 10px 10px 0;
+  padding:14px 16px;}
+.praise h4{font-family:var(--disp);font-size:17px;margin:0 0 5px;color:var(--ink);}
+.praise p{margin:0;font-size:14px;color:var(--ink-dim);}
+.stamp{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+.stamp span{font-family:var(--mono);font-size:11px;color:var(--ink-faint);border:1px solid var(--edge);
+  border-radius:6px;padding:5px 10px;background:var(--board);}
+.stamp span b{color:var(--ink-dim);font-weight:600;}
+.vcode{font-family:var(--mono);font-size:15px;letter-spacing:.22em;color:var(--ok);}
+/* ===== หน้าสรุปวงจรก่อนเริ่มภารกิจ ===== */
+.misgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 6px;}
+@media(max-width:760px){.misgrid{grid-template-columns:1fr;}}
+.miscard{background:var(--board);border:1px solid var(--edge);border-radius:13px;padding:15px 16px;transition:.16s;}
+.miscard:hover{transform:translateY(-2px);}
+.miscard .k{font-family:var(--mono);font-size:23px;font-weight:600;line-height:1;display:block;}
+.miscard .h{font-family:var(--disp);font-size:15px;font-weight:600;color:var(--ink);margin:7px 0 4px;}
+.miscard .d{font-size:13.5px;color:var(--ink-dim);line-height:1.55;}
+.miscard.a{border-color:rgba(127,185,205,.42);} .miscard.a .k{color:var(--ref);}
+.miscard.b{border-color:rgba(242,165,65,.42);} .miscard.b .k{color:var(--signal);}
+.miscard.c{border-color:rgba(74,222,128,.38);} .miscard.c .k{color:var(--ok);font-size:19px;padding-top:4px;}
+.mission{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:18px;padding:15px 18px;
+  border-radius:12px;border:1px dashed var(--signal);background:var(--shade);}
+.mission .tagline{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--signal);}
+.mission .goal{font-family:var(--disp);font-size:16.5px;font-weight:600;color:var(--ink);margin-top:3px;}
+.mission .sub{font-size:13px;color:var(--ink-dim);margin-top:2px;}
+.mission .go{margin-left:auto;}
+.briefsvgwrap{background:var(--board);border:1px solid var(--rail);border-radius:12px;padding:8px 6px;margin-top:16px;}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+
+/* ===== ผลลัพธ์การเรียนรู้ และเอนจินข้อสอบสุ่ม ===== */
+.clobox{margin-top:22px;text-align:left;border-top:1px solid var(--edge);padding-top:16px;}
+.clolist{margin:8px 0 0;padding-left:0;list-style:none;}
+.clolist li{margin-bottom:8px;font-size:14px;color:var(--ink-dim);line-height:1.55;
+  border-left:3px solid var(--edge);padding:2px 0 2px 12px;}
+.clolist li b{display:block;color:var(--ink);font-family:var(--disp);font-size:14.5px;}
+.clotag{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--ref);}
+.setid{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);letter-spacing:.06em;margin-top:8px;}
+.setid b{color:var(--ref);font-weight:600;}
+.clot{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px;}
+.clot th{font-family:var(--disp);font-size:12px;color:var(--ink-faint);text-align:left;
+  padding:7px 8px;border-bottom:1px solid var(--rail);font-weight:600;}
+.clot td{padding:9px 8px;border-bottom:1px solid var(--edge);font-size:13.5px;vertical-align:top;}
+.clot td.mk{font-family:var(--mono);font-size:16px;text-align:center;width:56px;}
+.mk.y{color:var(--ok);} .mk.n{color:var(--bad);opacity:.75;}
+.clost{font-family:var(--disp);font-size:12.5px;font-weight:600;border-radius:20px;
+  padding:3px 11px;border:1px solid var(--edge);white-space:nowrap;display:inline-block;}
+.clost.up{color:var(--ok);border-color:var(--ok);}
+.clost.keep{color:var(--ref);border-color:var(--ref);}
+.clost.down{color:var(--signal);border-color:var(--signal);}
+.clost.miss{color:var(--bad);border-color:var(--bad);}
+
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="rshine" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="#ffffff" stop-opacity=".35"/>
+<stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+<stop offset="100%" stop-color="#000000" stop-opacity=".18"/>
+</linearGradient></defs></svg>
+
+<div class="wrap">
+
+  <div class="plate">
+    <div>
+      <h1>TRIP <span>POINT</span></h1>
+      <div class="sub">ห้องทดลองเสมือน — วงจรตรวจจับระดับแรงดันด้วยคอมพาราเตอร์เดี่ยว (IC1A)</div>
+    </div>
+    <div class="hdr-right">
+      <button id="themebtn">โหมดสว่าง</button>
+      <div class="score" id="whobox" style="display:none;border-left:none;padding-left:0;text-align:right;">
+        <b id="whoname" style="font-family:var(--disp);font-size:16px;color:var(--ink);"></b>
+        <small>ผู้เรียน</small>
+      </div>
+      <div class="score"><b id="xp">0</b><small>คะแนนสะสม</small></div>
+    </div>
+  </div>
+
+  <nav>
+    <button class="on" data-tab="pre">1 · ทดสอบก่อนเรียน</button>
+    <button data-tab="lab">2 · ห้องทดลอง</button>
+    <button data-tab="wire">3 · ต่อวงจรเอง</button>
+    <button data-tab="design">4 · ห้องออกแบบ</button>
+    <button data-tab="post">5 · ทดสอบหลังเรียน</button>
+    <button data-tab="report">6 · ผลการเรียนรู้</button>
+    <button data-tab="theory">หลักการ</button>
+  </nav>
+
+  <!-- PRETEST -->
+  <section class="tab on" id="tab-pre">
+
+    <!-- ขั้นที่ 0 · ลงทะเบียนชื่อเล่น -->
+    <div class="card" id="idcard">
+      <div class="eyebrow">ขั้นที่ 0 · ลงทะเบียนก่อนเริ่ม</div>
+      <div class="gate">
+        <h2 style="font-size:21px;">ระบุชื่อเล่นของผู้เรียน</h2>
+        <p class="muted" style="margin-bottom:16px;">ชื่อนี้จะปรากฏบนใบสรุปผลการเรียนรู้เมื่อจบบทเรียน
+        พร้อมรหัสยืนยันเฉพาะตัวที่ผูกกับพฤติกรรมการทำแบบทดสอบของผู้เรียนเอง</p>
+        <input class="idin" id="nick" maxlength="24" autocomplete="off" placeholder="พิมพ์ชื่อเล่นที่นี่">
+        <div class="btnrow" style="justify-content:center;">
+          <button class="btn pri" id="nickgo">ยืนยันชื่อและเริ่มบทเรียน</button>
+        </div>
+        <div class="hint" id="nickmsg">ใช้ได้ทั้งภาษาไทยและอังกฤษ ความยาว 2 ถึง 24 ตัวอักษร</div>
+
+        <div class="clobox">
+          <div class="eyebrow">ผลลัพธ์การเรียนรู้ที่คาดหวังของบทเรียนนี้</div>
+          <ol class="clolist" id="clolist"></ol>
+          <div class="hint">แบบทดสอบก่อนเรียนและหลังเรียนจะสุ่มข้อจากคลังตามผลลัพธ์การเรียนรู้ข้างต้น
+          ผลลัพธ์ละ 1 ข้อ โดยระบบรับประกันว่าข้อที่ได้ในรอบหลังเรียนจะไม่ซ้ำกับรอบก่อนเรียน
+          และตัวเลือกของทุกข้อถูกสับตำแหน่งใหม่ทุกครั้ง</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ขั้นที่ 1 · ทำความรู้จักวงจร -->
+    <div class="card" id="briefcard" style="display:none;">
+      <div class="eyebrow">สรุปวงจร · อ่าน 3 กล่องนี้ก็เล่นได้ทั้งบท</div>
+      <h2>ออปแอมป์ตัวนี้ทำอยู่อย่างเดียว คือเทียบแรงดันสองขา</h2>
+
+      <div class="misgrid">
+        <div class="miscard a">
+          <span class="k">V+</span>
+          <div class="h">เส้นชัย</div>
+          <div class="d">แรงดันคงที่จาก R2 กับ R3 ตั้งไว้แล้วไม่ขยับเอง</div>
+        </div>
+        <div class="miscard b">
+          <span class="k">V−</span>
+          <div class="h">ตัวที่คุณคุม</div>
+          <div class="d">แรงดันจากไวเปอร์ VR1 หมุนลูกบิดแล้วเปลี่ยนได้ทันที</div>
+        </div>
+        <div class="miscard c">
+          <span class="k">LED1</span>
+          <div class="h">ผลตัดสิน</div>
+          <div class="d">วินาทีที่ V− แซง V+ เอาต์พุตพลิกเป็น LOW แล้วหลอดติด</div>
+        </div>
+      </div>
+
+      <div class="briefsvgwrap"><svg id="brief-svg" viewBox="0 0 470 190" width="470"></svg></div>
+
+      <div class="simctrl">
+        <div class="field">
+          <label>หมุนลูกบิด VR1 · ตำแหน่ง 0–100%</label>
+          <input type="range" id="brief-slider" min="0" max="1000" value="0" step="1"
+                 aria-label="ปรับตำแหน่ง VR1 ในผังสรุปวงจร">
+        </div>
+        <div class="btnrow">
+          <button class="btn" id="brief-swap">สลับขั้วเข้า + / − ของออปแอมป์</button>
+          <button class="btn" id="brief-reset">ศูนย์ VR1</button>
+        </div>
+        <div class="readout" id="brief-ro" style="margin-top:10px;"></div>
+        <div class="capline">ลองหมุน VR1 แล้วกดปุ่มสลับขั้ว สังเกตว่าค่าที่ขา + และขา − สลับที่กัน และเงื่อนไขที่ LED1 ติดก็กลับด้านตามไปด้วย</div>
+      </div>
+
+      <div class="eq" style="margin-top:14px;">V+ = VCC × R3 / (R2 + R3) &nbsp;&nbsp;·&nbsp;&nbsp; V− = VCC × (k · VR1) / (R1 + VR1) &nbsp;&nbsp;·&nbsp;&nbsp; k = ตำแหน่งหมุน 0 ถึง 1</div>
+
+      <div class="mission">
+        <div>
+          <div class="tagline">ภารกิจของคุณ</div>
+          <div class="goal">หมุน VR1 หาตำแหน่งที่ทำให้หลอดติดพอดี</div>
+          <div class="sub">แล้วตอบให้ได้ว่าทำไมมันถึงติดที่ตำแหน่งนั้น ไม่ใช่ตำแหน่งอื่น</div>
+        </div>
+        <div class="go"><button class="btn pri" id="briefgo">พร้อมแล้ว เริ่มเลย</button></div>
+      </div>
+    </div>
+
+    <!-- ขั้นที่ 2 · แบบทดสอบก่อนเรียน -->
+    <div class="card" id="precard" style="display:none;">
+      <div class="eyebrow">ขั้นที่ 2 · แบบทดสอบก่อนเรียน · 3 ข้อ · ไม่เฉลยระหว่างทำ</div>
+      <h2>วัดความเข้าใจเดิมก่อนเข้าห้องทดลอง</h2>
+      <p class="muted">ตอบตามความเข้าใจปัจจุบัน ไม่ต้องเปิดตำรา ระบบจะเก็บคะแนนไว้เปรียบเทียบกับหลังเรียน
+      เพื่อคำนวณค่าความก้าวหน้าเชิงปกติ (normalized gain) ซึ่งเป็นตัวชี้วัดว่าห้องทดลองนี้ช่วยได้จริงมากน้อยเพียงใด</p>
+      <div class="note" style="border-left-color:var(--ref);">ทุกข้ออ้างอิงวงจรมาตรฐานตามผังด้านล่าง
+      คือ V+ มาจาก R2 กับ R3 และ V− มาจากไวเปอร์ของ VR1 โดย LED1 ต่อกลับขึ้นรางบวก (ปุ่ม "สลับขั้ว" มีไว้ให้ทดลองสังเกตเฉย ๆ
+      แต่โจทย์ทั้ง 3 ข้อยึดการต่อแบบมาตรฐานนี้เท่านั้น)</div>
+
+      <h3>วงจรอ้างอิงสำหรับใช้พิจารณาคำตอบ</h3>
+      <div class="briefsvgwrap"><svg id="pre-svg" viewBox="0 0 470 190" width="470"></svg></div>
+      <div class="simctrl">
+        <div class="field">
+          <label>หมุนลูกบิด VR1 · ตำแหน่ง 0–100%</label>
+          <input type="range" id="pre-slider" min="0" max="1000" value="0" step="1"
+                 aria-label="ปรับตำแหน่ง VR1 ในผังอ้างอิงหน้าแบบทดสอบ">
+        </div>
+        <div class="btnrow">
+          <button class="btn" id="pre-swap">สลับขั้วเข้า + / − ของออปแอมป์</button>
+          <button class="btn" id="pre-reset">ศูนย์ VR1</button>
+        </div>
+        <div class="readout" id="pre-ro" style="margin-top:10px;"></div>
+      </div>
+
+      <div class="setid setidout"></div>
+      <div class="btnrow"><button class="btn" id="preshuffle">สุ่มชุดข้อสอบใหม่</button></div>
+      <div id="prebox" style="margin-top:14px;"></div>
+      <div class="btnrow"><button class="btn pri" id="presubmit">ส่งคำตอบและเปิดห้องทดลอง</button></div>
+      <div class="note" id="premsg">ตอบให้ครบทั้ง 3 ข้อจึงจะส่งได้</div>
+    </div>
+  </section>
+
+  <!-- LAB -->
+  <section class="tab" id="tab-lab">
+    <div id="lab-lock" class="card locked">ทำแบบทดสอบก่อนเรียนให้เสร็จก่อน จึงจะเข้าห้องทดลองได้</div>
+    <div id="lab-body" style="display:none;">
+      <div class="faceplate">
+        <div class="eyebrow">แผงอุปกรณ์จริง · หมุน VR1 จนกว่า V_in จะข้ามจุดตัด</div>
+        <div style="display:flex;gap:22px;align-items:center;flex-wrap:wrap;">
+          <svg id="biglamp" viewBox="0 0 150 190" width="130" height="165"></svg>
+          <div style="flex:1;min-width:260px;">
+            <div style="font-family:var(--disp);font-weight:700;font-size:20px;" id="statebig">LED1 · ดับ</div>
+            <div class="muted" id="statesub">เอาต์พุตของ IC1A อยู่ที่ HIGH จึงไม่มีเส้นทางให้กระแสไหลลงกราวด์</div>
+            <div class="railwrap" style="margin-top:12px;">
+              <div class="railfill" id="railfill"></div>
+              <div class="railval" id="railval">0.000 V</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="eyebrow">ตัวควบคุม VR1</div>
+          <div class="knobbox">
+            <svg id="knob" width="180" height="180" viewBox="0 0 180 180" role="slider"
+                 aria-label="ปรับ VR1" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+              <circle cx="90" cy="90" r="74" fill="var(--board)" stroke="var(--rail)"/>
+              <g id="ticks"></g>
+              <circle cx="90" cy="90" r="52" fill="var(--panel-2)" stroke="var(--edge)" stroke-width="1.5"/>
+              <g id="pointer">
+                <line x1="90" y1="90" x2="90" y2="46" stroke="var(--signal)" stroke-width="4" stroke-linecap="round"/>
+                <circle cx="90" cy="90" r="7" fill="var(--signal)"/>
+              </g>
+              <text x="90" y="168" text-anchor="middle" font-family="var(--mono)" fill="var(--ink-faint)" font-size="11">ลาก · ลูกศร ◀ ▶</text>
+            </svg>
+            <div class="readout">
+              <div class="row"><span>ตำแหน่ง VR1</span><span id="ro-pos">0 %</span></div>
+              <div class="row"><span>V+ ขาบวก (อ้างอิง)</span><span id="ro-vref" style="color:var(--ref)">4.361 V</span></div>
+              <div class="row"><span>V− ขาลบ (จาก VR1)</span><span id="ro-vin" style="color:var(--signal)">0.000 V</span></div>
+              <div class="row"><span>V_d = V+ − V−</span><span id="ro-vd">+4.361 V</span></div>
+              <div class="row"><span>V_out ที่ขาออก</span><span id="ro-vout">9.00 V · HIGH</span></div>
+              <div class="row"><span>กระแส LED</span><span id="ro-iled">0.0 mA</span></div>
+              <div class="row"><span>กระแสสายอ้างอิง</span><span id="ro-iref">928 µA</span></div>
+              <div class="row"><span>ตำแหน่งหมุนที่จะทริก</span><span id="ro-trip">96.9 %</span></div>
+            </div>
+            <div class="btnrow">
+              <button class="btn pri" id="sweep">กวาดอัตโนมัติ</button>
+              <button class="btn" id="reset">ศูนย์</button>
+              <button class="btn" id="tojump">ไปที่จุดตัดพอดี</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="eyebrow">สถานะการเปรียบเทียบ</div>
+          <table class="cmp">
+            <thead><tr><th>รายการ</th><th>ค่า</th><th>ความหมาย</th></tr></thead>
+            <tbody id="cmpbody"></tbody>
+          </table>
+          <div class="note" id="verdict">หมุน VR1 เพื่อเริ่มการทดลอง</div>
+          <div class="note" style="border-left-color:var(--ref);">
+            ลองสังเกตว่าไฟจะติดก็ต่อเมื่อหมุนเกือบสุดสเกลเท่านั้น นี่ไม่ใช่ความผิดพลาดของการทดลอง
+            แต่เป็นผลโดยตรงจากค่า R2 กับ R3 ที่เลือกไว้ ให้จดสังเกตนี้ไว้แล้วไปแก้ที่แท็บห้องออกแบบ
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">หัวใจของออปแอมป์ · เครื่องมือเปรียบเทียบแรงดันสองขา</div>
+        <h2>V+ เทียบกับ V− แบบเรียลไทม์</h2>
+        <p class="muted">ออปแอมป์ไม่ได้สนใจค่าแรงดันของขาใดขาหนึ่งโดยลำพัง แต่สนใจเฉพาะ <b>ผลต่าง</b> ระหว่างสองขาเท่านั้น
+        แถบด้านล่างแสดงระดับแรงดันจริงของแต่ละขาเทียบกับรางไฟ ให้หมุน VR1 แล้วสังเกตแถบสีอำพัน (ขาลบ) วิ่งไล่เส้นประสีฟ้า (ระดับขาบวก)
+        เมื่อใดที่แถบสีอำพันข้ามเส้นประไปได้ เอาต์พุตจะพลิกสถานะทันที</p>
+        <div class="vmeter">
+          <div>
+            <div class="vhead"><span>ขาบวก V+ · non-inverting · จากตัวแบ่งแรงดัน R2–R3</span><b id="mv-p" style="color:var(--ref)">0.000 V</b></div>
+            <div class="vtrack"><i class="p" id="mb-p" style="width:0%"></i></div>
+          </div>
+          <div>
+            <div class="vhead"><span>ขาลบ V− · inverting · จากไวเปอร์ของ VR1</span><b id="mv-n" style="color:var(--signal)">0.000 V</b></div>
+            <div class="vtrack"><i class="n" id="mb-n" style="width:0%"></i><u id="mk-n" data-t="ระดับ V+" style="left:0%"></u></div>
+            <div class="vscale"><span>0 V</span><span>สเกลเต็ม = แรงดันแหล่งจ่าย <b id="msc-h">9.0 V</b></span></div>
+          </div>
+          <div>
+            <div class="vhead"><span>ผลต่างที่ออปแอมป์ตรวจจับได้ · V_d = V+ − V−</span><b id="mv-d">+0.000 V</b></div>
+            <div class="dwrap"><div class="dzero"></div><div class="dfill" id="mb-d"></div><div class="dval" id="mv-d2">V_d = +0.000 V</div></div>
+            <div class="vscale"><span>ขาลบสูงกว่า → เอาต์พุต LOW</span><span>แถบนี้ใช้สเกลรากที่สอง เพื่อให้เห็นผลต่างระดับมิลลิโวลต์</span><span>ขาบวกสูงกว่า → เอาต์พุต HIGH</span></div>
+          </div>
+        </div>
+        <div class="logicline" id="mlogic"></div>
+        <div class="tcwrap">
+          <div class="scope"><svg id="tcplot" viewBox="0 0 380 210" width="380"></svg></div>
+          <div class="note" style="margin:0;border-left-color:var(--ref);">
+            กราฟถ่ายโอนนี้อธิบายว่าเหตุใดคอมพาราเตอร์จึงให้ผลลัพธ์เพียงสองระดับ
+            เมื่ออัตราขยายเปิดวง (A_OL) มีค่าราวหนึ่งแสนเท่า ผลต่างเพียง 0.1 mV ก็ถูกขยายจนเกินพิสัยของรางไฟแล้ว
+            เอาต์พุตจึงอิ่มตัวที่ปลายด้านใดด้านหนึ่งเสมอ ย่านเชิงเส้นแคบจนแทบมองไม่เห็นในสเกลจริง
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">ผังวงจรมีชีวิต · อุปกรณ์ในผังเป็นตัวจริงที่อ่านแถบสีได้</div>
+        <div class="scope">
+          <svg id="sch" viewBox="0 0 780 470" width="780"></svg>
+        </div>
+        <div class="note">ป้ายแรงดันสองป้ายที่ติดอยู่กับขาอินพุตเป็นค่าที่วัดได้จริงขณะนั้น
+        ขาที่มีแรงดันสูงกว่าจะถูกเน้นกรอบเรืองแสง ส่วนตัวเลข V_d ตรงกลางคือผลต่างที่ออปแอมป์นำไปขยาย
+        เส้นสีอำพันคือเส้นทางที่กระแสกำลังไหลจริง เมื่อเอาต์พุตของ IC1A ถูกดึงลง LOW
+        กระแสจะไหลจากรางบวกผ่าน LED1 และ R4 เข้าสู่ขาเอาต์พุตลงกราวด์ภายในตัวไอซี</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WIRE -->
+  <section class="tab" id="tab-wire">
+    <div class="card">
+      <div class="eyebrow">ภารกิจต่อวงจร · 6 เส้น</div>
+      <h2>ต่อสายให้ครบถ้วน</h2>
+      <p class="muted">คลิกจุดต่อหนึ่งจุด แล้วคลิกอีกจุดที่ควรเชื่อมถึงกัน ต่อถูกจะล็อกเป็นสีเขียว ต่อผิดระบบจะอธิบายเหตุผลทางวิศวกรรมให้ทันที</p>
+      <div class="scope" style="margin-top:12px;">
+        <svg id="wsvg" viewBox="0 0 760 400" width="760"></svg>
+      </div>
+      <ul class="checklist" id="wlist"></ul>
+      <div class="btnrow">
+        <button class="btn" id="wreset">เริ่มใหม่</button>
+        <button class="btn" id="whint">ขอคำใบ้</button>
+      </div>
+      <div class="note" id="wmsg">เลือกจุดต่อจุดแรกเพื่อเริ่ม</div>
+    </div>
+  </section>
+
+  <!-- DESIGN -->
+  <section class="tab" id="tab-design">
+    <div class="card">
+      <div class="eyebrow">ห้องออกแบบ · แก้ค่าแล้วจุดตัดขยับทันที</div>
+      <h2>ย้ายจุดตัดให้อยู่ตำแหน่งที่ใช้งานได้จริง</h2>
+      <div class="fields" style="margin-top:14px;">
+        <div class="field"><label>VCC (V)</label><input type="number" id="d-vcc" value="9" step="0.5" min="3" max="30"></div>
+        <div class="field"><label>R1 (kΩ)</label><input type="number" id="d-r1" value="10" step="0.5" min="0"></div>
+        <div class="field"><label>VR1 (kΩ)</label><input type="number" id="d-vr" value="10" step="0.5" min="0.5"></div>
+        <div class="field"><label>R2 (kΩ)</label><input type="number" id="d-r2" value="5" step="0.1" min="0.1"></div>
+        <div class="field"><label>R3 (kΩ)</label><input type="number" id="d-r3" value="4.7" step="0.1" min="0.1"></div>
+        <div class="field"><label>R4 (Ω)</label><input type="number" id="d-r4" value="330" step="10" min="47"></div>
+      </div>
+      <div class="chips">
+        <span class="chip" data-preset="std">ค่าตามใบงาน (จุดตัด 96.9%)</span>
+        <span class="chip" data-preset="mid">จุดตัดกลางสเกลพอดี 50%</span>
+        <span class="chip" data-preset="q">จุดตัดที่ 25% สำหรับเตือนระดับต่ำ</span>
+        <span class="chip" data-preset="v5">ระบบ 5 V สำหรับต่อกับไมโครคอนโทรลเลอร์</span>
+      </div>
+      <div class="eq" id="d-out"></div>
+      <div class="gaugebar"><i id="d-gauge" style="width:0%"></i></div>
+      <div class="note" id="d-warn"></div>
+    </div>
+    <div class="card">
+      <h3>โจทย์ออกแบบสำหรับส่งงาน</h3>
+      <ul class="tight muted">
+        <li>คำนวณค่า R3 ใหม่ที่ทำให้จุดตัดอยู่กึ่งกลางย่านการหมุนพอดี โดยคง R2 = 5 kΩ และ VCC = 9 V แล้วตรวจคำตอบด้วยห้องออกแบบ</li>
+        <li>อธิบายว่าเหตุใดการเพิ่ม VR1 เป็น 20 kΩ โดยไม่แก้ R1 จึงทำให้จุดตัดเลื่อนไปทางซ้าย ทั้งที่ไม่ได้แตะบันไดอ้างอิงเลย</li>
+        <li>ออกแบบ R4 ใหม่สำหรับ LED สีน้ำเงิน (V_F = 3.2 V) ที่กระแส 15 mA แล้วระบุค่ามาตรฐาน E12 ที่ใกล้ที่สุดพร้อมรหัสแถบสี</li>
+        <li>ต่อยอด: แทน VR1 ด้วย LDR หรือเทอร์มิสเตอร์ แล้ววิเคราะห์ว่าวงจรกลายเป็นสวิตช์แสงหรือสวิตช์อุณหภูมิได้อย่างไร</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- POSTTEST -->
+  <section class="tab" id="tab-post">
+    <div id="post-lock" class="card locked">เข้าห้องทดลองและลองปรับ VR1 อย่างน้อยสักครู่ก่อน จึงจะทำแบบทดสอบหลังเรียนได้</div>
+    <div id="post-body" style="display:none;">
+      <div class="card">
+        <div class="eyebrow">แบบทดสอบหลังเรียน · 3 ข้อ · โครงสร้างคู่ขนานกับก่อนเรียน</div>
+        <h2>วัดความเข้าใจหลังผ่านห้องทดลอง</h2>
+        <div id="postbox" style="margin-top:14px;"></div>
+        <div class="btnrow"><button class="btn pri" id="postsubmit">ส่งคำตอบและดูผล</button></div>
+        <div class="note" id="postmsg">ตอบให้ครบทั้ง 3 ข้อจึงจะส่งได้</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPORT -->
+  <section class="tab" id="tab-report">
+    <div class="card">
+      <div class="eyebrow">รายงานผล · TRIP POINT · วงจรตรวจจับระดับแรงดัน</div>
+      <h2>บทเรียน TRIP POINT ช่วยให้เข้าใจวงจรตรวจจับระดับแรงดันมากขึ้นแค่ไหน</h2>
+      <div id="repbody"><p class="muted">ยังไม่มีข้อมูล ทำแบบทดสอบก่อนเรียนและหลังเรียนให้ครบก่อน</p></div>
+    </div>
+  </section>
+
+  <!-- THEORY -->
+  <section class="tab" id="tab-theory">
+    <div class="card">
+      <h2>หลักการของวงจรตรวจจับระดับแรงดัน</h2>
+      <p class="muted">วงจรนี้คือหน่วยย่อยที่สุดของไม้บรรทัดอิเล็กทรอนิกส์ คือเหลือคอมพาราเตอร์เพียงตัวเดียว
+      ทำหน้าที่เปลี่ยนแรงดันต่อเนื่องให้เป็นสัญญาณดิจิทัลหนึ่งบิต ซึ่งเป็นพื้นฐานของวงจรเตือนภัย สวิตช์แสง
+      สวิตช์อุณหภูมิ และวงจรตรวจแบตเตอรี่ต่ำทุกชนิด</p>
+
+      <h3>1. แรงดันอ้างอิงจาก R2 และ R3</h3>
+      <div class="eq">V_ref = VCC × R3 / (R2 + R3) = 9 × 4.7k / (5k + 4.7k) = 4.361 V</div>
+
+      <h3>2. แรงดันอินพุตจาก R1 และ VR1</h3>
+      <div class="eq">V_in = VCC × (k · VR1) / (R1 + VR1) , k = 0 ถึง 1<br>พิสัย 0.000 ถึง 4.500 V</div>
+
+      <h3>3. ตำแหน่งหมุนที่ทำให้ทริก</h3>
+      <p class="muted">แก้สมการ V_in = V_ref เพื่อหาค่า k ที่จุดตัด</p>
+      <div class="eq">k_trip = V_ref × (R1 + VR1) / (VCC × VR1) = 4.361 × 20k / (9 × 10k) = 0.969</div>
+      <p class="muted">จุดตัดจึงอยู่ที่ 96.9 เปอร์เซ็นต์ของการหมุน เหลือย่านใช้งานเพียง 3 เปอร์เซ็นต์สุดท้าย
+      ในทางปฏิบัติถือว่าปรับละเอียดไม่ได้ และไวต่อความคลาดเคลื่อนของตัวต้านทานมาก
+      ถ้า R3 คลาดเคลื่อน 5 เปอร์เซ็นต์ตามพิกัดแถบทอง จุดตัดอาจเลื่อนจนเกินพิสัยและไฟไม่ติดเลย
+      นี่คือบทเรียนสำคัญเรื่องการเผื่อพิสัยในการออกแบบ</p>
+
+      <h3>4. กลไกการเปรียบเทียบ เหตุใดจึงไม่มีค่ากลาง</h3>
+      <p class="muted">ออปแอมป์ไม่ได้ตัดสินจากแรงดันของขาใดขาหนึ่งโดยลำพัง แต่ขยาย
+      <b>ผลต่างขาเข้า</b> (differential input) เพียงค่าเดียว ด้วยอัตราขยายเปิดวงที่สูงมาก</p>
+      <div class="eq">V_d = V₊ − V₋<br>V_out(อุดมคติ) = A_OL × V_d , โดย A_OL ≈ 10⁵ เท่าสำหรับ LM324 หรือ LM393</div>
+      <p class="muted">แทนค่าดูจะเห็นทันทีว่า ผลต่างเพียง 1 mV ให้ผลลัพธ์ 100 โวลต์ ซึ่งเกินพิสัยของรางไฟ 9 โวลต์ไปมาก
+      เอาต์พุตจึงถูกจำกัดให้อิ่มตัวอยู่ที่ปลายด้านใดด้านหนึ่งเสมอ กล่าวคือ</p>
+      <ul class="tight muted">
+        <li>ถ้า V_d เป็นบวก แม้เพียงเล็กน้อย เอาต์พุตจะอิ่มตัวด้าน HIGH</li>
+        <li>ถ้า V_d เป็นลบ แม้เพียงเล็กน้อย เอาต์พุตจะอิ่มตัวด้าน LOW ซึ่งสำหรับไอซีชนิด open-collector หมายถึงการดูดกระแสลงกราวด์ภายในตัวไอซี</li>
+        <li>ย่านเชิงเส้นกินความกว้างเพียงราวไม่กี่สิบไมโครโวลต์ ในทางปฏิบัติจึงถือว่าไม่มีค่ากลาง เป็นสัญญาณดิจิทัลหนึ่งบิตอย่างสมบูรณ์</li>
+      </ul>
+      <p class="muted">ให้กลับไปสังเกตในห้องทดลองว่า ขณะหมุน VR1 ผ่านจุดตัด ป้ายแรงดันสองขาจะมีค่าใกล้กันมาก
+      แต่แถบผลต่างและสถานะเอาต์พุตพลิกจากด้านหนึ่งไปอีกด้านหนึ่งอย่างฉับพลัน นี่คือคุณสมบัติสำคัญที่ทำให้คอมพาราเตอร์
+      เหมาะกับงานตรวจจับเกณฑ์ และในเวลาเดียวกันก็เป็นสาเหตุของอาการไฟกะพริบเมื่อสัญญาณมีสัญญาณรบกวน
+      ซึ่งแก้ได้ด้วยการเพิ่มฮิสเทอรีซิสตามหัวข้อที่ 7</p>
+
+      <h3>5. ทิศทางเอาต์พุตและชนิดของไอซี</h3>
+      <ul class="tight muted">
+        <li>ผังนี้ต่อ LED กลับขึ้นราง +9V จึงต้องใช้คอมพาราเตอร์แบบ open-collector เช่น LM339 หรือ LM393 ซึ่งเอาต์พุตดูดกระแสได้อย่างเดียว</li>
+        <li>V_ref เข้าขาบวก และ V_in เข้าขาลบ ทำให้เอาต์พุตเป็น LOW เมื่อ V_in สูงกว่า V_ref ไฟจึงติดตอนแรงดันสูง</li>
+        <li>ถ้าใช้ LM324 ซึ่งเป็นออปแอมป์แบบ push-pull ต้องย้าย LED ลงกราวด์และสลับขาอินพุต มิฉะนั้นผลจะกลับด้าน</li>
+      </ul>
+
+      <h3>6. การอ่านค่าตัวต้านทานจากแถบสี</h3>
+      <div class="eq">R1 = น้ำตาล ดำ ส้ม ทอง = 10 × 10³ = 10 kΩ ±5%<br>
+R2 = เขียว ดำ แดง ทอง = 50 × 10² = 5 kΩ ±5%<br>
+R3 = เหลือง ม่วง แดง ทอง = 47 × 10² = 4.7 kΩ ±5%<br>
+R4 = ส้ม ส้ม น้ำตาล ทอง = 33 × 10¹ = 330 Ω ±5%</div>
+      <p class="muted">สังเกตว่า 5 kΩ ไม่ใช่ค่ามาตรฐานในอนุกรม E12 ในการทดลองจริงจึงมักใช้ 4.7 kΩ แทน
+      ซึ่งจะทำให้ V_ref กลายเป็น 4.5 V พอดี และวงจรจะทริกที่ปลายสุดของการหมุนพอดีเป๊ะ ลองคำนวณดูแล้วเทียบกับห้องออกแบบ</p>
+
+      <h3>7. ต่อยอดสู่งานจริง</h3>
+      <ul class="tight muted">
+        <li>เพิ่มตัวต้านทานป้อนกลับบวกจากเอาต์พุตกลับสู่ขาบวก เพื่อสร้างฮิสเทอรีซิสและกันไฟกะพริบเมื่อสัญญาณมีสัญญาณรบกวน</li>
+        <li>ต่อเอาต์พุตเข้าขาดิจิทัลของไมโครคอนโทรลเลอร์ เพื่อนับจำนวนครั้งที่สัญญาณข้ามเกณฑ์ ซึ่งเป็นวิธีทำเซนเซอร์นับรอบหรือเซนเซอร์ตรวจระดับน้ำที่ใช้กันจริง</li>
+        <li>เปลี่ยน VR1 เป็นเซนเซอร์ความต้านทานแปรผัน จะได้สวิตช์อัตโนมัติที่ไม่ต้องใช้ซอฟต์แวร์เลย ประหยัดพลังงานกว่าการอ่าน ADC ตลอดเวลา</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+function mk(t,a,txt){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!==undefined)e.textContent=txt;return e;}
+let XP=0;
+function addXP(n,m){XP+=n;document.getElementById('xp').textContent=XP;toast(m||('+'+n+' คะแนน'));}
+let tT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),1900);}
+
+/* ---------- ธีม ---------- */
+document.getElementById('themebtn').onclick=()=>{
+  const h=document.documentElement;
+  const light=h.getAttribute('data-theme')==='light';
+  h.setAttribute('data-theme',light?'dark':'light');
+  document.getElementById('themebtn').textContent=light?'โหมดสว่าง':'โหมดมืด';
+  render();
+};
+
+/* ---------- แถบสีตัวต้านทาน ---------- */
+const BC=['#111827','#7c3f14','#dc2626','#ea580c','#eab308','#16a34a','#2563eb','#7e22ce','#9ca3af','#f8fafc'];
+function bandsOf(R){
+  if(!(R>0))return ['#888','#888','#888','#d4af37'];
+  let exp=Math.floor(Math.log10(R))-1;
+  let m=Math.round(R/Math.pow(10,exp));
+  if(m>=100){m=Math.round(m/10);exp++;}
+  const d1=Math.floor(m/10),d2=m%10;
+  return [BC[d1]||'#888',BC[d2]||'#888',BC[Math.max(0,Math.min(9,exp))]||'#888','#d4af37'];
+}
+function fmtR(R){return R>=1000?(R/1000)+' kΩ':R+' Ω';}
+/* ตัวต้านทานเสมือนจริง: cx,cy คือกึ่งกลาง, vert=true คือวางตั้ง */
+function resistorNode(cx,cy,value,label,vert,len,labLeft){
+  len=len||62;const bw=24;
+  const g=mk('g',{class:'rcomp'});
+  const half=len/2, hb=bw/2;
+  if(vert){
+    g.appendChild(mk('line',{x1:cx,y1:cy-half-16,x2:cx,y2:cy-half+3,class:'wire'}));
+    g.appendChild(mk('line',{x1:cx,y1:cy+half-3,x2:cx,y2:cy+half+16,class:'wire'}));
+    g.appendChild(mk('rect',{x:cx-hb,y:cy-half,width:bw,height:len,rx:9,fill:'#dcc39a',stroke:'#8d7550','stroke-width':1}));
+    g.appendChild(mk('rect',{x:cx-hb,y:cy-half,width:bw,height:len,rx:9,fill:'url(#rshine)',stroke:'none'}));
+    const bd=bandsOf(value);
+    [-0.30,-0.10,0.10,0.34].forEach((f,i)=>{
+      g.appendChild(mk('rect',{x:cx-hb,y:cy+f*len-3.2,width:bw,height:6.4,fill:bd[i]}));
+    });
+  }else{
+    g.appendChild(mk('line',{x1:cx-half-16,y1:cy,x2:cx-half+3,y2:cy,class:'wire'}));
+    g.appendChild(mk('line',{x1:cx+half-3,y1:cy,x2:cx+half+16,y2:cy,class:'wire'}));
+    g.appendChild(mk('rect',{x:cx-half,y:cy-hb,width:len,height:bw,rx:9,fill:'#dcc39a',stroke:'#8d7550','stroke-width':1}));
+    g.appendChild(mk('rect',{x:cx-half,y:cy-hb,width:len,height:bw,rx:9,fill:'url(#rshine)',stroke:'none'}));
+    const bd=bandsOf(value);
+    [-0.30,-0.10,0.10,0.34].forEach((f,i)=>{
+      g.appendChild(mk('rect',{x:cx+f*len-3.2,y:cy-hb,width:6.4,height:bw,fill:bd[i]}));
+    });
+  }
+  if(label){
+    const side=labLeft?-1:1;
+    const tx=vert?cx+22*side:cx, ty=vert?cy-4:cy-24;
+    const anc=vert?(labLeft?'end':'start'):'middle';
+    g.appendChild(mk('text',{x:tx,y:ty,class:'tag','text-anchor':anc},label));
+    g.appendChild(mk('text',{x:tx,y:vert?cy+12:cy+34,class:'lbl','text-anchor':anc},fmtR(value)));
+  }
+  return g;
+}
+/* LED 5 มม. เสมือนจริง วางแนวนอน แอโนดอยู่ขวา */
+function ledNode(cx,cy,scale,idPrefix){
+  scale=scale||1;
+  const g=mk('g',{transform:`translate(${cx} ${cy}) scale(${scale})`});
+  g.appendChild(mk('line',{x1:-30,y1:0,x2:-16,y2:0,class:'wire'}));
+  g.appendChild(mk('line',{x1:16,y1:0,x2:34,y2:0,class:'wire'}));
+  const body=mk('path',{d:'M-14,-16 L4,-16 A16,16 0 0 1 4,16 L-14,16 Z',id:idPrefix+'-body',
+    fill:'#5c1620',stroke:'#31121a','stroke-width':1.4});
+  g.appendChild(body);
+  g.appendChild(mk('rect',{x:-18,y:-19,width:6,height:38,rx:2,fill:'#7a2430',stroke:'#31121a','stroke-width':1,id:idPrefix+'-flange'}));
+  g.appendChild(mk('ellipse',{cx:-2,cy:-7,rx:7,ry:4,fill:'#ffffff',opacity:.22}));
+  const rays=mk('g',{id:idPrefix+'-rays',opacity:0});
+  [[-30,-1],[-24,-14],[-14,-24]].forEach(()=>{});
+  [[10,-30],[24,-22],[28,-6]].forEach(p=>{
+    rays.appendChild(mk('line',{x1:p[0]*0.55,y1:p[1]*0.55,x2:p[0],y2:p[1],stroke:'#ff5a4d','stroke-width':2.4,'stroke-linecap':'round'}));
+  });
+  g.appendChild(rays);
+  return g;
+}
+function setLed(prefix,on,bright){
+  const b=document.getElementById(prefix+'-body');
+  const f=document.getElementById(prefix+'-flange');
+  const r=document.getElementById(prefix+'-rays');
+  if(!b)return;
+  if(on){
+    const a=Math.min(1,Math.max(.3,bright||1));
+    b.setAttribute('fill','#ff3b30');
+    f.setAttribute('fill','#e0332a');
+    b.style.filter=`drop-shadow(0 0 ${6*a}px #ff3b30) drop-shadow(0 0 ${20*a}px rgba(255,59,48,.8))`;
+    r.setAttribute('opacity',a);
+  }else{
+    b.setAttribute('fill','#5c1620');f.setAttribute('fill','#7a2430');
+    b.style.filter='none';r.setAttribute('opacity',0);
+  }
+}
+
+/* ---------- สถานะวงจร ---------- */
+const S={vcc:9,R1:10000,VR:10000,R2:5000,R3:4700,R4:330,Vf:2.0,Vsat:0.2,pos:0};
+let knobMoves=0, labSeconds=0, labTimer=null;
+const vref=()=>S.vcc*S.R3/(S.R2+S.R3);
+const vin=()=>S.vcc*(S.pos*S.VR)/(S.R1+S.VR);
+const vinMax=()=>S.vcc*S.VR/(S.R1+S.VR);
+const iled=()=>Math.max(0,(S.vcc-S.Vf-S.Vsat)/S.R4);
+const kTrip=()=>vref()*(S.R1+S.VR)/(S.vcc*S.VR);
+
+/* ---------- แท็บ ---------- */
+let preDone=false, postDone=false;
+function gate(name){
+  if(name!=='pre'&&!NICK){toast('กรุณาระบุชื่อเล่นที่แท็บแรกก่อนเริ่มบทเรียน');return false;}
+  if(name!=='pre'&&name!=='theory'&&!preDone){toast('ทำแบบทดสอบก่อนเรียนให้เสร็จก่อน');return false;}
+  return true;
+}
+document.querySelectorAll('nav button').forEach(b=>{
+  b.onclick=()=>{
+    if(!gate(b.dataset.tab))return;
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('section.tab').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    document.getElementById('tab-'+b.dataset.tab).classList.add('on');
+    if(b.dataset.tab==='lab'){startLabTimer();}else{stopLabTimer();}
+    if(b.dataset.tab==='post')checkPostGate();
+    if(b.dataset.tab==='report')drawReport();
+  };
+});
+function lockNav(){
+  document.querySelectorAll('nav button').forEach(b=>{
+    const openTab = b.dataset.tab==='pre' || (b.dataset.tab==='theory'&&NICK);
+    b.classList.toggle('lock', !openTab && !preDone);
+  });
+}
+function startLabTimer(){if(labTimer)return;labTimer=setInterval(()=>{labSeconds++;},1000);}
+function stopLabTimer(){if(labTimer){clearInterval(labTimer);labTimer=null;}}
+
+/* ---------- ลงทะเบียนชื่อเล่น ---------- */
+let NICK='', startedAt=null;
+const nickIn=document.getElementById('nick');
+function goBrief(){
+  const v=(nickIn.value||'').trim().replace(/\s+/g,' ');
+  if(v.length<2){document.getElementById('nickmsg').textContent='กรุณาพิมพ์ชื่อเล่นอย่างน้อย 2 ตัวอักษรก่อนเริ่มบทเรียน';nickIn.focus();return;}
+  NICK=v; startedAt=new Date();
+  document.getElementById('whoname').textContent=NICK;
+  document.getElementById('whobox').style.display='block';
+  lockNav();
+  document.getElementById('idcard').style.display='none';
+  document.getElementById('briefcard').style.display='block';
+  toast('สวัสดี '+NICK+' ยินดีต้อนรับเข้าสู่บทเรียน');
+}
+document.getElementById('nickgo').onclick=goBrief;
+nickIn.addEventListener('keydown',e=>{if(e.key==='Enter')goBrief();});
+document.getElementById('briefgo').onclick=()=>{
+  document.getElementById('briefcard').style.display='none';
+  document.getElementById('precard').style.display='block';
+  const pc=document.getElementById('precard');
+  if(pc.scrollIntoView)pc.scrollIntoView({behavior:'smooth',block:'start'});
+};
+
+/* ---------- ผังวงจรเปรียบเทียบแบบโต้ตอบได้ ----------
+   ใช้ร่วมกันทั้งการ์ดสรุปวงจร (brief) และการ์ดแบบทดสอบก่อนเรียน (pre)
+   คุณสมบัติ: ตัวต้านทานอ่านแถบสีได้จริง (ใช้ resistorNode เดียวกับผังวงจรจริงในห้องทดลอง),
+   ปรับตำแหน่ง VR1 ได้ด้วยแถบเลื่อน, สลับได้ว่าจะให้สัญญาณใดเข้าขา + หรือขา − ของออปแอมป์,
+   แสดงค่าแรงดันสดที่ขา + ขา − และขาออก พร้อม LED1 ที่ติดจริงตามผลการเปรียบเทียบ */
+function makeCompSim(prefix){
+  const svg=document.getElementById(prefix+'-svg');
+  if(!svg)return null;
+  const st={k:0,swap:false};
+  const slider=document.getElementById(prefix+'-slider');
+  const swapBtn=document.getElementById(prefix+'-swap');
+  const resetBtn=document.getElementById(prefix+'-reset');
+  const ro=document.getElementById(prefix+'-ro');
+
+  function draw(){
+    svg.innerHTML='';
+    const T=(x,y,t,o)=>{o=o||{};const e=mk('text',Object.assign({x:x,y:y,
+      style:'font-family:var(--mono);font-size:'+(o.s||11)+'px;fill:'+(o.f||'var(--ink-dim)')+';'+
+      (o.w?'font-weight:600;':'')},o.a?{'text-anchor':o.a}:{}),t);svg.appendChild(e);return e;};
+    const BOX=(x,y,w,h,c)=>svg.appendChild(mk('rect',{x:x,y:y,width:w,height:h,rx:11,
+      fill:'var(--panel)',stroke:c,'stroke-width':1.3}));
+    svg.appendChild(mk('defs',{},''));
+    const hd=(id,c)=>{
+      const m=mk('marker',{id:id,markerWidth:8,markerHeight:8,refX:6,refY:3,orient:'auto'});
+      m.appendChild(mk('path',{d:'M0,0 L6,3 L0,6 Z',fill:c}));
+      svg.firstChild.appendChild(m);
+    };
+    hd(prefix+'-ah-r','#7fb9cd'); hd(prefix+'-ah-s','#f2a541'); hd(prefix+'-ah-o','#4ade80');
+
+    const vref=S.vcc*S.R3/(S.R2+S.R3);
+    const vwip=S.vcc*(st.k*S.VR)/(S.R1+S.VR);
+    const pinP=st.swap?vwip:vref, pinN=st.swap?vref:vwip;
+    const vd=pinP-pinN, on=vd<0;
+    const vout=on?S.Vsat:S.vcc;
+    const plusColor=st.swap?'var(--signal)':'var(--ref)';
+    const minusColor=st.swap?'var(--ref)':'var(--signal)';
+
+    /* กล่องตัวแบ่งแรงดัน R2–R3 · อ่านแถบสีได้จริง */
+    BOX(6,12,172,72,'rgba(127,185,205,.5)');
+    T(92,27,'ตัวแบ่งแรงดัน R2–R3',{a:'middle',f:'var(--ink)',w:1,s:11.5});
+    svg.appendChild(resistorNode(46,52,S.R2,'R2',false,34));
+    svg.appendChild(resistorNode(140,52,S.R3,'R3',false,34));
+    T(92,76,'V_ref = '+vref.toFixed(3)+' V',{a:'middle',f:'var(--ref)',w:1,s:11});
+
+    /* กล่อง R1 + ลูกบิด VR1 · ปรับได้ด้วยแถบเลื่อนด้านล่างผัง */
+    BOX(6,96,172,72,'rgba(242,165,65,.5)');
+    T(92,111,'R1 + ลูกบิด VR1',{a:'middle',f:'var(--ink)',w:1,s:11.5});
+    svg.appendChild(resistorNode(40,136,S.R1,'R1',false,30));
+    const potX=94,potY=126,potW=60,potH=20;
+    svg.appendChild(mk('line',{x1:potX-14,y1:potY+potH/2,x2:potX,y2:potY+potH/2,class:'wire'}));
+    svg.appendChild(mk('rect',{x:potX,y:potY,width:potW,height:potH,rx:5,
+      fill:'#1c2b35',stroke:'#4f6b7a','stroke-width':1.4}));
+    for(let i=1;i<8;i++){svg.appendChild(mk('line',{x1:potX+i*potW/8,y1:potY+3,x2:potX+i*potW/8,y2:potY+potH-3,
+      stroke:'#3a4a55','stroke-width':1}));}
+    const wx=potX+st.k*potW;
+    svg.appendChild(mk('polygon',{points:(wx-4)+','+(potY-10)+' '+(wx+4)+','+(potY-10)+' '+wx+','+(potY-3),
+      fill:'var(--signal)'}));
+    svg.appendChild(mk('path',{d:'M'+wx+','+(potY-10)+' L'+wx+','+(potY-18)+' H178 V132',
+      stroke:'var(--signal)','stroke-width':2,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
+    T(126,160,'VR1 · '+(st.k*100).toFixed(0)+'% · '+vwip.toFixed(3)+' V',{a:'middle',f:'var(--signal)',w:1,s:11});
+
+    /* สายเข้าขาบวก/ลบ ของออปแอมป์ · เส้นทางสลับตามปุ่มสลับขั้ว */
+    const startX=178;
+    const refPath = st.swap? ('M'+startX+',48 H222 V130 H246') : ('M'+startX+',48 H206 V80 H246');
+    const vrPath  = st.swap? ('M'+startX+',132 H206 V80 H246') : ('M'+startX+',132 H222 V130 H246');
+    svg.appendChild(mk('path',{d:refPath,stroke:'var(--ref)','stroke-width':2,fill:'none',
+      'marker-end':'url(#'+prefix+'-ah-r)','stroke-linejoin':'round'}));
+    svg.appendChild(mk('path',{d:vrPath,stroke:'var(--signal)','stroke-width':2,fill:'none',
+      'marker-end':'url(#'+prefix+'-ah-s)','stroke-linejoin':'round'}));
+
+    /* คอมพาราเตอร์ */
+    svg.appendChild(mk('polygon',{points:'252,56 252,154 330,105',class:'comp'}));
+    T(262,84,'+',{f:plusColor,w:1,s:14});
+    T(262,130,'−',{f:minusColor,w:1,s:14});
+    T(278,112,'IC1A',{f:'var(--ink)',s:11});
+    T(291,178,'เทียบสองขา ตัดสินทันที',{a:'middle',f:'var(--ink-faint)',s:10});
+    T(250,68,pinP.toFixed(3)+' V',{a:'end',f:plusColor,w:1,s:11.5});
+    T(250,144,pinN.toFixed(3)+' V',{a:'end',f:minusColor,w:1,s:11.5});
+
+    /* เอาต์พุตไปยัง LED1 */
+    svg.appendChild(mk('path',{d:'M330,105 H382',stroke:'var(--ok)','stroke-width':2,fill:'none',
+      'marker-end':'url(#'+prefix+'-ah-o)'}));
+    T(356,94,'OUT',{a:'middle',f:'var(--ok)',s:11});
+    BOX(390,76,72,58,'rgba(74,222,128,.42)');
+    const lamp=mk('g',{transform:'translate(412 108) scale(0.6)',id:prefix+'-lamp'});
+    lamp.appendChild(ledNode(0,0,1,prefix+'-led'));
+    svg.appendChild(lamp);
+    T(426,68,vout.toFixed(2)+' V · '+(on?'LOW':'HIGH'),
+      {a:'middle',f:on?'var(--signal)':'var(--ink-dim)',w:1,s:10.5});
+    T(426,132,'LED1',{a:'middle',f:'var(--ink)',s:11,w:1});
+    setLed(prefix+'-led',on,1);
+
+    if(ro){
+      ro.innerHTML=
+        '<div class="row"><span>ขา + (non-inverting) ต่อกับ</span><span style="color:'+plusColor+'">'+
+          (st.swap?'ไวเปอร์ VR1':'ตัวแบ่ง R2–R3')+' · '+pinP.toFixed(3)+' V</span></div>'+
+        '<div class="row"><span>ขา − (inverting) ต่อกับ</span><span style="color:'+minusColor+'">'+
+          (st.swap?'ตัวแบ่ง R2–R3':'ไวเปอร์ VR1')+' · '+pinN.toFixed(3)+' V</span></div>'+
+        '<div class="row"><span>V_d = V+ − V−</span><span>'+(vd>=0?'+':'−')+Math.abs(vd).toFixed(3)+' V</span></div>'+
+        '<div class="row"><span>V_out ที่ขาออก</span><span>'+vout.toFixed(2)+' V · '+(on?'LOW':'HIGH')+'</span></div>'+
+        '<div class="row"><span>LED1</span><span style="color:'+(on?'var(--signal)':'var(--ink-faint)')+'">'+
+          (on?'ติดสว่าง':'ดับ')+'</span></div>';
+    }
+  }
+
+  if(slider)slider.addEventListener('input',()=>{st.k=(+slider.value)/1000;draw();});
+  if(swapBtn)swapBtn.addEventListener('click',()=>{
+    st.swap=!st.swap;draw();
+    toast(st.swap?'สลับแล้ว: VR1 → ขา + , ตัวแบ่งอ้างอิง → ขา −':'คืนค่าเดิม: ตัวแบ่งอ้างอิง → ขา + , VR1 → ขา −');
+  });
+  if(resetBtn)resetBtn.addEventListener('click',()=>{st.k=0;if(slider)slider.value=0;draw();});
+
+  draw();
+  return {draw:draw,state:st};
+}
+const briefSim=makeCompSim('brief');
+const preSim=makeCompSim('pre');
+
+/* ---------- แบบทดสอบ ---------- */
+
+/* ===================================================================
+   คลังข้อสอบและเอนจินสุ่มแบบไม่ซ้ำ (Stratified Non-repeating Item Engine)
+   -------------------------------------------------------------------
+   คลังถูกจัดกลุ่มตามผลลัพธ์การเรียนรู้ (CLO) กลุ่มละหลายข้อที่วัดสมรรถนะเดียวกัน
+   การสุ่มเป็นแบบแบ่งชั้น คือทุก CLO จะถูกสุ่มออกมา 2 ข้อจากการสับลำดับชุดเดียวกัน
+   ข้อแรกใช้เป็นข้อสอบก่อนเรียน ข้อที่สองใช้เป็นข้อสอบหลังเรียน จึงรับประกันว่า
+     1. ไม่มีข้อใดซ้ำกันระหว่างก่อนเรียนกับหลังเรียน (เพราะมาจากการเรียงสับเปลี่ยนเดียวกัน)
+     2. ทั้งสองชุดวัด CLO ครบเท่ากัน ค่า normalized gain จึงยังเปรียบเทียบกันได้อย่างเป็นธรรม
+     3. ผู้เรียนคนละคนหรือคนละรอบได้คนละชุด จึงลดการลอกคำตอบกันในชั้นเรียน
+   ตัวเลือกของทุกข้อถูกสับตำแหน่งใหม่ทุกครั้ง เฉลยจึงไม่อยู่ตำแหน่งเดิม
+   =================================================================== */
+const BANK=[
+ {code:'A',clo:'คำนวณแรงดันอ้างอิงจากตัวแบ่งแรงดัน',
+  desc:'คำนวณแรงดันที่ขาอ้างอิงของคอมพาราเตอร์จากค่าตัวต้านทานและแรงดันแหล่งจ่าย รวมถึงคาดการณ์ผลเมื่อค่าเปลี่ยนไป',
+  items:[
+  {q:'จากวงจรมาตรฐาน VCC = 9 V โดย R2 = 5 kΩ ต่อจากรางบวกลงมา และ R3 = 4.7 kΩ ต่อลงกราวด์ แรงดันที่ขาบวก V+ ซึ่งเป็นเกณฑ์อ้างอิง มีค่าเท่าใด',
+   o:['4.361 V','4.500 V','1.914 V','5.000 V'],a:0,
+   e:'เป็นตัวแบ่งแรงดันธรรมดา V+ = 9 × 4.7/(5+4.7) = 4.361 V จุดสำคัญคือหารด้วยผลรวมของตัวต้านทานเสมอ ไม่ใช่หารด้วยตัวใดตัวหนึ่ง'},
+  {q:'ถ้าเปลี่ยนเป็น R2 = 6.8 kΩ และ R3 = 3.3 kΩ บน VCC = 9 V แรงดันที่ขาบวก V+ จะมีค่าเท่าใด',
+   o:['2.941 V','6.059 V','4.361 V','3.300 V'],a:0,
+   e:'V+ = 9 × 3.3/(6.8+3.3) = 9 × 3.3/10.1 = 2.941 V สังเกตว่าเมื่อ R3 เล็กลงเมื่อเทียบกับ R2 เกณฑ์อ้างอิงจะลดลง จุดตัดจึงเลื่อนมาอยู่กลางย่านการหมุนมากขึ้น'},
+  {q:'ต้องการออกแบบให้เกณฑ์อ้างอิง V+ เท่ากับ 3.000 V พอดี บน VCC = 9 V โดยกำหนด R2 = 10 kΩ ไว้แล้ว ต้องเลือก R3 เท่าใด',
+   o:['5.0 kΩ','3.3 kΩ','4.7 kΩ','6.8 kΩ'],a:0,
+   e:'จาก 9 × R3/(10k+R3) = 3 จะได้ 3(10k+R3) = 9R3 → 30k = 6R3 → R3 = 5 kΩ วิธีคิดเร็วคือ V+ ต้องเป็นหนึ่งในสามของ VCC ดังนั้น R3 ต้องเป็นครึ่งหนึ่งของ R2'},
+  {q:'ใช้วงจรมาตรฐาน R2 = 5 kΩ และ R3 = 4.7 kΩ แต่แบตเตอรี่อ่อนลงจนแรงดันแหล่งจ่ายเหลือ 7.5 V เกณฑ์อ้างอิง V+ จะเปลี่ยนเป็นเท่าใด',
+   o:['3.634 V','4.361 V','2.907 V','คงเดิมเพราะเป็นอัตราส่วน'],a:0,
+   e:'V+ = 7.5 × 4.7/9.7 = 3.634 V อัตราส่วนคงที่ก็จริง แต่ตัวคูณคือ VCC จึงลดตามไปด้วย นี่คือเหตุผลที่วงจรตรวจจับระดับซึ่งอ้างอิงกับแหล่งจ่ายเดียวกันจะเลื่อนจุดตัดเมื่อแบตเตอรี่อ่อน หากต้องการเสถียรต้องใช้แหล่งอ้างอิงชนิดซีเนอร์หรือไอซีอ้างอิง'},
+  {q:'วงจรมาตรฐาน VCC = 9 V, R1 = 10 kΩ อนุกรมกับ VR1 = 10 kΩ และ V+ = 4.361 V ตำแหน่งหมุนของ VR1 ที่ทำให้เอาต์พุตพลิกสถานะพอดีอยู่ที่ประมาณกี่เปอร์เซ็นต์ของย่านหมุน',
+   o:['96.9 %','48.5 %','87.2 %','50.0 %'],a:0,
+   e:'แรงดันจากไวเปอร์สูงสุดคือ 9 × 10/(10+10) = 4.5 V จึงต้องหมุนถึงสัดส่วน 4.361/4.5 = 0.969 หรือ 96.9 % ของย่าน แปลว่าจุดตัดอยู่ชิดปลายสเกลมาก การออกแบบที่ดีควรเลื่อนจุดตัดมากลางย่านเพื่อให้ปรับละเอียดได้'}
+ ]},
+ {code:'B',clo:'วิเคราะห์ตรรกะการเปรียบเทียบและเอาต์พุตแบบโอเพนคอลเลกเตอร์',
+  desc:'ระบุได้ว่าเอาต์พุตพลิกสถานะเมื่อใด และอธิบายเหตุผลที่หลอดติดหรือดับจากทิศทางของกระแส',
+  items:[
+  {q:'วงจรป้อนแรงดันอ้างอิงเข้าขาบวก (V+) และป้อนแรงดันจากไวเปอร์ VR1 เข้าขาลบ (V−) ตัวไอซีเป็นชนิดโอเพนคอลเลกเตอร์ และ LED1 ต่อกลับขึ้นรางบวก หลอดจะติดเมื่อใด',
+   o:['เมื่อ V− ต่ำกว่า V+','เมื่อ V− สูงกว่า V+','เมื่อ V− เท่ากับ V+ เท่านั้น','ติดตลอดเวลาไม่ว่าอย่างไร'],a:1,
+   e:'เมื่อ V− สูงกว่า V+ ผลต่าง V_d = V+ − V− จะเป็นลบ เอาต์พุตจึงอิ่มตัวด้าน LOW เอาต์พุตแบบโอเพนคอลเลกเตอร์ดูดกระแสได้ กระแสจึงไหลจากรางบวกผ่าน LED ลงมา หลอดจึงติด'},
+  {q:'ถ้าสลับขาอินพุต คือย้ายสัญญาณจากไวเปอร์ VR1 ไปเข้าขาบวก และย้ายเกณฑ์อ้างอิงไปเข้าขาลบ โดยยังคงต่อ LED1 กลับขึ้นรางบวกเหมือนเดิม หลอดจะติดเมื่อใด',
+   o:['เมื่อสัญญาณจาก VR1 สูงกว่าเกณฑ์อ้างอิง','เมื่อสัญญาณจาก VR1 ต่ำกว่าเกณฑ์อ้างอิง','ไม่ติดเลย','ติดตลอดเวลา'],a:1,
+   e:'เอาต์พุตเป็น LOW เมื่อขาบวกต่ำกว่าขาลบเสมอ เมื่อสลับขากันแล้วเงื่อนไขจึงกลับด้าน คือหลอดติดตอนสัญญาณจาก VR1 ต่ำกว่าเกณฑ์ วงจรจึงกลายเป็นตัวเตือนระดับต่ำแทน'},
+  {q:'ขณะที่ LED1 ดับสนิท สภาพที่ขาเอาต์พุตของคอมพาราเตอร์เป็นอย่างไร',
+   o:['เอาต์พุตอยู่สถานะ HIGH เพราะทรานซิสเตอร์ภายในหยุดนำ จึงไม่มีเส้นทางให้กระแสไหลลงกราวด์','เอาต์พุตอยู่สถานะ LOW แต่กระแสน้อยเกินไป','เอาต์พุตลอยไม่มีศักย์ใด ๆ ทั้งสิ้น','เอาต์พุตจ่ายกระแสออกมาแต่ทิศทางกลับกัน'],a:0,
+   e:'เอาต์พุตโอเพนคอลเลกเตอร์เปรียบเสมือนสวิตช์ลงกราวด์ เมื่ออยู่สถานะ HIGH คือสวิตช์เปิดวงจร ปลายล่างของ LED จึงถูกดึงขึ้นไปใกล้รางบวกผ่านตัว LED เอง แรงดันคร่อม LED จึงเกือบศูนย์ หลอดจึงดับ'},
+  {q:'เหตุใดเอาต์พุตแบบโอเพนคอลเลกเตอร์จึงต้องมีโหลดหรือตัวต้านทานพูลอัปต่อขึ้นรางบวกเสมอ',
+   o:['เพื่อจำกัดกระแสไม่ให้ไอซีพัง','เพราะขาออกทำได้เพียงดูดกระแสลงกราวด์ ไม่สามารถจ่ายกระแสออกมาเองได้','เพื่อกรองสัญญาณรบกวนที่ขาออก','เพื่อเพิ่มอัตราขยายของวงจร'],a:1,
+   e:'ภายในมีเพียงทรานซิสเตอร์ตัวล่างที่ดึงขาออกลงกราวด์ ไม่มีตัวบนคอยดันขึ้น หากไม่มีโหลดหรือพูลอัป ขาออกจะลอยและอ่านค่าสถานะ HIGH ไม่ได้เลย ในวงจรนี้ตัว LED กับ R4 ทำหน้าที่เป็นโหลดนั้นอยู่แล้ว'},
+  {q:'ถ้าปรับ VR1 จนแรงดันสองขาเท่ากันพอดี คือ V_d = 0 V พฤติกรรมที่ควรคาดหวังคือข้อใด',
+   o:['เอาต์พุตหยุดนิ่งที่กึ่งกลางระหว่าง HIGH กับ LOW','เอาต์พุตไม่แน่นอนและอาจแกว่งไปมาตามสัญญาณรบกวน จึงควรเพิ่มฮิสเทอรีซิส','LED สว่างครึ่งหนึ่งของปกติ','ไอซีจะเสียหายจากการทำงานที่จุดสมดุล'],a:1,
+   e:'ที่จุดตัดพอดี สัญญาณรบกวนระดับมิลลิโวลต์ก็เพียงพอจะพลิกสถานะกลับไปกลับมา เกิดอาการกระพริบถี่ ทางแก้มาตรฐานคือป้อนกลับบวกเล็กน้อยเพื่อสร้างฮิสเทอรีซิส ซึ่งก็คือวงจรชมิตต์ทริกเกอร์'}
+ ]},
+ {code:'C',clo:'ออกแบบการจำกัดกระแสและกำลังสูญเสียของ LED',
+  desc:'คำนวณกระแส ค่าตัวต้านทานจำกัดกระแส และกำลังสูญเสีย เพื่อขับ LED ได้อย่างปลอดภัย',
+  items:[
+  {q:'ตัวต้านทานจำกัดกระแส R4 = 330 Ω ต่ออนุกรมกับ LED1 ที่ V_F = 2.0 V บนระบบ 9 V ขณะเอาต์พุตเป็น LOW โดยมีแรงดันตกคร่อมขาออก 0.2 V กระแสที่ไหลผ่าน LED มีค่าประมาณเท่าใด',
+   o:['27.3 mA','20.6 mA','13.6 mA','6.1 mA'],a:1,
+   e:'I = (9 − 2.0 − 0.2)/330 = 6.8/330 ≈ 20.6 mA ต้องหักทั้ง V_F และ V_sat ออกจากแรงดันแหล่งจ่ายก่อนเสมอ'},
+  {q:'บนระบบ 5 V ต้องการขับ LED ที่ V_F = 1.8 V ผ่านตัวต้านทาน 470 Ω โดยแรงดันตกคร่อมเอาต์พุต 0.2 V กระแสจะมีค่าประมาณเท่าใด',
+   o:['10.6 mA','6.4 mA','8.9 mA','3.8 mA'],a:1,
+   e:'I = (5 − 1.8 − 0.2)/470 = 3.0/470 ≈ 6.4 mA กระแสระดับนี้ยังพอเห็นแสงได้กับ LED ประสิทธิภาพสูง แต่ถ้าต้องการสว่างเท่าเดิมต้องลดค่าตัวต้านทานลง'},
+  {q:'ต้องการจำกัดกระแส LED ไว้ที่ 10 mA พอดี บนระบบ 9 V ที่มี V_F = 2.0 V และ V_sat = 0.2 V ควรเลือกตัวต้านทานค่าใด',
+   o:['680 Ω','330 Ω','470 Ω','1.2 kΩ'],a:0,
+   e:'R = (9 − 2.0 − 0.2)/0.010 = 6.8/0.010 = 680 Ω ซึ่งเป็นค่ามาตรฐานในอนุกรม E12 พอดี การลดกระแสลงครึ่งหนึ่งทำให้ความสว่างลดลงแต่ยืดอายุ LED และลดการกินไฟของทั้งระบบ'},
+  {q:'ขณะ LED ติดด้วยกระแส 20.6 mA ผ่าน R4 = 330 Ω กำลังสูญเสียที่ตัวต้านทานและขนาดวัตต์ที่เหมาะสมคือข้อใด',
+   o:['ประมาณ 0.14 W จึงใช้ตัวต้านทานขนาด 1/4 W ได้อย่างปลอดภัย','ประมาณ 0.14 W แต่ต้องใช้ขนาด 1 W เท่านั้น','ประมาณ 0.43 W จึงต้องใช้ขนาด 1/2 W','ประมาณ 0.02 W ใช้ขนาด 1/8 W ได้สบาย'],a:0,
+   e:'P = I²R = (0.0206)² × 330 ≈ 0.140 W หรือคิดจาก P = V×I = 6.8 × 0.0206 ≈ 0.140 W ก็ได้ค่าเดียวกัน ตัวต้านทาน 1/4 W รับได้ 0.25 W จึงมีเผื่อประมาณ 1.8 เท่า ถือว่าเพียงพอสำหรับการใช้งานต่อเนื่อง'},
+  {q:'ถ้าลืมใส่ R4 แล้วต่อ LED1 จากรางบวกลงขาเอาต์พุตโดยตรง ผลที่เกิดขึ้นคือข้อใด',
+   o:['LED สว่างขึ้นเล็กน้อยแต่ยังปลอดภัย','กระแสถูกจำกัดด้วยความต้านทานภายในเท่านั้น จึงพุ่งสูงมากจน LED และขาเอาต์พุตเสียหาย','LED ไม่ติดเพราะไม่มีตัวต้านทานไบแอส','เอาต์พุตจะเปลี่ยนเป็นสถานะ HIGH โดยอัตโนมัติ'],a:1,
+   e:'LED มีลักษณะสมบัติชันมาก แรงดันส่วนเกินเพียงเศษส่วนของโวลต์ทำให้กระแสพุ่งขึ้นหลายเท่า เมื่อไม่มีตัวจำกัดกระแส กระแสจะถูกจำกัดด้วยความต้านทานเชิงอนุกรมภายในและความสามารถดูดกระแสของไอซีเท่านั้น ซึ่งเกินพิกัดทั้งคู่'}
+ ]}
+];
+
+function shuf(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function pickItem(g,k){
+  const it=g.items[k];
+  const idx=shuf(it.o.map((_,i)=>i));
+  return {q:it.q,o:idx.map(i=>it.o[i]),a:idx.indexOf(it.a),e:it.e,
+          clo:g.clo,code:g.code,id:g.code+(k+1)};
+}
+let PRE=[],POST=[],preAns=[],postAns=[],SETCODE='';
+function buildSets(){
+  PRE=[];POST=[];
+  shuf(BANK.map((_,i)=>i)).forEach(gi=>{
+    const g=BANK[gi];
+    const p=shuf(g.items.map((_,i)=>i));   /* p[0] กับ p[1] ต่างกันเสมอ จึงไม่มีทางได้ข้อซ้ำ */
+    PRE.push(pickItem(g,p[0]));
+    POST.push(pickItem(g,p[1]));
+  });
+  preAns=PRE.map(()=>null); postAns=POST.map(()=>null);
+  SETCODE=PRE.map(q=>q.id).join('-')+' / '+POST.map(q=>q.id).join('-');
+  document.querySelectorAll('.setidout').forEach(el=>{
+    el.innerHTML='รหัสชุดข้อสอบรอบนี้ <b>'+SETCODE+'</b> · ก่อนเรียนและหลังเรียนไม่ใช้ข้อเดียวกัน';
+  });
+}
+function renderCLO(){
+  const el=document.getElementById('clolist'); if(!el)return;
+  el.innerHTML=BANK.map((g,i)=>
+    '<li><span class="clotag">CLO '+(i+1)+' · รหัส '+g.code+'</span><b>'+g.clo+'</b>'+g.desc+
+    ' <span class="muted">(คลังข้อสอบ '+g.items.length+' ข้อ)</span></li>').join('');
+}
+function drawTest(list,ans,boxId,locked){
+  const box=document.getElementById(boxId); if(!box)return;
+  box.innerHTML=list.map((q,i)=>{
+    const opts=q.o.map((o,j)=>{
+      let c='opt';
+      if(locked){ if(j===q.a)c+=' right'; else if(j===ans[i])c+=' wrong'; }
+      else if(ans[i]===j)c+=' pick';
+      return '<button class="'+c+'" data-q="'+i+'" data-o="'+j+'" '+(locked?'disabled':'')+'>'+o+'</button>';
+    }).join('');
+    const ex=locked?'<div class="explain"><b>'+(ans[i]===q.a?'ตอบถูก':'เฉลย')+'</b> — '+q.e+'</div>':'';
+    return '<div class="qcard"><div class="qhead">ข้อ '+(i+1)+' / '+list.length+
+           ' · วัดผลลัพธ์การเรียนรู้ '+q.clo+' · รหัสข้อ '+q.id+'</div>'+
+           '<div class="qtext">'+q.q+'</div><div class="opts">'+opts+'</div>'+ex+'</div>';
+  }).join('');
+  if(!locked){
+    box.querySelectorAll('.opt').forEach(b=>{
+      b.onclick=()=>{ans[+b.dataset.q]=+b.dataset.o;drawTest(list,ans,boxId,false);};
+    });
+  }
+}
+/* ตารางสรุปผลลัพธ์การเรียนรู้รายข้อ จับคู่ก่อนและหลังเรียนด้วยรหัส CLO เดียวกัน */
+function cloTable(){
+  const rows=BANK.map(g=>{
+    const i=PRE.findIndex(q=>q.code===g.code), j=POST.findIndex(q=>q.code===g.code);
+    if(i<0||j<0)return '';
+    const a=preAns[i]===PRE[i].a, b=postAns[j]===POST[j].a;
+    const st=(a&&b)?['keep','ผ่านทั้งก่อนและหลัง']:((!a&&b)?['up','พัฒนาขึ้นหลังเรียน']:
+             ((a&&!b)?['down','พลาดในรอบหลัง ควรทบทวน']:['miss','ยังไม่ผ่าน ต้องทบทวนซ้ำ']));
+    return '<tr><td><b>'+g.clo+'</b><div class="muted" style="font-size:12.5px;">'+g.desc+'</div>'+
+           '<div class="clotag" style="margin-top:4px;">ข้อก่อนเรียน '+PRE[i].id+' · ข้อหลังเรียน '+POST[j].id+'</div></td>'+
+           '<td class="mk '+(a?'y':'n')+'">'+(a?'✓':'✗')+'</td>'+
+           '<td class="mk '+(b?'y':'n')+'">'+(b?'✓':'✗')+'</td>'+
+           '<td><span class="clost '+st[0]+'">'+st[1]+'</span></td></tr>';
+  }).join('');
+  const passed=BANK.filter(g=>{
+    const j=POST.findIndex(q=>q.code===g.code);
+    return j>=0&&postAns[j]===POST[j].a;
+  }).length;
+  return '<h3>ผลลัพธ์การเรียนรู้รายข้อ (Course Learning Outcomes)</h3>'+
+    '<p class="muted">แต่ละ CLO ถูกวัดด้วยข้อสอบคนละข้อในรอบก่อนและหลังเรียน โจทย์จึงไม่ซ้ำ '+
+    'แต่ยังวัดสมรรถนะเดียวกัน ผลด้านล่างจึงบอกได้ว่าผู้เรียนบรรลุผลลัพธ์ใดแล้วบ้าง</p>'+
+    '<table class="clot"><tr><th>ผลลัพธ์การเรียนรู้</th><th style="text-align:center;">ก่อน</th>'+
+    '<th style="text-align:center;">หลัง</th><th>สรุป</th></tr>'+rows+'</table>'+
+    '<div class="setid" style="margin-top:10px;">รหัสชุดข้อสอบรอบนี้ <b>'+SETCODE+'</b> · ก่อนเรียนและหลังเรียนไม่ใช้ข้อเดียวกัน</div>'+
+    '<div class="note" style="margin-top:10px;">บรรลุผลลัพธ์การเรียนรู้หลังเรียน <b>'+passed+' จาก '+BANK.length+' ข้อ</b> '+
+    (passed===BANK.length?'ครบทุกผลลัพธ์ตามที่บทเรียนกำหนด'
+      :'ผลลัพธ์ที่ยังไม่ผ่านให้กลับไปทบทวนแท็บหลักการและห้องทดลองในหัวข้อที่เกี่ยวข้อง แล้วกดสุ่มชุดใหม่เพื่อประเมินอีกครั้ง')+'</div>';
+}
+
+buildSets();
+renderCLO();
+drawTest(PRE,preAns,'prebox',false);
+document.getElementById('presubmit').onclick=()=>{
+  if(preAns.some(a=>a===null)){toast('ยังตอบไม่ครบ');return;}
+  preDone=true;
+  drawTest(PRE,preAns,'prebox',false);
+  document.getElementById('presubmit').disabled=true;
+  document.getElementById('premsg').textContent=
+    'บันทึกคำตอบแล้ว ระบบยังไม่เฉลยเพื่อไม่ให้กระทบผลวัดหลังเรียน เชิญไปที่แท็บห้องทดลองได้เลย';
+  document.getElementById('lab-lock').style.display='none';
+  document.getElementById('lab-body').style.display='block';
+  lockNav();
+  addXP(10,'เริ่มบทเรียนแล้ว');
+};
+const psBtn=document.getElementById('preshuffle');
+if(psBtn)psBtn.onclick=()=>{
+  if(preDone){toast('ส่งคำตอบก่อนเรียนไปแล้ว จึงสุ่มชุดใหม่ไม่ได้ในรอบนี้');return;}
+  buildSets();
+  drawTest(PRE,preAns,'prebox',false);
+  drawTest(POST,postAns,'postbox',false);
+  toast('สุ่มชุดข้อสอบใหม่แล้ว · '+SETCODE);
+};
+
+drawTest(POST,postAns,'postbox',false);
+function checkPostGate(){
+  const ok=knobMoves>=15;
+  document.getElementById('post-lock').style.display=ok?'none':'block';
+  document.getElementById('post-body').style.display=ok?'block':'none';
+  if(!ok)document.getElementById('post-lock').textContent=
+    'ลองปรับ VR1 ในห้องทดลองอีกสักหน่อยก่อน (ปรับแล้ว '+knobMoves+' จาก 15 ครั้ง)';
+}
+document.getElementById('postsubmit').onclick=()=>{
+  if(postAns.some(a=>a===null)){toast('ยังตอบไม่ครบ');return;}
+  postDone=true;
+  drawTest(POST,postAns,'postbox',true);
+  drawTest(PRE,preAns,'prebox',true);
+  document.getElementById('postsubmit').disabled=true;
+  document.getElementById('postmsg').textContent='ส่งคำตอบแล้ว ดูผลสรุปได้ที่แท็บผลการเรียนรู้';
+  const sc=postAns.filter((a,i)=>a===POST[i].a).length;
+  addXP(sc*20,'ทำแบบทดสอบหลังเรียนเสร็จ');
+  drawReport();
+};
+/* รหัสยืนยันเฉพาะตัว คำนวณจากชื่อเล่นและร่องรอยการทำงานจริงของผู้เรียน
+   ผู้เรียนคนละคนหรือคนละรอบการทดลองจะได้รหัสไม่ซ้ำกัน จึงตรวจสอบการคัดลอกผลของเพื่อนได้ */
+function fingerprint(pre,post){
+  const seed=[NICK,SETCODE,preAns.join(''),postAns.join(''),pre,post,knobMoves,labSeconds,wdone.length,XP,
+              startedAt?startedAt.getTime():0].join('|');
+  let h1=0x811c9dc5,h2=0x01000193;
+  for(let i=0;i<seed.length;i++){
+    const c=seed.charCodeAt(i);
+    h1=((h1^c)*16777619)>>>0;
+    h2=((h2+c*(i+7))^(h2<<5))>>>0;
+  }
+  const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let out='';let v=h1;
+  for(let i=0;i<5;i++){out+=A[v%32];v=Math.floor(v/32)||h2>>>(i*3);}
+  let out2='';v=h2;
+  for(let i=0;i<4;i++){out2+=A[v%32];v=Math.floor(v/32)||h1>>>(i*3);}
+  return out+'-'+out2;
+}
+/* ข้อความให้กำลังใจ เลือกตามรูปแบบคะแนนก่อนและหลังเรียน */
+function praiseFor(pre,post,n,g){
+  if(post===n&&pre===n) return {t:'แม่นยำตั้งแต่ต้นจนจบ',
+    p:'ผู้เรียนมีพื้นฐานแน่นอยู่แล้วและยังรักษาความถูกต้องไว้ได้ครบทุกข้อ ขั้นถัดไปที่ท้าทายกว่าคือโจทย์ในห้องออกแบบ ลองย้ายจุดตัดไปกลางสเกลแล้วอธิบายเหตุผลเชิงคณิตศาสตร์ดู'};
+  if(post===n) return {t:'ทำได้เต็มหลังเรียน ยอดเยี่ยมมาก',
+    p:'จากที่เคยพลาดในตอนแรก ตอนนี้ตอบถูกครบทุกข้อแล้ว นี่คือหลักฐานชัดเจนว่าการลงมือหมุน VR1 และสังเกตผลต่าง V_d ด้วยตนเองทำให้เข้าใจจริง'};
+  if(post>pre) return {t:'ก้าวหน้าขึ้นชัดเจน',
+    p:'คะแนนเพิ่มขึ้นจากเดิม แสดงว่าแนวคิดเรื่องการเปรียบเทียบสองขาเริ่มเข้าที่แล้ว ลองกลับไปทบทวนข้อที่ยังพลาดในแท็บหลักการอีกสักรอบ แล้วกลับมาแก้ตัวใหม่ ผู้สอนเชื่อว่าทำได้ดีกว่านี้แน่นอน'};
+  if(post===pre&&post>=Math.ceil(n/2)) return {t:'รักษาระดับไว้ได้ แต่ยังไปได้ไกลกว่านี้',
+    p:'คะแนนคงเดิม แปลว่าจุดที่ยังไม่เข้าใจเป็นจุดเดิม ลองเปิดแท็บห้องทดลองแล้วหมุนผ่านจุดตัดช้า ๆ สังเกตว่าป้าย V+ กับ V− สลับกันเมื่อใด แล้วกลับมาแก้ตัวอีกครั้ง'};
+  if(post<pre) return {t:'ยังไม่เข้าที่ในรอบนี้ ไม่เป็นไรเลย',
+    p:'คะแนนรอบนี้ลดลงจากเดิม ซึ่งมักเกิดจากความเร่งรีบมากกว่าความไม่เข้าใจ พักสักครู่แล้วกลับไปที่แท็บหลักการหัวข้อที่ 4 อ่านเรื่องผลต่างขาเข้าให้จบ จากนั้นเข้าห้องทดลองอีกรอบแล้วกลับมาแก้ตัวใหม่ ผู้สอนรอดูผลรอบหน้าอยู่'};
+  return {t:'เริ่มต้นได้แล้ว ขอให้สู้ต่ออีกนิด',
+    p:'บทเรียนนี้ตั้งใจให้ยากพอที่จะต้องลองมากกว่าหนึ่งรอบ ขอให้กลับไปที่ห้องทดลอง หมุน VR1 จนเห็นว่าเอาต์พุตพลิกที่ตำแหน่งใด แล้วกลับมาแก้ตัวใหม่ ความก้าวหน้าจะเห็นชัดขึ้นแน่นอน'};
+}
+function drawReport(){
+  const box=document.getElementById('repbody');
+  if(!preDone||!postDone){box.innerHTML='<p class="muted">ยังไม่มีข้อมูล ทำแบบทดสอบก่อนเรียนและหลังเรียนให้ครบก่อน</p>';return;}
+  const pre=preAns.filter((a,i)=>a===PRE[i].a).length;
+  const post=postAns.filter((a,i)=>a===POST[i].a).length;
+  const n=PRE.length;
+  const g=(n-pre)===0?(post===n?1:0):(post-pre)/(n-pre);
+  const lvl=g>=0.7?'สูง':(g>=0.3?'ปานกลาง':'ต่ำ');
+  const mm=Math.floor(labSeconds/60),ss=labSeconds%60;
+  const wiredOK=wdone.length;
+  const pr=praiseFor(pre,post,n,g);
+  const code=fingerprint(pre,post);
+  const rank=post===n?'ระดับเชี่ยวชาญ':(post>=Math.ceil(n*2/3)?'ระดับดี':(post>pre?'กำลังก้าวหน้า':'กำลังฝึกฝน'));
+  const stampT=(startedAt||new Date()).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'});
+  const dots=(ans,list)=>list.map((q,i)=>`<i class="${ans[i]===q.a?'hit':'miss'}"></i>`).join('');
+  const diff=post-pre;
+  const summary=`ผู้เรียน ${NICK} · ก่อนเรียน ${pre}/${n} · หลังเรียน ${post}/${n} · normalized gain ${g.toFixed(2)} (${lvl}) · เวลาในห้องทดลอง ${mm} นาที ${ss} วินาที · ปรับ VR1 ${knobMoves} ครั้ง · ต่อวงจรถูก ${wiredOK}/6 · คะแนนสะสม ${XP} · ชุดข้อสอบ ${SETCODE} · รหัสยืนยัน ${code} · เริ่มเรียน ${stampT}`;
+  box.innerHTML=`
+    <div class="cert">
+      <div class="cert-top">
+        <div>
+          <div class="eyebrow" style="margin-bottom:2px;">ใบสรุปผลการเรียนรู้ · TRIP POINT</div>
+          <div class="cert-name">${NICK||'ผู้เรียน'}</div>
+          <div class="cert-meta">วงจรตรวจจับระดับแรงดันด้วยคอมพาราเตอร์เดี่ยว · IC1A</div>
+          <div class="cert-rank">${rank}</div>
+        </div>
+        <div class="cert-medal">
+          <b>${g.toFixed(2)}</b>
+          <small>NORMALIZED GAIN</small>
+          <div class="muted" style="font-size:12px;margin-top:4px;">ระดับ${lvl}</div>
+        </div>
+      </div>
+
+      <div class="scorepair">
+        <div class="scorebox">
+          <div class="cap">ก่อนเรียน</div>
+          <div class="num">${pre}<span style="font-size:20px;color:var(--ink-faint)">/${n}</span></div>
+          <div class="pct">${Math.round(pre/n*100)} เปอร์เซ็นต์</div>
+          <div class="dotrow">${dots(preAns,PRE)}</div>
+        </div>
+        <div class="arrowcell"><b>→</b><span style="display:block;margin-top:5px;">${diff>0?'เพิ่มขึ้น '+diff+' ข้อ':(diff<0?'ลดลง '+Math.abs(diff)+' ข้อ':'คงเดิม')}</span></div>
+        <div class="scorebox after">
+          <div class="cap">หลังเรียน</div>
+          <div class="num">${post}<span style="font-size:20px;color:var(--ink-faint)">/${n}</span></div>
+          <div class="pct">${Math.round(post/n*100)} เปอร์เซ็นต์</div>
+          <div class="dotrow">${dots(postAns,POST)}</div>
+        </div>
+      </div>
+
+      <div class="praise">
+        <h4>${pr.t}</h4>
+        <p>${pr.p}</p>
+      </div>
+
+      <div class="stamp">
+        <span>เวลาในห้องทดลอง <b>${mm} นาที ${ss} วินาที</b></span>
+        <span>ปรับ VR1 <b>${knobMoves} ครั้ง</b></span>
+        <span>ต่อวงจรถูก <b>${wiredOK}/6 เส้น</b></span>
+        <span>คะแนนสะสม <b>${XP}</b></span>
+        <span>เริ่มเรียน <b>${stampT}</b></span>
+        <span>รหัสยืนยัน <b class="vcode">${code}</b></span>
+      </div>
+    </div>
+
+    ${cloTable()}
+
+    <h3>ความก้าวหน้าเชิงปกติ (Normalized Gain)</h3>
+    <div class="eq">&lt;g&gt; = (คะแนนหลัง − คะแนนก่อน) / (คะแนนเต็ม − คะแนนก่อน) = (${post} − ${pre}) / (${n} − ${pre}) = <b>${g.toFixed(2)}</b> → ระดับ${lvl}</div>
+    <p class="muted">ค่านี้เป็นดัชนีมาตรฐานที่ใช้ในงานวิจัยการเรียนการสอนวิทยาศาสตร์ ตัดผลของพื้นฐานเดิมออกไป
+    จึงเปรียบเทียบระหว่างผู้เรียนที่มีพื้นฐานต่างกันได้อย่างเป็นธรรม เกณฑ์ที่ใช้กันคือ
+    ต่ำกว่า 0.30 ถือว่าต่ำ ระหว่าง 0.30 ถึง 0.70 ถือว่าปานกลาง และสูงกว่า 0.70 ถือว่าสูง</p>
+    <div class="note" style="border-left-color:var(--ref);">
+      <b>สำหรับผู้สอน</b> รหัสยืนยัน <span class="vcode">${code}</span> คำนวณจากชื่อเล่น รูปแบบคำตอบทุกข้อ
+      จำนวนครั้งที่ปรับ VR1 เวลาที่ใช้ในห้องทดลอง จำนวนสายที่ต่อถูก และเวลาที่เริ่มบทเรียน
+      ผู้เรียนสองคนที่ทำงานจริงด้วยตนเองย่อมได้รหัสไม่ซ้ำกัน หากพบรหัสซ้ำกันในชั้นเรียน
+      แสดงว่าเป็นภาพเดียวกันที่ถูกส่งต่อ ไม่ใช่ผลจากการลงมือทำเอง
+    </div>
+    <div class="btnrow"><button class="btn pri" id="copyrep">คัดลอกสรุปผลเพื่อส่งผู้สอน</button></div>
+    <div class="eq" id="repline">${summary}</div>`;
+  document.getElementById('copyrep').onclick=()=>{
+    const t=document.getElementById('repline').textContent;
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>toast('คัดลอกแล้ว'),()=>toast('คัดลอกไม่สำเร็จ ให้เลือกข้อความแล้วกด Ctrl+C'));}
+    else toast('เลือกข้อความในกรอบแล้วกด Ctrl+C');
+  };
+}
+
+/* ---------- ลูกบิด ---------- */
+const ticksG=document.getElementById('ticks');
+for(let i=0;i<=10;i++){
+  const a=(-135+i*27)*Math.PI/180, r1=68, r2=i%5===0?58:62;
+  ticksG.appendChild(mk('line',{x1:90+r1*Math.sin(a),y1:90-r1*Math.cos(a),x2:90+r2*Math.sin(a),y2:90-r2*Math.cos(a),
+    stroke:i%5===0?'var(--ref)':'var(--edge)','stroke-width':i%5===0?2:1.5}));
+}
+const knob=document.getElementById('knob');let dragging=false;
+function setFromEvent(e){
+  const r=knob.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  let deg=Math.atan2(e.clientX-cx,-(e.clientY-cy))*180/Math.PI;
+  deg=Math.max(-135,Math.min(135,deg));
+  S.pos=(deg+135)/270;knobMoves++;render();
+}
+knob.addEventListener('pointerdown',e=>{dragging=true;knob.setPointerCapture(e.pointerId);setFromEvent(e);});
+knob.addEventListener('pointermove',e=>{if(dragging)setFromEvent(e);});
+knob.addEventListener('pointerup',()=>dragging=false);
+knob.addEventListener('keydown',e=>{
+  const st=e.shiftKey?0.05:0.005;
+  if(e.key==='ArrowRight'||e.key==='ArrowUp'){S.pos=Math.min(1,S.pos+st);knobMoves++;render();e.preventDefault();}
+  if(e.key==='ArrowLeft'||e.key==='ArrowDown'){S.pos=Math.max(0,S.pos-st);knobMoves++;render();e.preventDefault();}
+});
+let sweepTimer=null,dir=1;
+document.getElementById('sweep').onclick=e=>{
+  if(sweepTimer){clearInterval(sweepTimer);sweepTimer=null;e.target.textContent='กวาดอัตโนมัติ';return;}
+  e.target.textContent='หยุดกวาด';
+  sweepTimer=setInterval(()=>{S.pos+=0.005*dir;if(S.pos>=1){S.pos=1;dir=-1;}if(S.pos<=0){S.pos=0;dir=1;}knobMoves++;render();},26);
+};
+document.getElementById('reset').onclick=()=>{S.pos=0;render();};
+document.getElementById('tojump').onclick=()=>{
+  const k=kTrip();
+  if(k>1){toast('จุดตัดอยู่นอกพิสัยของ VR1 ต้องแก้ค่าที่ห้องออกแบบก่อน');return;}
+  S.pos=Math.min(1,k+0.004);knobMoves++;render();toast('ตั้งไว้เหนือจุดตัดเล็กน้อย');
+};
+
+/* ---------- ผังวงจรหลัก ---------- */
+const sch=document.getElementById('sch');
+/* ป้ายแสดงแรงดันสดที่ขาอินพุต/เอาต์พุตของออปแอมป์ */
+function pinBadge(cx,cy,idp,cap,col,w){
+  w=w||100;const h=40,g=mk('g',{});
+  g.appendChild(mk('rect',{x:cx-w/2,y:cy-h/2,width:w,height:h,rx:8,
+    fill:'var(--board)',stroke:col,'stroke-width':1.4,id:idp+'-box'}));
+  g.appendChild(mk('text',{x:cx,y:cy-7,'text-anchor':'middle',class:'pinlbl'},cap));
+  g.appendChild(mk('text',{x:cx,y:cy+13,'text-anchor':'middle',class:'pinval',
+    id:idp+'-val',style:'fill:'+col},'0.000 V'));
+  return g;
+}
+function buildSch(){
+  sch.innerHTML='';
+  /* ราง +VCC */
+  sch.appendChild(mk('path',{class:'wire',d:'M110,50 H760'}));
+  sch.appendChild(mk('circle',{cx:330,cy:50,r:4,fill:'none',stroke:'var(--compstroke)','stroke-width':2}));
+  sch.appendChild(mk('text',{x:330,y:36,'text-anchor':'middle',class:'tag',fill:'var(--signal)'},'+'+S.vcc+'V'));
+
+  /* R1 แนวตั้ง */
+  sch.appendChild(mk('path',{class:'wire',d:'M110,50 V104'}));
+  sch.appendChild(resistorNode(110,135,S.R1,'R1',true));
+  sch.appendChild(mk('path',{class:'wire',d:'M110,166 V210'}));
+
+  /* VR1 ทริมเมอร์ */
+  const vr=mk('g',{});
+  vr.appendChild(mk('rect',{x:84,y:210,width:52,height:80,rx:5,fill:'#1e5aa8',stroke:'#123a6d','stroke-width':1.5}));
+  vr.appendChild(mk('rect',{x:84,y:210,width:52,height:80,rx:5,fill:'url(#rshine)',stroke:'none'}));
+  vr.appendChild(mk('circle',{cx:110,cy:250,r:17,fill:'#c9ccd1',stroke:'#7c8288','stroke-width':1.5}));
+  vr.appendChild(mk('line',{x1:110,y1:236,x2:110,y2:264,stroke:'#3b4148','stroke-width':4,'stroke-linecap':'round',id:'vrslot'}));
+  vr.appendChild(mk('text',{x:60,y:246,class:'tag','text-anchor':'end'},'VR1'));
+  vr.appendChild(mk('text',{x:60,y:262,class:'lbl','text-anchor':'end'},fmtR(S.VR)));
+  sch.appendChild(vr);
+
+  /* กราวด์ */
+  sch.appendChild(mk('path',{class:'wire',d:'M110,290 V344'}));
+  sch.appendChild(mk('path',{class:'wire',d:'M110,344 H236'}));
+  sch.appendChild(mk('path',{class:'wire',d:'M155,344 h26 M159,351 h18 M163,358 h10'}));
+
+  /* บันไดอ้างอิง R2 R3 → ขาบวก */
+  sch.appendChild(mk('path',{class:'wire',d:'M236,50 V104'}));
+  sch.appendChild(resistorNode(236,135,S.R2,'R2',true,62,true));
+  sch.appendChild(mk('path',{class:'wire',d:'M236,166 V218'}));
+  sch.appendChild(mk('circle',{cx:236,cy:186,r:3.5,class:'dot'}));
+  sch.appendChild(resistorNode(236,249,S.R3,'R3',true,62,true));
+  sch.appendChild(mk('path',{class:'wire',d:'M236,280 V344'}));
+  sch.appendChild(mk('path',{class:'wire',d:'M236,186 H300 V190 H400'}));
+
+  /* สายไวเปอร์ V_in → ขาลบ (มีสะพานข้ามสายกราวด์) */
+  sch.appendChild(mk('path',{class:'wire hot',d:'M136,250 H160 V312 H230 A6,6 0 0 1 242,312 H276 V240 H400'}));
+  sch.appendChild(mk('polygon',{points:'136,250 148,244 148,256',fill:'var(--signal)'}));
+  sch.appendChild(mk('text',{x:186,y:304,class:'lbl sig'},'V_in'));
+
+  /* คอมพาราเตอร์ */
+  sch.appendChild(mk('polygon',{points:'400,160 400,270 490,215',class:'comp'}));
+  sch.appendChild(mk('text',{x:418,y:220,class:'tag'},'IC1A'));
+  sch.appendChild(mk('text',{x:408,y:196,class:'pinsym','style':'fill:var(--ref)'},'+'));
+  sch.appendChild(mk('text',{x:408,y:246,class:'pinsym','style':'fill:var(--signal)'},'−'));
+  sch.appendChild(mk('circle',{cx:400,cy:190,r:3.5,class:'dot'}));
+  sch.appendChild(mk('circle',{cx:400,cy:240,r:3.5,class:'dot'}));
+
+  /* ป้ายแรงดันสดที่ขาบวก / ขาลบ / ผลต่าง */
+  sch.appendChild(mk('line',{x1:340,y1:166,x2:340,y2:190,class:'leader'}));
+  sch.appendChild(pinBadge(340,146,'vp','V+ · ขาบวก','var(--ref)',116));
+  sch.appendChild(mk('line',{x1:340,y1:270,x2:340,y2:240,class:'leader'}));
+  sch.appendChild(pinBadge(340,290,'vn','V− · ขาลบ','var(--signal)',116));
+  sch.appendChild(mk('text',{x:340,y:209,'text-anchor':'middle',class:'pinlbl',id:'vd-cap'},'V+ เทียบกับ V−'));
+  sch.appendChild(mk('text',{x:340,y:228,'text-anchor':'middle',class:'pinval',id:'vd-val',
+    style:'fill:var(--ink)'},'V_d = +0.000 V'));
+
+  /* เอาต์พุต R4 LED */
+  sch.appendChild(mk('path',{class:'wire',d:'M490,215 H533'}));
+  sch.appendChild(mk('line',{x1:512,y1:170,x2:512,y2:215,class:'leader'}));
+  sch.appendChild(pinBadge(512,150,'vo','ขาออก (V_out)','var(--ok)',124));
+  sch.appendChild(resistorNode(580,215,S.R4,'R4',false));
+  sch.appendChild(mk('path',{class:'wire',d:'M611,215 H650'}));
+  sch.appendChild(ledNode(680,215,1,'schled'));
+  sch.appendChild(mk('text',{x:680,y:172,class:'tag','text-anchor':'middle'},'LED1'));
+  sch.appendChild(mk('path',{class:'wire',d:'M714,215 H760 V50'}));
+  sch.appendChild(mk('circle',{cx:760,cy:215,r:3.5,class:'dot'}));
+
+  sch.appendChild(mk('path',{class:'flowline',id:'flowmain',d:'M760,215 H714 M650,215 H611'}));
+  sch.appendChild(mk('path',{class:'flowline',id:'flowmain2',d:'M533,215 H490'}));
+}
+buildSch();
+
+/* ---------- LED ใหญ่บนแผงหน้า ---------- */
+(function(){
+  const bl=document.getElementById('biglamp');
+  const g=mk('g',{transform:'translate(75 82) rotate(-90) scale(2.1)'});
+  g.appendChild(ledNode(0,0,1,'biglED'));
+  bl.appendChild(g);
+  bl.appendChild(mk('text',{x:75,y:178,'text-anchor':'middle',class:'lbl'},'LED1 · 5 มม. สีแดง'));
+})();
+
+/* ---------- เกมต่อวงจร ---------- */
+const PADS=[
+  {id:'VCC', x:330,y:56, t:'ราง +9V'},
+  {id:'R2T', x:250,y:96, t:'ปลายบน R2'},
+  {id:'R3B', x:250,y:286,t:'ปลายล่าง R3'},
+  {id:'GND', x:170,y:340,t:'กราวด์'},
+  {id:'TAP', x:250,y:190,t:'จุดต่อ R2-R3'},
+  {id:'INP', x:330,y:196,t:'IC1A ขา +'},
+  {id:'VIN', x:290,y:262,t:'ไวเปอร์ VR1'},
+  {id:'INN', x:330,y:232,t:'IC1A ขา −'},
+  {id:'OUT', x:400,y:214,t:'เอาต์พุต'},
+  {id:'R4L', x:466,y:214,t:'ปลายซ้าย R4'},
+  {id:'LEDA',x:634,y:214,t:'แอโนด LED1'},
+  {id:'RAIL',x:690,y:214,t:'ราง +9V ฝั่งขวา'}
+];
+const NET=[
+  {a:'VCC',b:'R2T',t:'จ่ายไฟเข้าปลายบนของ R2'},
+  {a:'R3B',b:'GND',t:'ปิดวงจรตัวแบ่งแรงดันลงกราวด์'},
+  {a:'TAP',b:'INP',t:'ส่งแรงดันอ้างอิงเข้าขาบวก'},
+  {a:'VIN',b:'INN',t:'ส่งสัญญาณจาก VR1 เข้าขาลบ'},
+  {a:'OUT',b:'R4L',t:'เอาต์พุตเข้าตัวต้านทานจำกัดกระแส'},
+  {a:'LEDA',b:'RAIL',t:'แอโนด LED กลับขึ้นราง +9V'}
+];
+let wsel=null,wdone=[];
+const wsvg=document.getElementById('wsvg');
+(function buildW(){
+  wsvg.appendChild(mk('path',{class:'wire',d:'M170,56 H560'}));
+  wsvg.appendChild(mk('text',{x:170,y:42,class:'tag',fill:'var(--signal)'},'+9V'));
+  wsvg.appendChild(resistorNode(250,130,5000,'R2',true));
+  wsvg.appendChild(mk('path',{class:'wire',d:'M250,161 V190 M250,190 V222'}));
+  wsvg.appendChild(resistorNode(250,254,4700,'R3',true));
+  wsvg.appendChild(mk('circle',{cx:250,cy:190,r:3.5,class:'dot'}));
+  wsvg.appendChild(mk('path',{class:'wire',d:'M170,340 H210 M168,340 h24 M172,347 h16 M176,354 h8'}));
+  wsvg.appendChild(mk('polygon',{points:'330,178 330,250 400,214',class:'comp'}));
+  wsvg.appendChild(mk('text',{x:348,y:219,class:'tag'},'IC1A'));
+  wsvg.appendChild(mk('text',{x:337,y:205,class:'lbl','font-size':13},'+'));
+  wsvg.appendChild(mk('text',{x:337,y:235,class:'lbl','font-size':13},'−'));
+  wsvg.appendChild(mk('rect',{x:264,y:236,width:52,height:52,rx:5,fill:'#1e5aa8',stroke:'#123a6d','stroke-width':1.5}));
+  wsvg.appendChild(mk('text',{x:290,y:306,class:'lbl','text-anchor':'middle'},'VR1'));
+  wsvg.appendChild(resistorNode(500,214,330,'R4',false));
+  wsvg.appendChild(ledNode(600,214,1,'wled'));
+  wsvg.appendChild(mk('path',{class:'wire',d:'M690,56 V214'}));
+  wsvg.appendChild(mk('g',{id:'wires'}));
+  wsvg.appendChild(mk('g',{id:'pads'}));
+  setLed('wled',false);
+})();
+function drawPads(){
+  const g=document.getElementById('pads');g.innerHTML='';
+  PADS.forEach(p=>{
+    const c=mk('circle',{cx:p.x,cy:p.y,r:8,class:'pad'});
+    if(wsel===p.id)c.classList.add('sel');
+    if(wdone.some(n=>n.a===p.id||n.b===p.id))c.classList.add('done');
+    c.addEventListener('click',()=>clickPad(p.id));
+    g.appendChild(c);
+    g.appendChild(mk('text',{x:p.x,y:p.y-13,class:'padlbl','text-anchor':'middle'},p.t));
+  });
+}
+function drawWires(){
+  const g=document.getElementById('wires');g.innerHTML='';
+  wdone.forEach(n=>{
+    const A=PADS.find(p=>p.id===n.a),B=PADS.find(p=>p.id===n.b),mx=(A.x+B.x)/2;
+    g.appendChild(mk('path',{class:'jw',d:`M${A.x},${A.y} H${mx} V${B.y} H${B.x}`}));
+  });
+  setLed('wled',wdone.length===NET.length,1);
+}
+function clickPad(id){
+  if(wdone.some(n=>n.a===id||n.b===id)){wmsg('จุดนี้ต่อเรียบร้อยแล้ว');return;}
+  if(wsel===null){wsel=id;wmsg('เลือก '+PADS.find(p=>p.id===id).t+' แล้ว — คลิกปลายทาง');drawPads();return;}
+  if(wsel===id){wsel=null;drawPads();wmsg('ยกเลิกการเลือก');return;}
+  const hit=NET.find(n=>(n.a===wsel&&n.b===id)||(n.b===wsel&&n.a===id));
+  if(hit){
+    wdone.push(hit);wsel=null;drawPads();drawWires();updateList();addXP(10,'ต่อถูก: '+hit.t);
+    if(wdone.length===NET.length){addXP(30,'ต่อวงจรครบสมบูรณ์');wmsg('วงจรสมบูรณ์แล้ว LED ในภาพติดสว่างเพื่อยืนยันเส้นทางกระแส');}
+  }else{wmsg('ยังไม่ถูก — '+why(wsel,id));wsel=null;drawPads();}
+}
+function why(a,b){
+  const p=id=>PADS.find(x=>x.id===id).t;
+  if((a==='VIN'&&b==='INP')||(b==='VIN'&&a==='INP'))return 'ถ้าส่ง V_in เข้าขาบวก เงื่อนไขจะกลับด้าน ไฟจะติดตอนแรงดันต่ำแทน';
+  if((a==='LEDA'&&b==='GND')||(b==='LEDA'&&a==='GND'))return 'ต่อ LED ลงกราวด์ใช้ได้กับ LM324 เท่านั้น ผังนี้เป็น open-collector จึงต้องกลับขึ้นราง +9V';
+  if((a==='OUT'&&b==='LEDA')||(b==='OUT'&&a==='LEDA'))return 'ต่อตรงแบบนี้ไม่มีตัวจำกัดกระแส LED จะพังทันทีที่เอาต์พุตลง LOW';
+  return p(a)+' กับ '+p(b)+' ไม่ได้อยู่โหนดเดียวกันในผังวงจร';
+}
+function updateList(){
+  document.getElementById('wlist').innerHTML=NET.map(n=>
+    `<li class="${wdone.includes(n)?'done':''}">${wdone.includes(n)?n.t:'ยังไม่ได้ต่อ — '+n.t}</li>`).join('');
+}
+function wmsg(m){document.getElementById('wmsg').textContent=m;}
+document.getElementById('wreset').onclick=()=>{wdone=[];wsel=null;drawPads();drawWires();updateList();wmsg('ล้างสายทั้งหมดแล้ว');};
+document.getElementById('whint').onclick=()=>{
+  const l=NET.find(n=>!wdone.includes(n));
+  wmsg(l?('ลองต่อ: '+PADS.find(p=>p.id===l.a).t+' ไปยัง '+PADS.find(p=>p.id===l.b).t):'ต่อครบแล้ว');
+};
+drawPads();drawWires();updateList();
+
+/* จัดรูปแรงดันให้มีเครื่องหมายกำกับชัดเจน ใช้เครื่องหมายลบเชิงพิมพ์ */
+function sv(x,d){d=(d===undefined)?3:d;return (x>=0?'+':'−')+Math.abs(x).toFixed(d);}
+
+/* ---------- กราฟถ่ายโอนของคอมพาราเตอร์ ---------- */
+function drawTC(){
+  const p=document.getElementById('tcplot'); if(!p)return;
+  p.innerHTML='';
+  const x0=56,x1=356,y0=26,y1=160;
+  const vp=vref(), vn=vin(), on=vn>vp;
+  const xs=Math.max(vinMax(),vp)*1.12, ys=S.vcc*1.15;
+  const X=v=>x0+Math.max(0,Math.min(1,v/xs))*(x1-x0);
+  const Y=v=>y1-Math.max(0,Math.min(1,v/ys))*(y1-y0);
+  p.appendChild(mk('line',{x1:x0,y1:y1,x2:x1,y2:y1,stroke:'var(--rail)','stroke-width':1.5}));
+  p.appendChild(mk('line',{x1:x0,y1:y0,x2:x0,y2:y1,stroke:'var(--rail)','stroke-width':1.5}));
+  p.appendChild(mk('text',{x:x0-8,y:Y(S.vcc)+4,'text-anchor':'end',class:'lbl'},S.vcc.toFixed(0)+'V'));
+  p.appendChild(mk('text',{x:x0-8,y:Y(0)+4,'text-anchor':'end',class:'lbl'},'0V'));
+  p.appendChild(mk('text',{x:x1,y:y1+18,'text-anchor':'end',class:'lbl'},'V− (โวลต์)'));
+  p.appendChild(mk('text',{x:x0-8,y:y0-8,'text-anchor':'start',class:'lbl'},'V_out'));
+  /* เส้นถ่ายโอนอุดมคติ */
+  p.appendChild(mk('path',{d:'M'+X(0)+','+Y(S.vcc)+' H'+(X(vp)-2)+' L'+(X(vp)+2)+','+Y(S.Vsat)+' H'+X(xs),
+    stroke:'var(--ref)','stroke-width':2.6,fill:'none','stroke-linejoin':'round'}));
+  /* เส้นเกณฑ์ V+ */
+  p.appendChild(mk('line',{x1:X(vp),y1:y0,x2:X(vp),y2:y1,stroke:'var(--ref)','stroke-dasharray':'4 4','stroke-width':1}));
+  p.appendChild(mk('text',{x:X(vp)+5,y:y0+11,class:'lbl v'},'V+ = '+vp.toFixed(2)+' V'));
+  /* จุดทำงานปัจจุบัน */
+  p.appendChild(mk('line',{x1:X(vn),y1:y1,x2:X(vn),y2:Y(on?S.Vsat:S.vcc),
+    stroke:'var(--signal)','stroke-dasharray':'3 3','stroke-width':1}));
+  p.appendChild(mk('circle',{cx:X(vn),cy:Y(on?S.Vsat:S.vcc),r:6.5,fill:'var(--signal)',
+    stroke:'var(--board)','stroke-width':2}));
+  p.appendChild(mk('text',{x:X(vn),y:y1+18,'text-anchor':'middle',class:'lbl sig'},vn.toFixed(2)+' V'));
+  p.appendChild(mk('text',{x:x1,y:y1+36,'text-anchor':'end',class:'lbl'},
+    on?'V− > V+  →  เอาต์พุตอิ่มตัวด้าน LOW':'V− < V+  →  เอาต์พุตอยู่ที่ HIGH'));
+}
+
+/* ---------- เรนเดอร์ ---------- */
+function render(){
+  const vr=vref(), v=vin(), vm=vinMax(), on=v>vr;
+  const vd=vr-v, vout=on?S.Vsat:S.vcc;
+  const span=Math.max(vm,vr)*1.06;
+  document.getElementById('pointer').setAttribute('transform',`rotate(${-135+S.pos*270} 90 90)`);
+  const slot=document.getElementById('vrslot');
+  if(slot)slot.setAttribute('transform',`rotate(${-135+S.pos*270} 110 250)`);
+  knob.setAttribute('aria-valuenow',Math.round(S.pos*100));
+
+  document.getElementById('ro-pos').textContent=(S.pos*100).toFixed(1)+' %';
+  document.getElementById('ro-vin').textContent=v.toFixed(3)+' V';
+  document.getElementById('ro-vref').textContent=vr.toFixed(3)+' V';
+  document.getElementById('ro-vd').textContent=sv(vd)+' V';
+  document.getElementById('ro-vout').textContent=vout.toFixed(2)+' V · '+(on?'LOW':'HIGH');
+  document.getElementById('ro-iled').textContent=(on?iled()*1000:0).toFixed(1)+' mA';
+  document.getElementById('ro-iref').textContent=(S.vcc/(S.R2+S.R3)*1e6).toFixed(0)+' µA';
+  const kt=kTrip();
+  document.getElementById('ro-trip').textContent=kt>1?'เกินพิสัย':(kt*100).toFixed(1)+' %';
+
+  setLed('schled',on,1);setLed('biglED',on,1);
+  document.getElementById('flowmain').classList.toggle('live',on);
+  document.getElementById('flowmain2').classList.toggle('live',on);
+  /* --- ป้ายแรงดันสดบนผังวงจร --- */
+  const setTxt=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t;};
+  setTxt('vp-val',vr.toFixed(3)+' V');
+  setTxt('vn-val',v.toFixed(3)+' V');
+  setTxt('vo-val',vout.toFixed(2)+' V · '+(on?'LOW':'HIGH'));
+  setTxt('vd-val','V_d = '+sv(vd)+' V');
+  setTxt('vd-cap',Math.abs(vd)<0.005?'V+ ≈ V− · อยู่ที่จุดตัดพอดี':(vd>0?'V+ สูงกว่า V−':'V− สูงกว่า V+'));
+  const vdEl=document.getElementById('vd-val');
+  if(vdEl)vdEl.style.fill=Math.abs(vd)<0.002?'var(--ink)':(vd>0?'var(--ref)':'var(--signal)');
+  const boxP=document.getElementById('vp-box'), boxN=document.getElementById('vn-box'),
+        boxO=document.getElementById('vo-box'), valO=document.getElementById('vo-val');
+  if(boxP){boxP.setAttribute('stroke-width',on?1.4:2.8);
+           boxP.style.filter=on?'none':'drop-shadow(0 0 7px var(--ref))';}
+  if(boxN){boxN.setAttribute('stroke-width',on?2.8:1.4);
+           boxN.style.filter=on?'drop-shadow(0 0 7px var(--signal))':'none';}
+  if(boxO){boxO.setAttribute('stroke',on?'var(--signal)':'var(--ink-faint)');}
+  if(valO)valO.style.fill=on?'var(--signal)':'var(--ink-dim)';
+
+  /* --- มิเตอร์เปรียบเทียบสองขา --- */
+  const pcP=Math.max(0,Math.min(100,vr/S.vcc*100)), pcN=Math.max(0,Math.min(100,v/S.vcc*100));
+  setTxt('mv-p',vr.toFixed(3)+' V'); setTxt('mv-n',v.toFixed(3)+' V');
+  setTxt('msc-h',S.vcc.toFixed(1)+' V');
+  const mbP=document.getElementById('mb-p'), mbN=document.getElementById('mb-n'),
+        mkN=document.getElementById('mk-n'), mbD=document.getElementById('mb-d');
+  if(mbP)mbP.style.width=pcP+'%';
+  if(mbN)mbN.style.width=pcN+'%';
+  if(mkN)mkN.style.left=pcP+'%';
+  setTxt('mv-d',sv(vd)+' V');
+  setTxt('mv-d2','V_d = '+sv(vd)+' V');
+  if(mbD){
+    const half=Math.max(0.001,S.vcc/2);
+    /* สเกลรากที่สอง เพื่อให้ผลต่างระดับมิลลิโวลต์ยังปรากฏให้เห็น */
+    const w=Math.min(50,Math.sqrt(Math.min(1,Math.abs(vd)/half))*50);
+    mbD.className='dfill '+(vd>=0?'pos':'neg');
+    mbD.style.left=(vd>=0?50:50-w)+'%';
+    mbD.style.width=w+'%';
+  }
+  const ml=document.getElementById('mlogic');
+  if(ml){
+    const aol=100000, ideal=aol*vd, dcol=vd>=0?'var(--ref)':'var(--signal)';
+    ml.innerHTML=
+      '<div><em>ขั้นที่ 1 · ผลต่างขาเข้า</em>&nbsp;&nbsp;V_d = V+ − V− = '+vr.toFixed(3)+' − '+v.toFixed(3)+
+        ' = <b style="color:'+dcol+'">'+sv(vd)+' V</b></div>'+
+      '<div><em>ขั้นที่ 2 · ขยายด้วยอัตราขยายเปิดวง</em>&nbsp;&nbsp;A_OL × V_d ≈ 100,000 × ('+sv(vd)+') = '+
+        ideal.toFixed(0)+' V &nbsp;→&nbsp; '+(Math.abs(ideal)>S.vcc?'เกินพิสัยรางไฟ เอาต์พุตจึงอิ่มตัวทันที':
+        'ยังอยู่ในย่านเชิงเส้น ซึ่งกินความกว้างเพียงไม่กี่สิบไมโครโวลต์เท่านั้น')+'</div>'+
+      '<div><em>ขั้นที่ 3 · เอาต์พุต</em>&nbsp;&nbsp;V_out ≈ <b style="color:'+(on?'var(--signal)':'var(--ink)')+'">'+
+        vout.toFixed(2)+' V ('+(on?'LOW':'HIGH')+')</b> &nbsp;→&nbsp; LED1 '+
+        (on?'ติดสว่าง ด้วยกระแส '+(iled()*1000).toFixed(1)+' mA':'ดับ เพราะไม่มีผลต่างแรงดันคร่อมกิ่ง LED')+'</div>';
+  }
+  drawTC();
+
+  const vt=document.getElementById('vreftxt'); if(vt)vt.textContent=vr.toFixed(3)+' V';
+
+  document.getElementById('statebig').textContent=on?'LED1 · ติดสว่าง':'LED1 · ดับ';
+  document.getElementById('statesub').textContent=on
+    ? 'ขาลบ '+v.toFixed(3)+' V สูงกว่าขาบวก '+vr.toFixed(3)+' V (V_d = '+vd.toFixed(3)+' V) เอาต์พุตจึงอิ่มตัวที่ LOW กระแส '+(iled()*1000).toFixed(1)+' mA ไหลผ่าน LED1'
+    : 'ขาบวก '+vr.toFixed(3)+' V ยังสูงกว่าขาลบ '+v.toFixed(3)+' V (V_d = +'+vd.toFixed(3)+' V) เอาต์พุตจึงอยู่ที่ HIGH ไม่มีเส้นทางให้กระแสไหลลงกราวด์';
+
+  const rw=document.querySelector('#tab-lab .railwrap');
+  rw.querySelectorAll('.notch').forEach(n=>n.remove());
+  const nd=document.createElement('div');nd.className='notch';
+  nd.style.left=(vr/span*100)+'%';nd.innerHTML='<b>V_ref '+vr.toFixed(2)+'V</b>';rw.appendChild(nd);
+  const pct=Math.min(100,v/span*100);
+  document.getElementById('railfill').style.width=pct+'%';
+  const rv=document.getElementById('railval');
+  rv.textContent=v.toFixed(3)+' V';rv.style.left=pct+'%';
+  rv.style.transform=pct<16?'translateX(4px)':'translateX(calc(-100% - 6px))';
+
+  document.getElementById('cmpbody').innerHTML=`
+    <tr><td>V+ ขาบวก</td><td style="color:var(--ref)">${vr.toFixed(3)} V</td><td>คงที่จาก R2 กับ R3</td></tr>
+    <tr><td>V− ขาลบ</td><td style="color:var(--signal)">${v.toFixed(3)} V</td><td>ปรับได้ด้วย VR1</td></tr>
+    <tr><td>V_d = V+ − V−</td><td style="color:${vd>=0?'var(--ref)':'var(--signal)'}">${sv(vd)} V</td><td>${Math.abs(vd)<0.002?'เท่ากันพอดี ณ จุดตัด':(vd>0?'ขาบวกสูงกว่า':'ขาลบสูงกว่า')}</td></tr>
+    <tr><td>V_out</td><td>${vout.toFixed(2)} V · ${on?'LOW':'HIGH'}</td><td>${on?'ดูดกระแสได้':'ลอยตัว ถูกดึงขึ้นรางบวก'}</td></tr>
+    <tr><td>LED1</td><td><span class="pill ${on?'on':'off'}">${on?'ติด':'ดับ'}</span></td><td>${on?(iled()*1000).toFixed(1)+' mA':'0 mA'}</td></tr>`;
+
+  const vdict=document.getElementById('verdict');
+  if(on)vdict.innerHTML='ข้ามจุดตัดแล้ว · เหลือระยะเผื่อ <b style="color:var(--signal)">'+(v-vr).toFixed(3)+' V</b> เหนือเกณฑ์';
+  else vdict.innerHTML='ยังต่ำกว่าเกณฑ์อีก <b style="color:var(--ref)">'+(vr-v).toFixed(3)+' V</b> · หมุนเพิ่มอีกประมาณ '+
+    Math.max(0,((kt-S.pos)*100)).toFixed(1)+' เปอร์เซ็นต์ของสเกล';
+}
+
+/* ---------- ห้องออกแบบ ---------- */
+const FD=['vcc','r1','vr','r2','r3','r4'];
+function readDesign(){
+  const g=id=>parseFloat(document.getElementById('d-'+id).value)||0;
+  S.vcc=g('vcc');S.R1=g('r1')*1000;S.VR=Math.max(500,g('vr')*1000);
+  S.R2=Math.max(100,g('r2')*1000);S.R3=Math.max(100,g('r3')*1000);S.R4=Math.max(47,g('r4'));
+  const vr=vref(),vm=vinMax(),kt=kTrip();
+  document.getElementById('d-out').innerHTML=
+    `V_ref = ${S.vcc} × ${(S.R3/1000)}k / (${(S.R2/1000)}k + ${(S.R3/1000)}k) = <b>${vr.toFixed(3)} V</b><br>`+
+    `พิสัย V_in = 0.000 ถึง ${vm.toFixed(3)} V<br>`+
+    `ตำแหน่งหมุนที่ทริก k = ${kt>1?'เกินพิสัย ไฟไม่มีวันติด':(kt*100).toFixed(1)+' %'}<br>`+
+    `I_LED = ${(iled()*1000).toFixed(1)} mA · I_ref = ${(S.vcc/(S.R2+S.R3)*1e6).toFixed(0)} µA`;
+  document.getElementById('d-gauge').style.width=Math.min(100,Math.max(0,kt*100))+'%';
+  const w=[];
+  if(kt>1)w.push('จุดตัดอยู่เหนือพิสัยของ V_in ไฟจะไม่ติดไม่ว่าหมุนอย่างไร ต้องลด R3 หรือเพิ่มอัตราส่วน VR1/(R1+VR1)');
+  else if(kt>0.9)w.push('จุดตัดอยู่ปลายสเกลมาก ปรับละเอียดยากและไวต่อความคลาดเคลื่อนของตัวต้านทาน');
+  else if(kt<0.1)w.push('จุดตัดอยู่ต้นสเกลมาก ไฟจะติดเกือบตลอดย่านการหมุน');
+  else w.push('จุดตัดอยู่ในย่านที่ปรับได้สะดวก ถือว่าออกแบบได้เหมาะสม');
+  if(iled()*1000>30)w.push('กระแส LED เกิน 30 mA เสี่ยงเสียหาย ควรเพิ่มค่า R4');
+  if(iled()*1000<3)w.push('กระแส LED ต่ำกว่า 3 mA อาจมองเห็นแสงได้ยาก');
+  if(S.vcc<3.5)w.push('VCC ต่ำเกินไปสำหรับ V_F ของ LED บวก V_sat');
+  document.getElementById('d-warn').textContent=w.join(' · ');
+  rebuildSchValues();render();
+}
+function rebuildSchValues(){buildSch();}
+FD.forEach(f=>document.getElementById('d-'+f).addEventListener('input',readDesign));
+const PRESET={
+  std:{vcc:9,r1:10,vr:10,r2:5,r3:4.7,r4:330},
+  mid:{vcc:9,r1:10,vr:10,r2:14.1,r3:4.7,r4:330},
+  q:{vcc:9,r1:10,vr:10,r2:32.9,r3:4.7,r4:330},
+  v5:{vcc:5,r1:10,vr:10,r2:10,r3:10,r4:220}
+};
+document.querySelectorAll('.chip').forEach(c=>{
+  c.onclick=()=>{const p=PRESET[c.dataset.preset];for(const k in p)document.getElementById('d-'+k).value=p[k];readDesign();toast('โหลดชุดค่า: '+c.textContent);};
+});
+
+lockNav();
+render();
+</script>
+<a href="../index.html" class="gnr-back" aria-label="กลับแผนที่ภารกิจ" style="position:fixed;left:10px;bottom:10px;z-index:2147483000;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;font:500 13px/1 Kanit,system-ui,sans-serif;text-decoration:none;color:#f4f4ff;background:rgba(10,10,25,.72);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(8px);box-shadow:0 6px 20px -8px rgba(0,0,0,.6)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>แผนที่</a>
+</body>
+</html>

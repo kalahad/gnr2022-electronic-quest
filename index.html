@@ -1,485 +1,625 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MAINBOARD — GNR2022 · GNR2024 Basic Electronics Lab Series</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GNR2022 Circuit Quest</title>
+<meta name="description" content="แผนที่ภารกิจ GNR2022 อิเล็กทรอนิกส์พื้นฐาน: เกมบทเรียน 10 โซน ห้องทดลองจำลอง และ Final Boss ในที่เดียว">
+<meta property="og:title" content="GNR2022 Circuit Quest">
+<meta property="og:description" content="เดินทางผ่าน 10 โซนของวงจรอิเล็กทรอนิกส์ เก็บดาว เก็บการ์ด ไต่แรงก์ แล้วไปล้ม Final Boss">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2307070f'/><path d='M14 50h18l8-16 12 32 8-16h26' fill='none' stroke='%2300f0ff' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<script>(function(){try{var t=localStorage.getItem('gnr2022_theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';}document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Kanit:wght@300;400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap');
-
 :root{
-  --bg:#08120c; --bg2:#0c1a11; --panel:#0f2117; --panel2:#132a1d;
-  --copper:#c98a3d; --copper-hi:#e8b45c; --copper-dim:#6b4f27;
-  --silk:#eef3ea; --silk-dim:#9fb3a4; --silk-faint:#5d7267;
-  --mask:rgba(201,138,61,.28); --via:#1a3624;
-  --ok:#4ade80; --danger:#ff6b6b;
-  --mono:'IBM Plex Mono',monospace; --body:'IBM Plex Sans Thai','IBM Plex Mono',sans-serif;
+  --bg:#07070f; --bg2:#0d0d1d; --glass:rgba(255,255,255,.045); --glass2:rgba(255,255,255,.085);
+  --edge:rgba(255,255,255,.10); --text:#f4f4ff; --mute:#a7a8c8; --dim:#6f7096; --ink:#07070f;
+  --a:#00f0ff; --b:#b14bff; --ok:#4ade80; --warn:#facc15;
+  --disp:'Chakra Petch','Kanit',sans-serif; --font:'Kanit',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  color-scheme:dark;
 }
-*{box-sizing:border-box;}
-html,body{margin:0;padding:0;}
-body{
-  background:
-    radial-gradient(900px 500px at 15% -8%, rgba(201,138,61,.07), transparent 60%),
-    radial-gradient(700px 460px at 100% 10%, rgba(74,222,128,.05), transparent 55%),
-    linear-gradient(180deg, var(--bg2), var(--bg) 380px);
-  color:var(--silk); font-family:var(--body); font-size:15px; line-height:1.6;
-  min-height:100vh;
+:root[data-theme="light"]{
+  --bg:#f3f4fb; --bg2:#e7e9f6; --glass:rgba(255,255,255,.8); --glass2:#fff;
+  --edge:rgba(20,22,60,.13); --text:#12132a; --mute:#4b4e72; --dim:#7a7da0; --ink:#ffffff;
+  --a:#0077a3; --b:#7a1fd1; --ok:#15803d; --warn:#8a6a00;
+  color-scheme:light;
 }
-/* faint PCB grid + via dots */
-.board{position:relative;}
-.board::before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;
-  background-image:
-    linear-gradient(var(--mask) 1px, transparent 1px),
-    linear-gradient(90deg, var(--mask) 1px, transparent 1px);
-  background-size:42px 42px;
-  mask-image:radial-gradient(1100px 700px at 50% 0%, black, transparent 75%);
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;overflow:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(55vmax 40vmax at 0% -10%,color-mix(in srgb,var(--a) 18%,transparent),transparent 62%),
+  radial-gradient(50vmax 40vmax at 100% 110%,color-mix(in srgb,var(--b) 16%,transparent),transparent 62%)}
+body::after{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(var(--edge) 1px,transparent 1px),linear-gradient(90deg,var(--edge) 1px,transparent 1px);
+  background-size:44px 44px;mask-image:radial-gradient(ellipse at 50% 40%,#000 0%,transparent 75%)}
+button{font-family:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+
+/* ---------- layout ---------- */
+.app{display:grid;grid-template-columns:clamp(250px,22vw,310px) 1fr;height:100dvh}
+.rail{display:flex;flex-direction:column;gap:12px;padding:16px 14px;border-right:1px solid var(--edge);background:color-mix(in srgb,var(--bg2) 70%,transparent);backdrop-filter:blur(14px);overflow-y:auto;min-height:0}
+.main{display:flex;flex-direction:column;min-width:0;min-height:0}
+
+/* ---------- rail ---------- */
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{width:38px;height:38px;flex:none}
+.brand b{font-family:var(--disp);font-size:1.02rem;letter-spacing:.06em;line-height:1.1;display:block;
+  background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand small{display:block;font-size:.72rem;color:var(--mute)}
+.card{border:1px solid var(--edge);background:var(--glass);border-radius:16px;padding:12px}
+.who{display:flex;align-items:center;gap:10px}
+.rankico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex:none;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--a) 30%,transparent),color-mix(in srgb,var(--b) 30%,transparent));border:1px solid var(--edge)}
+.rankico svg{width:30px;height:30px}
+.who .nm{font-weight:600;font-size:1rem;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.who .rk{font-family:var(--disp);font-size:.8rem;letter-spacing:.08em;color:var(--a)}
+.who .sid{font-family:var(--mono);font-size:.7rem;color:var(--dim)}
+.xpbar{height:8px;border-radius:6px;background:var(--glass2);overflow:hidden;margin:10px 0 4px;border:1px solid var(--edge)}
+.xpbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--b));transition:width .6s}
+.xpcap{font-size:.72rem;color:var(--mute);display:flex;justify-content:space-between}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.stat{border:1px solid var(--edge);background:var(--glass);border-radius:12px;padding:8px 6px;text-align:center}
+.stat b{display:block;font-family:var(--disp);font-size:1.2rem;line-height:1.1}
+.stat span{font-size:.68rem;color:var(--mute)}
+.login label{display:block;font-size:.76rem;color:var(--mute);margin:6px 0 3px}
+.login input{width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--edge);background:var(--glass2);color:var(--text);font-family:var(--mono);font-size:.9rem}
+.login input:focus{outline:none;border-color:var(--a)}
+.login .err{color:#fb7185;font-size:.74rem;min-height:1.1em;margin-top:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;border-radius:12px;border:1px solid var(--edge);background:var(--glass2);font-weight:500;font-size:.88rem;text-decoration:none;transition:transform .15s, box-shadow .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn.pri{border:0;color:var(--ink);background:linear-gradient(100deg,var(--za,var(--a)),var(--zb,var(--b)));box-shadow:0 10px 26px -10px var(--za,var(--a))}
+.btn.full{width:100%;margin-top:8px}
+.btn.ghost{background:transparent}
+.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
+.ladder-h{font-family:var(--disp);font-size:.74rem;letter-spacing:.14em;color:var(--mute);margin:2px 2px 6px}
+.ladder{list-style:none;display:flex;flex-direction:column;gap:2px;position:relative}
+.ladder::before{content:'';position:absolute;left:15px;top:10px;bottom:10px;width:2px;background:var(--edge)}
+.ladder li button{width:100%;display:flex;align-items:center;gap:10px;padding:5px 6px;border:0;background:none;border-radius:10px;text-align:left;position:relative}
+.ladder li button:hover,.ladder li button.cur{background:var(--glass2)}
+.ladder .dot{width:20px;height:20px;border-radius:50%;flex:none;border:2px solid var(--zc);background:var(--bg);display:grid;place-items:center;font-size:.6rem;font-family:var(--mono);margin-left:6px;z-index:1}
+.ladder .dot.done{background:var(--zc);color:var(--ink)}
+.ladder .lt{flex:1;min-width:0;font-size:.82rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ladder .lt small{display:block;font-size:.66rem;color:var(--dim)}
+.ladder .ls{font-family:var(--mono);font-size:.7rem;color:var(--mute)}
+.ladder .sep{font-size:.66rem;color:var(--dim);letter-spacing:.12em;padding:6px 0 2px 34px;font-family:var(--disp)}
+.railfoot{margin-top:auto;display:flex;gap:6px;flex-wrap:wrap}
+.railfoot .btn{flex:1;padding:8px 8px;font-size:.78rem}
+
+/* ---------- main header ---------- */
+.top{display:flex;align-items:center;gap:12px;padding:14px clamp(14px,2.4vw,30px) 8px;flex-wrap:wrap}
+.top h1{font-family:var(--disp);font-size:clamp(1.25rem,2.3vw,2rem);letter-spacing:.03em;line-height:1.1}
+.top h1 em{font-style:normal;background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.top p{font-size:.84rem;color:var(--mute)}
+.tabs{display:flex;gap:6px;margin-left:auto;background:var(--glass);border:1px solid var(--edge);border-radius:14px;padding:4px}
+.tab{border:0;background:none;padding:7px 12px;white-space:nowrap;border-radius:10px;font-family:var(--disp);font-size:.8rem;letter-spacing:.06em;color:var(--mute)}
+.tab[aria-selected="true"]{background:var(--glass2);color:var(--text);box-shadow:inset 0 0 0 1px var(--edge)}
+.stage{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.85fr);gap:clamp(10px,1.6vw,22px);padding:6px clamp(14px,2.4vw,30px) 16px}
+
+/* ---------- map ---------- */
+.mapwrap{position:relative;min-height:0;overflow-y:auto;overflow-x:hidden;border-radius:22px;border:1px solid var(--edge);background:var(--glass);scrollbar-width:thin}
+.season-h{position:sticky;top:0;z-index:3;padding:12px 16px 10px;display:flex;flex-direction:column;gap:1px;background:linear-gradient(var(--bg2),color-mix(in srgb,var(--bg2) 0%,transparent));}
+.season-h b{font-family:var(--disp);letter-spacing:.12em;font-size:.82rem;color:var(--a)}
+.season-h span{font-size:.8rem;color:var(--mute)}
+.path{position:relative;padding:4px 0 26px}
+.path svg.wire{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.path svg.wire path{fill:none;stroke:var(--edge);stroke-width:3;stroke-dasharray:2 10;stroke-linecap:round}
+.path svg.wire path.lit{stroke:url(#wireGrad);stroke-dasharray:none;filter:drop-shadow(0 0 6px var(--a))}
+.node{position:relative;display:flex;align-items:center;gap:14px;width:min(78%,420px);margin:0 auto clamp(2px,1.2vh,18px);border:0;background:none;text-align:left;padding:0;z-index:1}
+.node.l{margin-left:6%} .node.r{margin-right:6%;flex-direction:row-reverse;text-align:right}
+.orb{--sz:clamp(52px,min(8vw,10vh),96px);width:var(--sz);height:var(--sz);flex:none;border-radius:50%;position:relative;display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--za) 40%,var(--bg2)),var(--bg2) 72%);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--za) 60%,transparent),0 14px 40px -12px var(--za);transition:transform .2s}
+.node:hover .orb{transform:translateY(-3px) scale(1.03)}
+.orb svg.ico{width:48%;height:48%}
+.orb svg.ring{position:absolute;inset:-7px;width:calc(100% + 14px);height:calc(100% + 14px);transform:rotate(-90deg)}
+.orb .boss{position:absolute;top:-8px;right:-8px;font-family:var(--disp);font-size:.6rem;letter-spacing:.1em;padding:2px 7px;border-radius:8px;background:var(--zc);color:var(--ink);font-weight:700}
+.node.soon .orb{filter:saturate(.25);opacity:.62}
+.node.next .orb{animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 2px color-mix(in srgb,var(--za) 60%,transparent),0 0 0 0 color-mix(in srgb,var(--za) 55%,transparent)}50%{box-shadow:0 0 0 2px var(--za),0 0 0 14px transparent}}
+.node.sel .orb{box-shadow:0 0 0 3px var(--za),0 0 0 7px color-mix(in srgb,var(--za) 25%,transparent),0 18px 46px -10px var(--za)}
+.ninfo{min-width:0}
+.ninfo .zn{font-family:var(--mono);font-size:.7rem;color:var(--za);letter-spacing:.1em}
+.ninfo .tt{font-family:var(--disp);font-size:clamp(1rem,1.4vw,1.2rem);line-height:1.15;letter-spacing:.03em}
+.ninfo .st{font-size:.76rem;color:var(--mute);line-height:1.3}
+.chip{display:inline-block;font-size:.66rem;padding:1px 8px;border-radius:999px;border:1px solid var(--edge);margin-top:3px;color:var(--mute)}
+.chip.ready{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 50%,transparent)}
+.chip.legacy{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 50%,transparent)}
+
+/* ---------- detail ---------- */
+.detail{min-height:0;overflow-y:auto;border-radius:22px;border:1px solid var(--edge);background:var(--glass);padding:clamp(14px,1.6vw,22px);position:relative;scrollbar-width:thin}
+.detail::before{content:'';position:absolute;inset:0;border-radius:22px;pointer-events:none;background:radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,var(--za) 20%,transparent),transparent 60%)}
+.dhead{display:flex;gap:14px;align-items:center;position:relative}
+.dhead .orb{--sz:70px}
+.dk{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:var(--za)}
+.dt{font-family:var(--disp);font-size:clamp(1.3rem,2vw,1.7rem);line-height:1.1}
+.ds{font-size:.86rem;color:var(--mute);margin-top:10px;position:relative}
+.topics{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;position:relative}
+.topics span{font-size:.76rem;padding:4px 10px;border-radius:999px;background:color-mix(in srgb,var(--za) 14%,transparent);border:1px solid color-mix(in srgb,var(--za) 35%,transparent)}
+.scorebox{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0;position:relative}
+.scorebox div{border:1px solid var(--edge);border-radius:12px;padding:8px;text-align:center;background:var(--glass)}
+.scorebox b{display:block;font-family:var(--disp);font-size:1.15rem}
+.scorebox span{font-size:.68rem;color:var(--mute)}
+.stars{font-family:var(--mono);letter-spacing:2px;color:var(--zc)}
+.dact{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;position:relative}
+.dact .btn{flex:1 1 160px}
+.sub-h{font-family:var(--disp);font-size:.74rem;letter-spacing:.14em;color:var(--mute);margin:16px 0 6px;position:relative}
+.quest{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;border:1px dashed var(--edge);text-decoration:none;margin-bottom:6px;position:relative;transition:border-color .2s}
+.quest:hover{border-color:var(--za)}
+.quest i{font-style:normal;font-family:var(--mono);font-size:.66rem;padding:2px 6px;border-radius:6px;background:color-mix(in srgb,var(--za) 18%,transparent);color:var(--za)}
+.quest span{font-size:.84rem;line-height:1.3}
+.quest small{display:block;font-size:.7rem;color:var(--mute)}
+.stamp{margin-top:12px;border-radius:14px;padding:10px 12px;border:1px solid color-mix(in srgb,var(--ok) 45%,transparent);background:color-mix(in srgb,var(--ok) 10%,transparent);position:relative;font-size:.82rem}
+.stamp code{font-family:var(--mono);font-size:1.05rem;letter-spacing:.12em;font-weight:600}
+.note{font-size:.74rem;color:var(--dim);margin-top:8px;position:relative}
+
+/* ---------- cards drawer ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px;padding:14px}
+.ccard{aspect-ratio:3/4;border-radius:16px;border:1px solid var(--edge);padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--za) 22%,var(--bg2)),var(--bg2));position:relative;overflow:hidden}
+.ccard::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.18) 45%,transparent 60%);transform:translateX(-100%);transition:transform .8s}
+.ccard.own:hover::after{transform:translateX(100%)}
+.ccard svg{width:56%;height:auto}
+.ccard b{font-family:var(--disp);font-size:.8rem;letter-spacing:.06em;line-height:1.1}
+.ccard small{font-size:.66rem;color:var(--mute);line-height:1.25}
+.ccard.lock{background:var(--glass);filter:grayscale(1);opacity:.5}
+.ccard.lock svg{opacity:.35}
+.final{padding:16px;display:grid;gap:12px}
+.final .bossart{border-radius:20px;border:1px solid var(--edge);padding:18px;background:radial-gradient(100% 120% at 50% 0%,color-mix(in srgb,#fb7185 25%,transparent),transparent 70%)}
+.final h3{font-family:var(--disp);font-size:1.4rem;letter-spacing:.05em}
+.final ul{padding-left:20px;font-size:.88rem;color:var(--mute)}
+
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;z-index:50;display:none;place-items:center;background:rgba(0,0,0,.55);padding:16px}
+.modal.open{display:grid}
+.modal .box{width:min(420px,100%);border-radius:18px;border:1px solid var(--edge);background:var(--bg2);padding:18px}
+.modal h3{font-family:var(--disp);letter-spacing:.06em;margin-bottom:8px}
+.modal label{display:block;font-size:.78rem;color:var(--mute);margin:8px 0 3px}
+.modal input,.modal select{width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--edge);background:var(--glass2);color:var(--text);font-family:var(--mono)}
+.modal .res{margin-top:10px;font-weight:600;min-height:1.4em}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(30px);opacity:0;transition:.3s;z-index:60;padding:10px 16px;border-radius:12px;background:var(--glass2);border:1px solid var(--edge);font-size:.86rem;box-shadow:0 10px 30px -10px #000}
+.toast.on{opacity:1;transform:translateX(-50%)}
+
+/* ---------- responsive ---------- */
+@media (max-width:1080px){ .stage{grid-template-columns:1fr 330px} }
+@media (max-width:860px){
+  body{overflow:auto}
+  .app{grid-template-columns:1fr;height:auto;min-height:100dvh}
+  .rail{border-right:0;border-bottom:1px solid var(--edge);overflow:visible;padding:12px 16px}
+  .rail .ladder-wrap,.rail .railfoot{display:none}
+  .stage{grid-template-columns:1fr;padding:6px 16px 16px}
+  .mapwrap,.detail{overflow:visible}
+  .top{padding:12px 16px 6px}
+  .tabs{margin-left:0;width:100%}
+  .tab{flex:1;padding:7px 4px;font-size:.72rem;letter-spacing:.02em}
+  .node{width:92%}
+  .node.l{margin-left:2%} .node.r{margin-right:2%}
+  .season-h{position:static}
 }
-a{color:inherit;text-decoration:none;}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
-
-/* ============ GATE ============ */
-#gate{
-  position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(1000px 600px at 50% 30%, #0d2116 0%, #060d09 75%);
-  padding:20px; transition:opacity .5s ease, visibility .5s;
+@media (min-width:861px) and (max-height:820px){
+  .ninfo .st{display:none}
+  .season-h{padding:8px 14px 4px}
+  .top{padding-top:8px}.top p{display:none}
+  .ladder li button{padding:2px 6px}.ladder .lt small{display:none}.ladder .sep{padding:3px 0 1px 34px}
+  .card{padding:9px}.who .rankico{width:38px;height:38px}.stat{padding:5px 4px}.stat b{font-size:1rem}
+  .rail{gap:8px;padding:10px 12px}
+  .brand svg{width:30px;height:30px}
 }
-#gate.hide{opacity:0;visibility:hidden;pointer-events:none;}
-.gatecard{
-  width:100%;max-width:420px;background:var(--panel);border:1px solid var(--copper-dim);
-  border-radius:10px;padding:34px 30px 28px;text-align:center;
-  box-shadow:0 30px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.03);
-  position:relative;overflow:hidden;
-}
-.gatecard::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,transparent,var(--copper),transparent);}
-.gate-chip{width:52px;height:52px;margin:0 auto 16px;border:2px solid var(--copper);border-radius:6px;
-  display:flex;align-items:center;justify-content:center;position:relative;}
-.gate-chip::before,.gate-chip::after{content:"";position:absolute;top:50%;width:10px;height:2px;background:var(--copper);}
-.gate-chip::before{left:-10px;} .gate-chip::after{right:-10px;}
-.gate-chip b{font-family:var(--mono);color:var(--copper-hi);font-size:11px;}
-.gatecard h1{font-family:var(--mono);font-weight:700;font-size:22px;letter-spacing:.14em;margin:0 0 6px;color:var(--silk);}
-.gatecard h1 span{color:var(--copper-hi);}
-.gatecard p{color:var(--silk-dim);font-size:13.5px;margin:0 0 22px;}
-.gate-field{text-align:left;margin-bottom:14px;}
-.gate-field label{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--silk-faint);
-  margin-bottom:6px;text-transform:uppercase;}
-.gate-field input{width:100%;background:#081209;border:1px solid var(--copper-dim);border-radius:6px;
-  color:var(--copper-hi);font-family:var(--mono);font-size:18px;letter-spacing:.12em;padding:12px 14px;text-align:center;}
-.gate-field input:focus{outline:none;border-color:var(--copper);box-shadow:0 0 0 3px rgba(201,138,61,.18);}
-#gateBtn{width:100%;background:var(--copper);color:#0c1a11;border:none;border-radius:6px;padding:12px 14px;
-  font-family:var(--mono);font-weight:700;font-size:13.5px;letter-spacing:.1em;cursor:pointer;transition:.15s;}
-#gateBtn:hover{background:var(--copper-hi);}
-.gate-msg{min-height:18px;font-size:12.5px;color:var(--danger);margin-top:10px;font-family:var(--mono);}
-.gate-hint{margin-top:18px;padding-top:16px;border-top:1px dashed var(--copper-dim);
-  font-size:11.5px;color:var(--silk-faint);font-family:var(--mono);line-height:1.7;}
-
-/* ============ HEADER ============ */
-header{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:54px 22px 10px;text-align:center;}
-.badges{display:flex;gap:8px;justify-content:center;margin-bottom:18px;}
-.badge{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--copper-hi);
-  border:1px solid var(--copper-dim);border-radius:20px;padding:4px 13px;background:rgba(201,138,61,.08);}
-.wordmark{font-family:var(--mono);font-weight:700;font-size:clamp(38px,7vw,64px);letter-spacing:.04em;
-  margin:0;color:var(--silk);}
-.wordmark span{color:var(--copper-hi);}
-header .tagline{color:var(--silk-dim);font-size:15.5px;max-width:560px;margin:14px auto 0;}
-.course-line{font-family:var(--mono);font-size:12px;color:var(--silk-faint);margin-top:10px;letter-spacing:.05em;}
-
-/* power meter */
-.powerbar{max-width:420px;margin:26px auto 0;background:var(--panel);border:1px solid var(--copper-dim);
-  border-radius:8px;padding:12px 16px;}
-.powerbar .pbtop{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;
-  color:var(--silk-faint);letter-spacing:.08em;margin-bottom:8px;}
-.pbtop b{color:var(--copper-hi);}
-.segs{display:flex;gap:5px;}
-.seg{flex:1;height:8px;border-radius:2px;background:var(--via);border:1px solid var(--copper-dim);transition:.3s;}
-.seg.on{background:var(--ok);border-color:var(--ok);box-shadow:0 0 8px rgba(74,222,128,.6);}
-
-/* ============ TRACE / MODULE LIST ============ */
-main{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:50px 22px 90px;}
-.trace-wrap{position:relative;}
-.trace-line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:
-  repeating-linear-gradient(180deg,var(--copper) 0 6px, transparent 6px 12px);
-  opacity:.55;transform:translateX(-50%);}
-@media(max-width:760px){.trace-line{left:26px;}}
-
-.section-tag{position:relative;text-align:center;margin:46px 0 26px;}
-.section-tag:first-child{margin-top:0;}
-.section-tag span{background:var(--bg);position:relative;z-index:1;padding:0 16px;
-  font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;color:var(--copper-hi);text-transform:uppercase;}
-
-.row{position:relative;display:flex;margin-bottom:34px;}
-.row .stub{position:absolute;top:50%;height:2px;background:var(--copper);opacity:.55;}
-.row.left{justify-content:flex-start;}
-.row.right{justify-content:flex-end;}
-.row.left .stub{left:50%;width:calc(50% - 210px);}
-.row.right .stub{right:50%;width:calc(50% - 210px);}
-@media(max-width:760px){
-  .row, .row.left, .row.right{justify-content:flex-start;padding-left:52px;}
-  .row .stub{left:26px;width:26px;}
-}
-
-.via{position:absolute;left:50%;top:50%;width:9px;height:9px;border-radius:50%;background:var(--copper);
-  transform:translate(-50%,-50%);box-shadow:0 0 0 3px var(--bg);}
-@media(max-width:760px){.via{left:26px;}}
-
-.chip{
-  width:420px;max-width:calc(100vw - 60px);background:var(--panel);border:1px solid var(--copper-dim);
-  border-radius:8px;padding:18px 20px;display:block;position:relative;transition:transform .15s,border-color .15s,box-shadow .15s;
-}
-.chip::before,.chip::after{content:"";position:absolute;top:22px;bottom:22px;width:2px;background:var(--copper-dim);}
-.chip::before{left:-2px;} .chip::after{right:-2px;}
-.chip:hover, .chip:focus-visible{border-color:var(--accent,var(--copper));transform:translateY(-2px);
-  box-shadow:0 14px 30px rgba(0,0,0,.4), 0 0 0 1px var(--accent,var(--copper)) inset;}
-.chip-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.chip-id{font-family:var(--mono);font-size:11px;color:var(--silk-faint);letter-spacing:.08em;}
-.led{width:9px;height:9px;border-radius:50%;background:var(--via);border:1px solid var(--copper-dim);margin-left:auto;transition:.3s;}
-.led.visited{background:var(--accent,var(--ok));border-color:var(--accent,var(--ok));box-shadow:0 0 8px var(--accent,var(--ok));}
-.chip-name{font-family:var(--mono);font-weight:700;font-size:19px;color:var(--silk);letter-spacing:.02em;}
-.chip-name b{color:var(--accent,var(--copper-hi));}
-.chip-fig{font-family:var(--mono);font-size:11px;color:var(--accent,var(--copper-hi));margin-top:2px;}
-.chip-desc{font-size:13.5px;color:var(--silk-dim);margin-top:9px;line-height:1.6;}
-.chip-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;
-  padding-top:12px;border-top:1px dashed var(--copper-dim);}
-.chip-cat{font-family:var(--mono);font-size:10.5px;color:var(--silk-faint);letter-spacing:.06em;}
-.chip-go{font-family:var(--mono);font-size:11.5px;color:var(--accent,var(--copper-hi));font-weight:600;}
-
-footer{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:0 22px 50px;text-align:center;}
-footer p{font-family:var(--mono);font-size:11.5px;color:var(--silk-faint);line-height:1.8;}
-
-/* ============ ACHIEVEMENT TOAST ============ */
-.ach-toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-30px);z-index:80;
-  background:var(--panel);border:1px solid var(--ok);color:var(--silk);font-family:var(--mono);font-size:12.5px;
-  padding:11px 22px;border-radius:24px;opacity:0;transition:.35s;letter-spacing:.03em;display:flex;gap:8px;align-items:center;
-  box-shadow:0 14px 34px rgba(0,0,0,.5), 0 0 0 1px rgba(74,222,128,.25);white-space:nowrap;}
-.ach-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.ach-toast b{color:var(--ok);}
-
-/* ============ CONFETTI ============ */
-#confettiLayer{position:fixed;inset:0;pointer-events:none;z-index:90;overflow:hidden;}
-.confetti-bit{position:absolute;top:-14px;width:8px;height:14px;opacity:.95;
-  animation:fall linear forwards;border-radius:1px;}
-@keyframes fall{ to{ transform:translateY(108vh) rotate(540deg); opacity:.15; } }
-
-/* ============ BOSS BATTLE SECTION ============ */
-.boss-wrap{max-width:640px;margin:0 auto;}
-.boss-card{position:relative;background:linear-gradient(160deg,#210f0f,#1a0c0c);
-  border:1px solid var(--copper-dim);border-radius:12px;padding:26px 24px;display:block;overflow:hidden;
-  transition:transform .2s,border-color .2s,box-shadow .2s;}
-.boss-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,transparent,#ff3b3b,transparent);}
-.boss-card.unlocked{border-color:#7a1f1f;cursor:pointer;}
-.boss-card.unlocked:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(255,59,59,.25), 0 0 0 1px #ff3b3b inset;}
-.boss-card.locked{cursor:not-allowed;filter:grayscale(.7);opacity:.72;}
-.boss-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.boss-badge{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:#ff6b6b;
-  border:1px solid #7a1f1f;border-radius:20px;padding:3px 11px;background:rgba(255,59,59,.1);}
-.boss-badge.glow{animation:bossglow 1.6s ease-in-out infinite;}
-@keyframes bossglow{0%,100%{box-shadow:0 0 0 rgba(255,59,59,0);}50%{box-shadow:0 0 14px rgba(255,59,59,.55);}}
-.boss-name{font-family:var(--mono);font-weight:700;font-size:24px;color:var(--silk);letter-spacing:.02em;}
-.boss-name b{color:#ff6b6b;}
-.boss-desc{font-size:13.5px;color:var(--silk-dim);margin-top:8px;line-height:1.7;}
-.boss-lockline{font-family:var(--mono);font-size:12px;color:var(--silk-faint);margin-top:14px;
-  padding-top:14px;border-top:1px dashed #4a2323;display:flex;justify-content:space-between;align-items:center;}
-.boss-cta{font-family:var(--mono);font-size:12px;color:#ff6b6b;font-weight:600;margin-top:14px;
-  padding-top:14px;border-top:1px dashed #4a2323;text-align:right;}
-.lock-icon{font-size:15px;}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
-<body class="board">
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="wireGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#00f0ff"/><stop offset="1" stop-color="#b14bff"/></linearGradient>
+</defs></svg>
 
-<div id="confettiLayer"></div>
-<div class="ach-toast" id="achToast"></div>
-
-<div id="gate">
-  <div class="gatecard">
-    <div class="gate-chip"><b>PWR</b></div>
-    <h1>MAIN<span>BOARD</span></h1>
-    <p>ป้อนรหัสเพื่อจ่ายไฟเข้าระบบห้องทดลอง</p>
-    <div class="gate-field">
-      <label>รหัสนักศึกษา (10 หลัก) หรือรหัสรายวิชา</label>
-      <input id="gateInput" type="text" inputmode="text" autocomplete="off" maxlength="20" placeholder="6800000000">
+<div class="app">
+  <!-- ================= RAIL ================= -->
+  <aside class="rail" aria-label="ข้อมูลผู้เล่นและความคืบหน้า">
+    <div class="brand">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="var(--glass2)" stroke="var(--edge)"/><path d="M6 20h7l3.5-7 5 14 3.5-7h9" fill="none" stroke="url(#wireGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><b>CIRCUIT QUEST</b><small>GNR2022 อิเล็กทรอนิกส์พื้นฐาน</small></div>
     </div>
-    <button id="gateBtn">จ่ายไฟเข้าระบบ</button>
-    <div class="gate-msg" id="gateMsg"></div>
-    <div class="gate-hint">รับรหัสนักศึกษา 10 หลักของทุกคน หรือรหัสรายวิชา</div>
-  </div>
+
+    <div class="card" id="playerCard"></div>
+
+    <div class="stats">
+      <div class="stat"><b id="stStars">0</b><span>ดาวรวม</span></div>
+      <div class="stat"><b id="stStreak">0</b><span>สตรีค (วัน)</span></div>
+      <div class="stat"><b id="stCards">0/10</b><span>การ์ด</span></div>
+    </div>
+
+    <div class="ladder-wrap">
+      <div class="ladder-h">ความคืบหน้า</div>
+      <ul class="ladder" id="ladder"></ul>
+    </div>
+
+    <div class="railfoot">
+      <button class="btn" id="themeBtn" type="button">สลับโหมดสว่าง</button>
+      <button class="btn ghost" id="teachBtn" type="button">ผู้สอน</button>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+    <header class="top">
+      <div>
+        <h1><em>แผนที่ภารกิจ</em> วงจรอิเล็กทรอนิกส์</h1>
+        <p>เลือกโซน เล่นให้ได้ 5 ดาวขึ้นไป รับการ์ดอุปกรณ์และรหัสแสตมป์ แล้วไปล้ม Final Boss</p>
+      </div>
+      <nav class="tabs" role="tablist" aria-label="ซีซัน">
+        <button class="tab" role="tab" data-tab="s1" aria-selected="true">SEASON 1</button>
+        <button class="tab" role="tab" data-tab="s2" aria-selected="false">SEASON 2</button>
+        <button class="tab" role="tab" data-tab="cards" aria-selected="false">การ์ด</button>
+        <button class="tab" role="tab" data-tab="final" aria-selected="false">FINAL</button>
+      </nav>
+    </header>
+    <section class="stage">
+      <div class="mapwrap" id="mapwrap"></div>
+      <aside class="detail" id="detail" aria-live="polite"></aside>
+    </section>
+  </main>
 </div>
 
-<header>
-  <div class="badges"><span class="badge">GNR2022</span><span class="badge">GNR2024</span><span class="badge">BASIC ELECTRONICS</span></div>
-  <h1 class="wordmark" id="secretWordmark" style="cursor:default;user-select:none;">MAIN<span>BOARD</span></h1>
-  <p class="tagline">จ่ายไฟให้เมนบอร์ดติดครบทั้ง 7 ดวง ปลดล็อกภารกิจสุดท้าย <b style="color:var(--copper-hi)">BOSS BATTLE</b> —
-  ห้องทดลองอิเล็กทรอนิกส์เสมือนที่เล่นได้จริง กดชิปไหนก่อนก็ได้ แล้วมาเก็บให้ครบ!</p>
-  <div class="course-line">คณะวิศวกรรมศาสตร์ · มหาวิทยาลัยรามคำแหง</div>
-
-  <div class="powerbar">
-    <div class="pbtop"><span>ระบบพร้อมใช้งาน</span><b id="pbCount">0 / 7</b></div>
-    <div class="segs" id="segs"></div>
+<div class="modal" id="teachModal" role="dialog" aria-modal="true" aria-labelledby="tmH">
+  <div class="box">
+    <h3 id="tmH">ตรวจรหัสแสตมป์</h3>
+    <p style="font-size:.8rem;color:var(--mute)">สำหรับผู้สอน ตรวจว่ารหัสที่นักศึกษาแสดงตรงกับรหัสนักศึกษาและโซนหรือไม่</p>
+    <label for="tmSecret">รหัสผู้สอน</label><input id="tmSecret" type="password" autocomplete="off">
+    <label for="tmSid">รหัสนักศึกษา 10 หลัก</label><input id="tmSid" inputmode="numeric" maxlength="10">
+    <label for="tmCode">รหัสแสตมป์ (เช่น Z6-ABCDE)</label><input id="tmCode" autocomplete="off">
+    <div class="res" id="tmRes"></div>
+    <div style="display:flex;gap:8px;margin-top:10px"><button class="btn pri" id="tmGo" type="button" style="flex:1">ตรวจ</button><button class="btn" id="tmClose" type="button">ปิด</button></div>
   </div>
-</header>
-
-<main>
-<div class="trace-wrap">
-  <div class="trace-line"></div>
-
-  <div class="section-tag"><span>หมวดที่ 1 — ตัวแสดงผลดิจิทัล</span></div>
-  <div class="row left" data-row>
-    <div class="stub"></div><div class="via"></div>
-    <a class="chip" data-id="digitforge" data-accent="#f2a541" href="Content_1_digit_forge_7segment_lab5.html">
-      <div class="chip-top"><span class="chip-id">U1</span><span class="led" id="led-digitforge"></span></div>
-      <div class="chip-name">DIGIT <b>FORGE</b></div>
-      <div class="chip-fig">LAB 5 — ตัวแสดงผล 7 ส่วน</div>
-      <div class="chip-desc">ต่อขาแอโนดร่วม/แคโทดร่วมเอง เห็นเซกเมนต์ติดจริงตามระดับสัญญาณที่ป้อน</div>
-      <div class="chip-foot"><span class="chip-cat">ดิจิทัลพื้นฐาน</span><span class="chip-go">เข้าห้องทดลอง →</span></div>
-    </a>
-  </div>
-
-  <div class="section-tag"><span>หมวดที่ 2 — เซนเซอร์แสงและอินฟราเรด</span></div>
-
-  <div class="row right" data-row>
-    <div class="stub"></div><div class="via"></div>
-    <a class="chip" data-id="sunchime" data-accent="#ff8a3d" href="Lab_3_4_sun_chime_light_alarm_3_40.html">
-      <div class="chip-top"><span class="chip-id">U2</span><span class="led" id="led-sunchime"></span></div>
-      <div class="chip-name">SUN <b>CHIME</b></div>
-      <div class="chip-fig">รูปที่ 3-40 — ปลุกด้วยแสงอาทิตย์</div>
-      <div class="chip-desc">LDR จับแสงแดด ปรับจุดตั้งไว แล้วฟังว่าออสซิลเลเตอร์เสียงเปิดเมื่อไร</div>
-      <div class="chip-foot"><span class="chip-cat">LDR · เสียงเตือน</span><span class="chip-go">เข้าห้องทดลอง →</span></div>
-    </a>
-  </div>
-
-  <div class="row left" data-row>
-    <div class="stub"></div><div class="via"></div>
-    <a class="chip" data-id="duskguard" data-accent="#6ea8ff" href="Lab_3_5_dusk_guard_night_light_3_44.html">
-      <div class="chip-top"><span class="chip-id">U3</span><span class="led" id="led-duskguard"></span></div>
-      <div class="chip-name">DUSK <b>GUARD</b></div>
-      <div class="chip-fig">รูปที่ 3-44 — ไฟกลางคืนอัตโนมัติ</div>
-      <div class="chip-desc">คอมพาราเตอร์เอาต์พุตแบบโอเพนคอลเลกเตอร์ เปิดไฟเองเมื่อฟ้ามืด</div>
-      <div class="chip-foot"><span class="chip-cat">LDR · โอเพนคอลเลกเตอร์</span><span class="chip-go">เข้าห้องทดลอง →</span></div>
-    </a>
-  </div>
-
-  <div class="row right" data-row>
-    <div class="stub"></div><div class="via"></div>
-    <a class="chip" data-id="beamsentry" data-accent="#ff3b3b" href="Lab_3_6_beam_sentry_intruder_alarm_3_47.html">
-      <div class="chip-top"><span class="chip-id">U4</span><span class="led" id="led-beamsentry"></span></div>
-      <div class="chip-name">BEAM <b>SENTRY</b></div>
-      <div class="chip-fig">รูปที่ 3-47 — กันขโมยตัดผ่านลำแสง</div>
-      <div class="chip-desc">ตัดลำแสงแล้วดูวงจร latch ค้างเสียงเตือนไว้ จนกว่าจะกด Reset เอง</div>
-      <div class="chip-foot"><span class="chip-cat">ลำแสง · หน่วยความจำ</span><span class="chip-go">เข้าห้องทดลอง →</span></div>
-    </a>
-  </div>
-
-  <div class="row left" data-row>
-    <div class="stub"></div><div class="via"></div>
-    <a class="chip" data-id="pulseeye" data-accent="#00e5a0" href="Lab_3_7_pulse_eye_reflective_object_3_50.html">
-      <div class="chip-top"><span class="chip-id">U5</span><span class="led" id="led-pulseeye"></span></div>
-      <div class="chip-name">PULSE <b>EYE</b></div>
-      <div class="chip-fig">รูปที่ 3-50 — เซนเซอร์สะท้อนวัตถุ</div>
-      <div class="chip-desc">เลื่อนวัตถุเข้าใกล้-ออกห่าง เห็นเซนเซอร์ IR ตอบสนองแบบเรียลไทม์ ไม่มีการค้างสถานะ</div>
-      <div class="chip-foot"><span class="chip-cat">อินฟราเรด · เรียลไทม์</span><span class="chip-go">เข้าห้องทดลอง →</span></div>
-    </a>
-  </div>
-
-  <div class="section-tag"><span>หมวดที่ 3 — คอมพาราเตอร์และโปรเจกต์รวบยอด</span></div>
-
-  <div class="row right" data-row>
-    <div class="stub"></div><div class="via"></div>
-    <a class="chip" data-id="trippoint" data-accent="#f2a541" href="Lab_1_3_trip_point_level_detector_sim.html">
-      <div class="chip-top"><span class="chip-id">U6</span><span class="led" id="led-trippoint"></span></div>
-      <div class="chip-name">TRIP <b>POINT</b></div>
-      <div class="chip-fig">วงจรตรวจจับระดับแรงดัน</div>
-      <div class="chip-desc">หมุนตัวแบ่งแรงดันหาว่าคอมพาราเตอร์ตัวเดียว (IC1A) พลิกสถานะที่จุดใด</div>
-      <div class="chip-foot"><span class="chip-cat">คอมพาราเตอร์เดี่ยว</span><span class="chip-go">เข้าห้องทดลอง →</span></div>
-    </a>
-  </div>
-
-  <div class="row left" data-row>
-    <div class="stub"></div><div class="via"></div>
-    <a class="chip" data-id="barranger" data-accent="#f2a541" href="Proj_1_bar_ranger_led_ruler_sim.html">
-      <div class="chip-top"><span class="chip-id">U7</span><span class="led" id="led-barranger"></span></div>
-      <div class="chip-name">BAR <b>RANGER</b></div>
-      <div class="chip-fig">โปรเจกต์รวบยอด — ไม้บรรทัดอิเล็กทรอนิกส์</div>
-      <div class="chip-desc">รวมความรู้ทุกโมดูลไว้ใน LM339 สี่ตัวพร้อมกัน หลักการเดียวกับ Flash ADC 2 บิต</div>
-      <div class="chip-foot"><span class="chip-cat">ควอดคอมพาราเตอร์</span><span class="chip-go">เข้าห้องทดลอง →</span></div>
-    </a>
-  </div>
-
-  <div class="section-tag"><span>หมวดที่ 4 — ภารกิจสุดท้าย</span></div>
-
-  <div class="boss-wrap">
-    <a class="boss-card locked" id="bossCard" href="Boss_Battle_Exam_Simulator.html">
-      <div class="boss-top">
-        <span class="boss-badge" id="bossBadge">🔒 ล็อกอยู่</span>
-      </div>
-      <div class="boss-name">BOSS <b>BATTLE</b></div>
-      <div class="boss-desc" id="bossDesc">แบบฝึกซ้อมสอบจับเวลา 20 ข้อ คละทุกหัวข้อที่เรียนมา สะสมคอมโบ ลุ้นแรงก์ S
-        เก็บโมดูลทดลองให้ครบ 7/7 ก่อน เพื่อปลดล็อกด่านนี้</div>
-      <div class="boss-lockline" id="bossLockLine">
-        <span><span class="lock-icon">🔒</span> ต้องเก็บให้ครบ <b id="bossNeed">7</b>/7 โมดูลก่อน</span>
-      </div>
-    </a>
-  </div>
-
 </div>
-</main>
-
-<footer>
-  <p>MAINBOARD · ชุดสื่อการสอนวิชาพื้นฐานอิเล็กทรอนิกส์ GNR2022 / GNR2024<br>
-  วางไฟล์นี้ไว้โฟลเดอร์เดียวกับไฟล์ห้องทดลองทั้ง 7 ไฟล์ จึงจะเปิดใช้งานได้ครบ</p>
-</footer>
+<div class="toast" id="toast" role="status"></div>
 
 <script>
-const MODULES=['digitforge','sunchime','duskguard','beamsentry','pulseeye','trippoint','barranger'];
-const KEY_AUTH='mainboard_auth', KEY_VISITED='mainboard_visited';
-
-function getVisited(){
-  try{ return JSON.parse(localStorage.getItem(KEY_VISITED)||'[]'); }catch(e){ return []; }
-}
-function setVisited(arr){
-  try{ localStorage.setItem(KEY_VISITED, JSON.stringify(arr)); }catch(e){}
-}
-function paintProgress(){
-  const visited=getVisited();
-  document.getElementById('pbCount').textContent=visited.length+' / '+MODULES.length;
-  const segs=document.getElementById('segs');
-  segs.innerHTML='';
-  MODULES.forEach(id=>{
-    const seg=document.createElement('div');
-    seg.className='seg'+(visited.includes(id)?' on':'');
-    segs.appendChild(seg);
-  });
-  MODULES.forEach(id=>{
-    const led=document.getElementById('led-'+id);
-    if(led) led.classList.toggle('visited', visited.includes(id));
-  });
-}
-/* ---------- achievement toast ---------- */
-const achToast=document.getElementById('achToast');
-let achTimer=null;
-function showAch(text){
-  clearTimeout(achTimer);
-  achToast.innerHTML=text;
-  achToast.classList.add('show');
-  achTimer=setTimeout(()=>achToast.classList.remove('show'), 2200);
-}
-
-/* ---------- confetti ---------- */
-function burstConfetti(n){
-  n = n || 60;
-  const colors=['#c98a3d','#e8b45c','#4ade80','#6ea8ff','#ff3b3b','#00e5a0'];
-  const layer=document.getElementById('confettiLayer');
-  for(let i=0;i<n;i++){
-    const bit=document.createElement('div');
-    bit.className='confetti-bit';
-    bit.style.left=(Math.random()*100)+'vw';
-    bit.style.background=colors[Math.floor(Math.random()*colors.length)];
-    bit.style.animationDuration=(2.2+Math.random()*1.6)+'s';
-    bit.style.animationDelay=(Math.random()*0.4)+'s';
-    bit.style.transform='rotate('+Math.floor(Math.random()*360)+'deg)';
-    layer.appendChild(bit);
-    setTimeout(()=>bit.remove(), 4500);
-  }
-}
-
-/* ---------- boss battle unlock ---------- */
-const bossCard=document.getElementById('bossCard'), bossBadge=document.getElementById('bossBadge'),
-      bossDesc=document.getElementById('bossDesc'), bossLockLine=document.getElementById('bossLockLine');
-const KEY_CHEAT='mainboard_cheat_unlock';
-function cheatActive(){ try{ return localStorage.getItem(KEY_CHEAT)==='1'; }catch(e){ return false; } }
-function paintBoss(){
-  const visited=getVisited();
-  const need=MODULES.length - visited.filter(id=>MODULES.includes(id)).length;
-  const doneCount = MODULES.length - need;
-  const unlocked = need<=0 || cheatActive();
-  if(unlocked){
-    if(bossCard.classList.contains('locked')){
-      bossCard.classList.remove('locked'); bossCard.classList.add('unlocked');
-      bossBadge.textContent='🔥 ปลดล็อกแล้ว!'; bossBadge.classList.add('glow');
-      bossDesc.textContent='แบบฝึกซ้อมสอบจับเวลา 20 ข้อ คละทุกหัวข้อที่เรียนมา สะสมคอมโบ ลุ้นแรงก์ S — พร้อมลุยได้เลย!';
-      bossLockLine.innerHTML='<span></span><span class="boss-cta" style="margin:0;padding:0;border:none;">เข้าสู่ภารกิจ →</span>';
-      if(need<=0){ burstConfetti(90); showAch('🎉 <b>ปลดล็อก BOSS BATTLE!</b> เก็บครบ 7/7 โมดูลแล้ว ลุยด่านสุดท้ายได้เลย'); }
-    }
-  } else {
-    bossCard.classList.add('locked'); bossCard.classList.remove('unlocked');
-    document.getElementById('bossNeed').textContent = doneCount;
-  }
-}
-function guardBoss(e){
-  if(bossCard.classList.contains('locked')){
-    e.preventDefault();
-    const visited=getVisited().filter(id=>MODULES.includes(id));
-    showAch('🔒 เก็บโมดูลอีก <b>'+(MODULES.length-visited.length)+'</b> ชิ้นเพื่อปลดล็อก BOSS BATTLE');
-  }
-}
-bossCard.addEventListener('click', guardBoss);
-
-/* ---------- secret shortcut: click "MAINBOARD" wordmark 5x fast to unlock ---------- */
 (function(){
-  const wm = document.getElementById('secretWordmark');
-  let clicks = 0, clickTimer = null;
-  wm.addEventListener('click', ()=>{
-    clicks++;
-    clearTimeout(clickTimer);
-    clickTimer = setTimeout(()=>{ clicks = 0; }, 4000);
-    if(clicks >= 5){
-      clicks = 0; clearTimeout(clickTimer);
-      if(!cheatActive()){
-        try{ localStorage.setItem(KEY_CHEAT,'1'); }catch(e){}
-        burstConfetti(70);
-        showAch('🎮 <b>โค้ดลับปลดล็อก!</b> เข้า BOSS BATTLE ได้ทันทีโดยไม่ต้องเก็บโมดูลครบ');
-        paintBoss();
-      } else {
-        showAch('🎮 โค้ดลับเปิดใช้งานอยู่แล้ว — เข้า BOSS BATTLE ได้เลย');
-      }
+'use strict';
+var ID_KEY='gnr2022_student', RES_KEY='gnr2022_results', DAY_KEY='gnr2022_days', SECRET='gnr2569', SECRETS=['ru2569','gnr2569'], MASK='xxxxxxxxxx';
+
+/* ---------- ไอคอนอุปกรณ์ (ใช้ทั้งแผนที่ การ์ด และแรงก์) ---------- */
+var IC={
+ resistor:'<svg viewBox="0 0 48 48" class="ico" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M3 24h8"/><rect x="11" y="16" width="26" height="16" rx="6"/><path d="M37 24h8"/><path d="M17 16v16" stroke="#ef4444"/><path d="M23 16v16" stroke="#a855f7"/><path d="M29 16v16" stroke="#facc15"/></svg>',
+ ldr:'<svg viewBox="0 0 48 48" class="ico" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="24" cy="28" r="13"/><path d="M17 28c2-6 5 6 7 0s5 6 7 0"/><path d="M8 4l7 8M18 2l3 9" stroke="#facc15"/></svg>',
+ crystal:'<svg viewBox="0 0 48 48" class="ico" fill="none" stroke="currentColor" stroke-width="3"><path d="M24 3l17 10v22L24 45 7 35V13z"/><path d="M24 3v42M7 13l34 22M41 13L7 35" opacity=".45"/><circle cx="24" cy="24" r="4" fill="currentColor"/></svg>',
+ diode:'<svg viewBox="0 0 48 48" class="ico" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><path d="M3 24h12M33 24h12"/><path d="M15 12l18 12-18 12z" fill="currentColor" fill-opacity=".25"/><path d="M33 11v26"/><path d="M30 6l6-5M36 8l6-5" stroke="#facc15"/></svg>',
+ bridge:'<svg viewBox="0 0 48 48" class="ico" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M24 4L44 24 24 44 4 24z"/><path d="M4 24c4-8 8 8 12 0s8 8 12 0" stroke="#22d3ee" opacity=".9"/><path d="M30 34h12" stroke="#fde047"/></svg>',
+ melody:'<svg viewBox="0 0 48 48" class="ico" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 36V10l22-5v26"/><circle cx="13" cy="36" r="6" fill="currentColor" fill-opacity=".3"/><circle cx="35" cy="31" r="6" fill="currentColor" fill-opacity=".3"/><path d="M18 17l22-5" /></svg>',
+ bjt:'<svg viewBox="0 0 48 48" class="ico" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="26" cy="24" r="19"/><path d="M4 24h14M18 12v24M18 18l14-9v-8M18 30l14 9v8"/><path d="M27 36l5 3-1-6" fill="currentColor"/></svg>',
+ opamp:'<svg viewBox="0 0 48 48" class="ico" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><path d="M10 6l30 18-30 18z"/><path d="M2 16h8M2 32h8M40 24h7"/><path d="M14 16h5M14 32h5M16.5 29.5v5" stroke-width="2.4"/></svg>',
+ ic555:'<svg viewBox="0 0 48 48" class="ico" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><rect x="11" y="6" width="26" height="36" rx="4"/><path d="M4 13h7M4 21h7M4 29h7M4 37h7M37 13h7M37 21h7M37 29h7M37 37h7" stroke-width="2.4"/><text x="24" y="29" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor" stroke="none">555</text></svg>',
+ mosfet:'<svg viewBox="0 0 48 48" class="ico" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 30h12M16 14v20M21 12v6M21 21v6M21 30v6M21 15h14V4M21 33h14v11M21 24h14v9"/><path d="M27 24l5-3v6z" fill="currentColor"/><path d="M38 12a6 6 0 0 1 6 6M38 6a12 12 0 0 1 9 9" stroke="#60a5fa" stroke-width="2.4"/></svg>',
+ skull:'<svg viewBox="0 0 48 48" class="ico" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><path d="M8 22a16 16 0 0 1 32 0v8l-5 3v8H13v-8l-5-3z"/><circle cx="18" cy="23" r="4" fill="currentColor"/><circle cx="30" cy="23" r="4" fill="currentColor"/><path d="M21 41v-5M27 41v-5"/></svg>',
+ cap:'<svg viewBox="0 0 48 48" class="ico" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M3 24h16M29 24h16M19 10v28M29 10v28"/></svg>',
+ mcu:'<svg viewBox="0 0 48 48" class="ico" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><rect x="10" y="10" width="28" height="28" rx="4"/><rect x="18" y="18" width="12" height="12" rx="2" fill="currentColor" fill-opacity=".3"/><path d="M16 4v6M24 4v6M32 4v6M16 38v6M24 38v6M32 38v6M4 16h6M4 24h6M4 32h6M38 16h6M38 24h6M38 32h6"/></svg>',
+ legend:'<svg viewBox="0 0 48 48" class="ico" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><path d="M24 3l6 13 14 2-10 10 3 14-13-7-13 7 3-14L4 18l14-2z" fill="currentColor" fill-opacity=".25"/></svg>'
+};
+
+/* ---------- โซนทั้งหมด (status: ready = ระบบใหม่, legacy = ฉบับเดิมรออัปเกรด, soon = กำลังสร้าง) ---------- */
+var ZONES=[
+ {id:'z1',game:'game1',season:'s1',name:'RESISTOR CITY',th:'เมืองตัวต้านทาน',ico:'resistor',za:'#f97316',zb:'#a855f7',zc:'#facc15',
+  file:'play/s1-z1-resistor-city.html',status:'ready',
+  sub:'อ่านแถบสีให้ไว ก่อนเข้าเมืองวงจร',
+  topics:['กฎของโอห์มและ LED','แถบสี 4 และ 5 แถบ','ค่ามาตรฐาน E12 และพิกัดวัตต์'],
+  card:'ตัวต้านทาน: จำกัดกระแส แบ่งแรงดัน',quests:[]},
+ {id:'z2',game:'game2',season:'s1',name:'LUMEN STATION',th:'สถานีแสง',ico:'ldr',za:'#38bdf8',zb:'#facc15',zc:'#a3e635',
+  file:'play/s1-z2-lumen-station.html',status:'ready',
+  sub:'ให้แสงกลายเป็นแรงดันที่ไมโครคอนโทรลเลอร์อ่านได้',
+  topics:['ตัวต้านทานปรับค่าได้','LDR และเซนเซอร์แสง','วงจรแบ่งแรงดันและ ADC'],
+  card:'LDR: มืด = ความต้านทานสูง',
+  quests:[{f:'lab/lab-3-40-sun-chime.html',t:'SUN CHIME',d:'รูปที่ 3-40 ปลุกด้วยแสงอาทิตย์'}]},
+ {id:'z3',game:'game3',season:'s1',name:'DEEP CRYSTAL',th:'ผลึกลึก',ico:'crystal',za:'#22d3ee',zb:'#818cf8',zc:'#f0abfc',
+  file:'play/s1-z3-deep-crystal.html',status:'ready',
+  sub:'ดำดิ่งเข้าไปในผลึกซิลิคอน ดูว่ากระแสเกิดจากอะไร',
+  topics:['แถบพลังงาน','การเจือสาร N และ P','รอยต่อ PN'],
+  card:'ผลึกซิลิคอน: เจือสารแล้วนำไฟฟ้า',quests:[]},
+ {id:'z4',game:'game4',season:'s1',name:'DIODE FORGE',th:'โรงตีไดโอด',ico:'diode',za:'#ff6a1f',zb:'#ff2e88',zc:'#ffd60a',
+  file:'play/s1-z4-diode-forge.html',status:'ready',
+  sub:'ไดโอด LED และตัวเลข 7 ส่วน ประตูทางเดียวของกระแส',
+  topics:['ไดโอดไบแอสตรงและย้อนกลับ','LED และตัวต้านทานจำกัดกระแส','7-segment','ซีเนอร์'],
+  card:'ไดโอด: ให้กระแสไหลทางเดียว',
+  quests:[{f:'lab/lab-7seg-digit-forge.html',t:'DIGIT FORGE',d:'LAB 5 ตัวแสดงผล 7 ส่วน'}]},
+ {id:'z5',game:'game5',season:'s1',name:'STORM HARBOR',th:'ท่าเรือพายุ',ico:'bridge',za:'#3b82f6',zb:'#22d3ee',zc:'#fde047',
+  file:'play/s1-z5-storm-harbor.html',status:'ready',
+  sub:'เปลี่ยนพายุไฟสลับให้เป็นไฟตรงที่นิ่งสงบ',
+  topics:['เรียงกระแสครึ่งคลื่น','เต็มคลื่น CT และบริดจ์','ตัวกรอง C และซีเนอร์'],
+  card:'วงจรเรียงกระแส: AC เป็น DC',quests:[]},
+ {id:'z6',game:'game6',season:'s1',name:'NIGHT MELODY',th:'วงจรเพลงยามค่ำ',ico:'melody',za:'#a78bfa',zb:'#2dd4bf',zc:'#facc15',boss:true,
+  file:'play/s1-z6-night-melody.html',status:'ready',
+  sub:'บอส Season 1: รวม LDR ทรานซิสเตอร์ และไอซีเสียงเพลง เป็นระบบเดียว (ข้อสอบกลางภาคข้อ 72)',
+  topics:['LDR และวงจรแบ่งแรงดัน','ทรานซิสเตอร์เป็นสวิตช์','ประกอบระบบ 5 บล็อก'],
+  card:'ระบบเพลงยามค่ำ: รับรู้ สวิตช์ ส่งเสียง',
+  quests:[{f:'lab/lab-3-44-dusk-guard.html',t:'DUSK GUARD',d:'รูปที่ 3-44 เปิดไฟกลางคืนอัตโนมัติ'}]},
+ {id:'z7',game:'game7',season:'s2',name:'BJT ARENA',th:'สังเวียนทรานซิสเตอร์',ico:'bjt',za:'#00f0ff',zb:'#b14bff',zc:'#c6ff3d',
+  file:'play/s2-z7-bjt-arena.html',status:'soon',
+  sub:'ทรานซิสเตอร์ทั้งสวิตช์และขยายสัญญาณ',
+  topics:['ย่านคัตออฟ แอกทีฟ อิ่มตัว','การไบแอส','งานประยุกต์เซนเซอร์'],
+  card:'BJT: กระแสเล็กคุมกระแสใหญ่',
+  quests:[{f:'lab/lab-3-47-beam-sentry.html',t:'BEAM SENTRY',d:'รูปที่ 3-47 กันขโมยแบบตัดลำแสง'},{f:'lab/lab-3-50-pulse-eye.html',t:'PULSE EYE',d:'รูปที่ 3-50 เซนเซอร์สะท้อนวัตถุ'}]},
+ {id:'z8',game:'game8',season:'s2',name:'OP-AMP TOWER',th:'หอคอยออปแอมป์',ico:'opamp',za:'#8b7bff',zb:'#ff8a1f',zc:'#ffe14d',
+  file:'play/s2-z8-opamp-tower.html',status:'soon',
+  sub:'เปรียบเทียบ ขยาย และตัดสินใจด้วยออปแอมป์',
+  topics:['วงจรเปรียบเทียบ','วงจรขยายกลับเฟสและไม่กลับเฟส','LM339 และ LM741'],
+  card:'Op-Amp: เปรียบเทียบและขยาย',
+  quests:[{f:'lab/lab-lm339-trip-point.html',t:'TRIP POINT',d:'วงจรตรวจจับระดับแรงดัน'},{f:'lab/lab-lm339-bar-ranger.html',t:'BAR RANGER',d:'ไม้บรรทัด LED ด้วย LM339'}]},
+ {id:'z9',game:'game9',season:'s2',name:'555 CLOCKWORK',th:'โรงนาฬิกา 555',ico:'ic555',za:'#eab308',zb:'#14b8a6',zc:'#fde68a',
+  file:'play/s2-z9-555-clockwork.html',status:'soon',
+  sub:'สร้างจังหวะและพัลส์ด้วยไอซีที่โลกยังใช้',
+  topics:['โหมด Astable','โหมด Monostable','คำนวณความถี่และ duty cycle'],
+  card:'IC 555: สร้างจังหวะเวลา',quests:[]},
+ {id:'z10',game:'game10',season:'s2',name:'MOSFET × IoT GATE',th:'ประตู IoT',ico:'mosfet',za:'#34d399',zb:'#60a5fa',zc:'#f472b6',
+  file:'play/s2-z10-mosfet-iot-gate.html',status:'soon',
+  sub:'ขับโหลดกำลังสูงจากบอร์ด IoT อย่างปลอดภัย',
+  topics:['MOSFET เป็นสวิตช์','ระดับลอจิกกับแรงดันเกต','เชื่อมเซนเซอร์สู่ IoT'],
+  card:'MOSFET: สวิตช์กำลังของยุค IoT',quests:[]}
+];
+var RANKS=[
+ {min:0, n:'RESISTOR',ico:'resistor'},{min:4, n:'CAPACITOR',ico:'cap'},{min:10,n:'DIODE',ico:'diode'},
+ {min:18,n:'TRANSISTOR',ico:'bjt'},{min:27,n:'OP-AMP',ico:'opamp'},{min:38,n:'MCU',ico:'mcu'},{min:50,n:'CIRCUIT LEGEND',ico:'legend'}
+];
+var STAMP_MIN=5, MAXS=6;
+
+/* ---------- storage ---------- */
+function jget(store,k,d){ try{ var v=JSON.parse(store.getItem(k)||'null'); return v==null?d:v; }catch(e){ return d; } }
+function jset(store,k,v){ try{ store.setItem(k,JSON.stringify(v)); }catch(e){} }
+function getId(){ var o=jget(sessionStorage,ID_KEY,null); return (o&&o.sid)?o:null; }
+function allRes(){ return jget(localStorage,RES_KEY,{}); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+function checkId(raw){
+  var v=(raw||'').trim();
+  if(SECRETS.indexOf(v.toLowerCase())>=0) return {ok:true,sid:MASK,via:'code'};
+  var d=v.replace(/[\s-]/g,'');
+  if(!d) return {ok:false,msg:'กรุณากรอกรหัสนักศึกษา 10 หลัก'};
+  if(!/^\d+$/.test(d)) return {ok:false,msg:'กรอกได้เฉพาะตัวเลข 10 หลัก'};
+  if(d.length!==10) return {ok:false,msg:'รหัสต้องมี 10 หลัก (ตอนนี้ '+d.length+' หลัก)'};
+  if(!/^[5-7]\d{9}$/.test(d)) return {ok:false,msg:'รหัสต้องขึ้นต้นด้วยปีที่เข้าศึกษา เช่น 69xxxxxxxx'};
+  return {ok:true,sid:d,via:'id'};
+}
+
+/* ---------- รหัสแสตมป์ (FNV-1a) ---------- */
+function stampCode(sid,zid){
+  var s=sid+'|'+zid+'|'+SECRET, h=0x811c9dc5;
+  for(var i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,0x01000193)>>>0; }
+  var A='ABCDEFGHJKMNPQRSTUVWXYZ23456789', out='';
+  for(var j=0;j<5;j++){ out+=A[h%A.length]; h=Math.floor(h/A.length); }
+  return zid.toUpperCase()+'-'+out;
+}
+
+/* ---------- สตรีค (โล่กันขาด 1 วันต่อสัปดาห์) ---------- */
+function ymd(d){ return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
+function streakOf(days){
+  var set={}; (days||[]).forEach(function(x){ set[x]=1; });
+  var d=new Date(), n=0, shieldUsedWeek={};
+  if(!set[ymd(d)]) d.setDate(d.getDate()-1);           // ยังไม่เล่นวันนี้ นับต่อจากเมื่อวาน
+  for(var i=0;i<120;i++){
+    var k=ymd(d);
+    if(set[k]) n++;
+    else{
+      var wk=Math.floor((d.getTime()/864e5+3)/7);
+      if(n>0 && !shieldUsedWeek[wk] && set[ymd(new Date(d.getTime()-864e5))]) shieldUsedWeek[wk]=1;
+      else break;
     }
+    d.setDate(d.getDate()-1);
+  }
+  return n;
+}
+
+/* ---------- state ---------- */
+var me=null, R={}, tab='s1', sel=null;
+function resolveMe(){
+  me=getId();
+  var all=allRes();
+  if(!me){
+    var ks=Object.keys(all).filter(function(k){ return k!==MASK; });
+    if(ks.length===1){ var any=all[ks[0]], nk=''; for(var g in any){ if(any[g].nick){ nk=any[g].nick; break; } } me={sid:ks[0],via:'id',raw:ks[0],nick:nk,guess:true}; }
+  }
+  R=me?(all[me.sid]||{}):{};
+}
+function zr(z){ return R[z.game]||null; }
+function zStars(z){ var r=zr(z); return r?Math.min(MAXS,Math.max(r.best||0,r.post||0)):0; }
+function totalStars(){ return ZONES.reduce(function(a,z){ return a+zStars(z); },0); }
+function rankOf(st){ var r=RANKS[0],nx=null; for(var i=0;i<RANKS.length;i++){ if(st>=RANKS[i].min){ r=RANKS[i]; nx=RANKS[i+1]||null; } } return {r:r,nx:nx}; }
+function nextZone(){ for(var i=0;i<ZONES.length;i++){ var z=ZONES[i]; if(z.status==='ready' && zStars(z)<STAMP_MIN) return z; } return null; }
+
+/* ---------- render: rail ---------- */
+function ring(z,stars){
+  var c=2*Math.PI*46, seg=c/MAXS, out='';
+  for(var i=0;i<MAXS;i++){
+    out+='<circle cx="50" cy="50" r="46" fill="none" stroke-width="5" stroke-linecap="round" stroke="'+(i<stars?z.zc:'rgba(128,128,160,.28)')+'" stroke-dasharray="'+(seg-5).toFixed(1)+' '+(c-seg+5).toFixed(1)+'" stroke-dashoffset="'+(-i*seg).toFixed(1)+'"/>';
+  }
+  return '<svg class="ring" viewBox="0 0 100 100" aria-hidden="true">'+out+'</svg>';
+}
+function renderPlayer(){
+  var pc=document.getElementById('playerCard'), st=totalStars(), rk=rankOf(st);
+  if(!me){
+    pc.innerHTML='<div class="login"><div class="ladder-h" style="margin:0 0 4px">เข้าสู่ภารกิจ</div>'+
+      '<label for="lgSid">รหัสนักศึกษา 10 หลัก</label><input id="lgSid" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="69xxxxxxxx">'+
+      '<label for="lgNick">ชื่อเล่น</label><input id="lgNick" autocomplete="off" maxlength="20" style="font-family:var(--font)">'+
+      '<div class="err" id="lgErr"></div><button class="btn pri full" id="lgGo" type="button">เริ่มเดินทาง</button></div>';
+    document.getElementById('lgGo').onclick=doLogin;
+    document.getElementById('lgSid').onkeydown=document.getElementById('lgNick').onkeydown=function(e){ if(e.key==='Enter') doLogin(); };
+  }else{
+    var pct=rk.nx?Math.round((st-rk.r.min)/(rk.nx.min-rk.r.min)*100):100;
+    pc.innerHTML='<div class="who"><div class="rankico" style="color:var(--a)">'+IC[rk.r.ico]+'</div><div style="min-width:0">'+
+      '<div class="nm">'+esc(me.nick||'ผู้เล่น')+'</div><div class="rk">'+rk.r.n+'</div>'+
+      '<div class="sid">'+(me.sid===MASK?'โหมดผู้สอน':esc(me.sid.slice(0,2)+'xxxxxx'+me.sid.slice(-2)))+'</div></div></div>'+
+      '<div class="xpbar"><i style="width:'+pct+'%"></i></div>'+
+      '<div class="xpcap"><span>'+st+' ดาว</span><span>'+(rk.nx?('อีก '+(rk.nx.min-st)+' ดาว สู่ '+rk.nx.n):'แรงก์สูงสุดแล้ว')+'</span></div>'+
+      '<button class="btn ghost full" id="lgOut" type="button" style="font-size:.76rem;padding:6px">'+(me.guess?'ไม่ใช่ฉัน เปลี่ยนผู้เล่น':'ออกจากระบบ')+'</button>';
+    document.getElementById('lgOut').onclick=function(){ try{ sessionStorage.removeItem(ID_KEY); }catch(e){} me=null; R={}; renderAll(true); };
+  }
+  document.getElementById('stStars').textContent=st;
+  var days=me?(jget(localStorage,DAY_KEY,{})[me.sid]||[]):[];
+  document.getElementById('stStreak').textContent=streakOf(days);
+  var owned=ZONES.filter(function(z){ return zStars(z)>=STAMP_MIN; }).length;
+  document.getElementById('stCards').textContent=owned+'/'+ZONES.length;
+}
+function doLogin(){
+  var sid=document.getElementById('lgSid').value, nick=document.getElementById('lgNick').value.trim(), err=document.getElementById('lgErr');
+  var r=checkId(sid);
+  if(!r.ok){ err.textContent=r.msg; return; }
+  if(!nick){ err.textContent='กรุณาใส่ชื่อเล่น'; return; }
+  jset(sessionStorage,ID_KEY,{sid:r.sid,via:r.via,raw:sid,nick:nick});
+  renderAll(true); toast('ยินดีต้อนรับ '+nick+' เลือกโซนแรกได้เลย');
+}
+function renderLadder(){
+  var ul=document.getElementById('ladder'), h='', nz=nextZone();
+  ZONES.forEach(function(z,i){
+    if(i===0) h+='<li class="sep">SEASON 1</li>';
+    if(i===6) h+='<li class="sep">SEASON 2</li>';
+    var s=zStars(z), done=s>=STAMP_MIN;
+    h+='<li><button type="button" data-z="'+z.id+'" class="'+(sel&&sel.id===z.id?'cur':'')+'" style="--zc:'+z.za+'">'+
+       '<span class="dot'+(done?' done':'')+'">'+(done?'&#10003;':(i+1))+'</span>'+
+       '<span class="lt">'+z.name+'<small>'+(z.status==='soon'?'กำลังสร้าง':(nz===z?'แนะนำให้เล่นต่อ':z.th))+'</small></span>'+
+       '<span class="ls">'+(z.status==='ready'?s+'/6':z.status==='legacy'?'เดิม':'—')+'</span></button></li>';
   });
+  h+='<li class="sep">FINAL</li><li><button type="button" data-final="1" style="--zc:#fb7185"><span class="dot">B</span><span class="lt">FINAL BOSS<small>จำลองสอบปลายภาค</small></span><span class="ls"></span></button></li>';
+  ul.innerHTML=h;
+  ul.querySelectorAll('[data-z]').forEach(function(b){ b.onclick=function(){ var z=byId(b.dataset.z); setTab(z.season); pick(z,true); }; });
+  ul.querySelector('[data-final]').onclick=function(){ setTab('final'); };
+}
+
+/* ---------- render: map ---------- */
+function byId(id){ for(var i=0;i<ZONES.length;i++) if(ZONES[i].id===id) return ZONES[i]; return null; }
+function renderMap(){
+  var w=document.getElementById('mapwrap');
+  if(tab==='cards'){ renderCards(w); return; }
+  if(tab==='final'){ renderFinal(w); return; }
+  var list=ZONES.filter(function(z){ return z.season===tab; }), nz=nextZone();
+  var title=tab==='s1'?['SEASON 1 · MIDTERM RECOVERY','ซ่อมจุดอ่อนก่อนสอบปลายภาค เรียงตามลำดับที่เรียน']:['SEASON 2 · SIGNAL SEASON','เนื้อหาหลังสอบกลางภาค: ทรานซิสเตอร์ ออปแอมป์ 555 MOSFET'];
+  var h='<div class="season-h"><b>'+title[0]+'</b><span>'+title[1]+'</span></div><div class="path" id="path"><svg class="wire" id="wire"></svg>';
+  list.forEach(function(z,i){
+    var s=zStars(z), cls=['node',i%2?'r':'l'];
+    if(z.status==='soon') cls.push('soon');
+    if(nz===z) cls.push('next');
+    if(sel&&sel.id===z.id) cls.push('sel');
+    var chip=z.status==='ready'?'<span class="chip ready">พร้อมเล่น · ระบบใหม่</span>':z.status==='legacy'?'<span class="chip legacy">เล่นได้ · กำลังอัปเกรด</span>':'<span class="chip">กำลังสร้าง</span>';
+    h+='<button type="button" class="'+cls.join(' ')+'" data-z="'+z.id+'" style="--za:'+z.za+';--zb:'+z.zb+';--zc:'+z.zc+'">'+
+       '<span class="orb" style="color:'+z.za+'">'+IC[z.ico]+(z.status==='ready'?ring(z,s):'')+(z.boss?'<span class="boss">BOSS</span>':'')+'</span>'+
+       '<span class="ninfo"><span class="zn">ZONE '+z.id.slice(1)+'</span><span class="tt" style="display:block">'+z.name+'</span><span class="st" style="display:block">'+z.sub+'</span>'+chip+'</span></button>';
+  });
+  h+='</div>';
+  w.innerHTML=h;
+  w.querySelectorAll('.node').forEach(function(b){ b.onclick=function(){ pick(byId(b.dataset.z),true); }; });
+  requestAnimationFrame(drawWire);
+}
+function drawWire(){
+  var p=document.getElementById('path'), svg=document.getElementById('wire'); if(!p||!svg) return;
+  var pr=p.getBoundingClientRect(), orbs=p.querySelectorAll('.orb'), pts=[];
+  orbs.forEach(function(o){ var r=o.getBoundingClientRect(); pts.push([r.left-pr.left+r.width/2, r.top-pr.top+r.height/2]); });
+  svg.setAttribute('viewBox','0 0 '+pr.width+' '+pr.height);
+  var h='';
+  for(var i=0;i<pts.length-1;i++){
+    var a=pts[i], b=pts[i+1], my=(a[1]+b[1])/2;
+    var nodeA=orbs[i].closest('.node'), lit=!nodeA.classList.contains('soon') && zStars(byId(nodeA.dataset.z))>=STAMP_MIN;
+    h+='<path class="'+(lit?'lit':'')+'" d="M'+a[0]+' '+a[1]+' C'+a[0]+' '+my+' '+b[0]+' '+my+' '+b[0]+' '+b[1]+'"/>';
+  }
+  svg.innerHTML=h;
+}
+
+/* ---------- render: detail ---------- */
+function pick(z,scroll){
+  sel=z;
+  var d=document.getElementById('detail');
+  d.style.setProperty('--za',z.za); d.style.setProperty('--zb',z.zb); d.style.setProperty('--zc',z.zc);
+  var r=zr(z), s=zStars(z), stars='';
+  for(var i=0;i<MAXS;i++) stars+=i<s?'&#9733;':'<span style="opacity:.28">&#9733;</span>';
+  var h='<div class="dhead"><span class="orb" style="--za:'+z.za+';--zc:'+z.zc+';color:'+z.za+'">'+IC[z.ico]+(z.status==='ready'?ring(z,s):'')+'</span>'+
+        '<div><div class="dk">SEASON '+(z.season==='s1'?'1':'2')+' · ZONE '+z.id.slice(1)+(z.boss?' · BOSS':'')+'</div><div class="dt">'+z.name+'</div><div style="font-size:.86rem;color:var(--mute)">'+z.th+'</div></div></div>'+
+        '<p class="ds">'+z.sub+'</p><div class="topics">'+z.topics.map(function(t){ return '<span>'+t+'</span>'; }).join('')+'</div>';
+  if(z.status==='ready'){
+    h+='<div class="scorebox"><div><b>'+(r?r.pre+'/'+r.max:'—')+'</b><span>ก่อนเรียน</span></div><div><b>'+(r?r.post+'/'+r.max:'—')+'</b><span>หลังเรียน</span></div><div><b class="stars">'+stars+'</b><span>ดีที่สุด</span></div></div>';
+  }
+  h+='<div class="dact">';
+  if(z.status==='soon') h+='<a class="btn" aria-disabled="true">กำลังสร้าง เปิดเร็ว ๆ นี้</a>';
+  else h+='<a class="btn pri" href="'+z.file+'">'+(r?'เล่นอีกครั้ง':'เข้าโซนนี้')+'</a>';
+  h+='</div>';
+  if(z.status==='ready' && me){
+    if(s>=STAMP_MIN) h+='<div class="stamp">ได้การ์ด <b>'+z.name+'</b> แล้ว · รหัสแสตมป์ <code>'+stampCode(me.sid,z.id)+'</code><div style="font-size:.74rem;color:var(--mute);margin-top:2px">แสดงรหัสนี้กับผู้สอนเพื่อรับ Combo Stamp</div></div>';
+    else h+='<p class="note">ทำ Posttest ให้ได้ '+STAMP_MIN+' ดาวขึ้นไป เพื่อรับการ์ดและรหัสแสตมป์ของโซนนี้</p>';
+  }
+  if(z.status==='legacy') h+='<p class="note">โซนนี้ยังเป็นฉบับเดิม ดาวจะยังไม่นับเข้าแรงก์จนกว่าจะอัปเกรดเป็นระบบใหม่ ซึ่งจะใช้ลิงก์เดิม</p>';
+  if(z.quests.length){
+    h+='<div class="sub-h">SIDE QUEST · ห้องทดลองจำลอง</div>';
+    z.quests.forEach(function(q){ h+='<a class="quest" href="'+q.f+'"><i>LAB</i><span>'+q.t+'<small>'+q.d+'</small></span></a>'; });
+  }
+  d.innerHTML=h;
+  document.querySelectorAll('.node').forEach(function(n){ n.classList.toggle('sel',n.dataset.z===z.id); });
+  document.querySelectorAll('#ladder [data-z]').forEach(function(n){ n.classList.toggle('cur',n.dataset.z===z.id); });
+  if(scroll && window.matchMedia('(max-width:860px)').matches) d.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function renderCards(w){
+  var h='<div class="season-h"><b>คอลเลกชันการ์ดอุปกรณ์</b><span>ได้จากการทำ Posttest '+STAMP_MIN+' ดาวขึ้นไปในแต่ละโซน</span></div><div class="cards">';
+  ZONES.forEach(function(z){
+    var own=zStars(z)>=STAMP_MIN;
+    h+='<div class="ccard '+(own?'own':'lock')+'" style="--za:'+z.za+';color:'+z.za+'">'+IC[z.ico]+'<b style="color:var(--text)">'+z.name+'</b><small>'+(own?z.card:'ยังไม่ปลดล็อก')+'</small></div>';
+  });
+  w.innerHTML=h+'</div>';
+}
+function renderFinal(w){
+  var s1=ZONES.filter(function(z){ return z.season==='s1' && z.status!=='soon'; }), ok=s1.filter(function(z){ return zStars(z)>=STAMP_MIN; }).length;
+  w.innerHTML='<div class="final"><div class="bossart" style="color:#fb7185">'+
+    '<div style="width:72px">'+IC.skull+'</div><h3 style="color:var(--text)">FINAL BOSS</h3>'+
+    '<p style="color:var(--mute);font-size:.9rem">จำลองข้อสอบปลายภาคครบทุกหัวข้อ ฝึกตัดสินใจภายใต้เวลาจำกัด</p></div>'+
+    '<div class="card"><b style="font-family:var(--disp);letter-spacing:.06em">กติกาเหมือนสอบจริง</b><ul style="margin-top:6px"><li>ตอบถูกได้ 1 คะแนน</li><li>ตอบผิดหัก 0.5 คะแนน</li><li>ข้อที่เว้นว่างได้ 0 คะแนน ไม่หัก</li></ul>'+
+    '<p class="note">ความพร้อม Season 1: ได้การ์ดแล้ว '+ok+' จาก '+s1.length+' โซนที่เปิด</p></div>'+
+    '<a class="btn pri" href="boss/final-boss.html" style="--za:#fb7185;--zb:#a855f7">เข้าสู้ FINAL BOSS</a></div>';
+  var d=document.getElementById('detail');
+  d.style.setProperty('--za','#fb7185');
+  d.innerHTML='<div class="dk">FINAL</div><div class="dt">เตรียมตัวก่อนล้มบอส</div><p class="ds">ใช้ความคืบหน้าด้านซ้ายเป็นเช็กลิสต์ โซนที่ยังไม่ถึง 5 ดาวคือจุดที่ควรกลับไปทบทวนก่อนวันสอบ</p>'+
+    '<div class="sub-h">แนะนำลำดับทบทวน</div>'+ZONES.filter(function(z){ return z.status!=='soon' && zStars(z)<STAMP_MIN; }).map(function(z){ return '<a class="quest" href="'+z.file+'" style="--za:'+z.za+'"><i>Z'+z.id.slice(1)+'</i><span>'+z.name+'<small>'+z.th+'</small></span></a>'; }).join('');
+}
+
+/* ---------- tabs / theme / teacher ---------- */
+function setTab(t){
+  tab=t; setTimeout(fitAll,30);
+  document.querySelectorAll('.tab').forEach(function(b){ b.setAttribute('aria-selected',b.dataset.tab===t?'true':'false'); });
+  renderMap();
+  if(t==='s1'||t==='s2'){ var first=(sel&&sel.season===t)?sel:(nextZone()&&nextZone().season===t?nextZone():ZONES.filter(function(z){ return z.season===t; })[0]); pick(first,false); }
+  else if(t==='cards'){ var d=document.getElementById('detail'); d.style.setProperty('--za','#00f0ff'); d.innerHTML='<div class="dk">COLLECTION</div><div class="dt">การ์ดอุปกรณ์ 10 ใบ</div><p class="ds">การ์ดได้จากความเข้าใจจริงเท่านั้น ไม่มีการสุ่ม ไม่มีการซื้อ ทุกใบมาพร้อมรหัสแสตมป์ที่ใช้รับ Combo Stamp จากผู้สอน (เพดานรวม 3%)</p>'; }
+}
+document.querySelectorAll('.tab').forEach(function(b){ b.onclick=function(){ setTab(b.dataset.tab); }; });
+function syncThemeBtn(){ document.getElementById('themeBtn').textContent=document.documentElement.getAttribute('data-theme')==='light'?'สลับโหมดมืด':'สลับโหมดสว่าง'; }
+document.getElementById('themeBtn').onclick=function(){
+  var t=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';
+  document.documentElement.setAttribute('data-theme',t); try{ localStorage.setItem('gnr2022_theme',t); }catch(e){} syncThemeBtn(); renderMap(); if(sel&&(tab==='s1'||tab==='s2')) pick(sel,false);
+};
+var tm=document.getElementById('teachModal');
+document.getElementById('teachBtn').onclick=function(){ tm.classList.add('open'); document.getElementById('tmSecret').focus(); };
+document.getElementById('tmClose').onclick=function(){ tm.classList.remove('open'); };
+tm.onclick=function(e){ if(e.target===tm) tm.classList.remove('open'); };
+document.getElementById('tmGo').onclick=function(){
+  var res=document.getElementById('tmRes'), sec=document.getElementById('tmSecret').value.trim().toLowerCase(), sid=document.getElementById('tmSid').value.trim(), code=document.getElementById('tmCode').value.trim().toUpperCase();
+  if(SECRETS.indexOf(sec)<0){ res.style.color='#fb7185'; res.textContent='รหัสผู้สอนไม่ถูกต้อง'; return; }
+  var m=code.match(/^(Z\d+)-/); if(!m||!/^\d{10}$/.test(sid)){ res.style.color='#fb7185'; res.textContent='กรอกรหัสนักศึกษาและรหัสแสตมป์ให้ครบ'; return; }
+  var ok=stampCode(sid,m[1].toLowerCase())===code, z=byId(m[1].toLowerCase());
+  res.style.color=ok?'var(--ok)':'#fb7185'; res.textContent=ok?('ถูกต้อง: '+(z?z.name:m[1])+' ของ '+sid):'ไม่ตรงกัน กรุณาตรวจอีกครั้ง';
+};
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') tm.classList.remove('open'); });
+var tt; function toast(m){ var t=document.getElementById('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(function(){ t.classList.remove('on'); },2600); }
+
+/* ย่อเนื้อหาให้พอดีจอเดียวบนเดสก์ท็อป (ไม่ต้องเลื่อนเมาส์) */
+function fitBox(el){
+  if(!el||window.matchMedia('(max-width:860px)').matches) return;
+  var kids=Array.prototype.slice.call(el.children); kids.forEach(function(k){ k.style.zoom=''; });
+  var z=1; while(el.scrollHeight>el.clientHeight+2 && z>0.55){ z-=0.04; kids.forEach(function(k){ k.style.zoom=z.toFixed(2); }); }
+}
+function fitAll(){ fitBox(document.querySelector('.rail')); fitBox(document.getElementById('mapwrap')); fitBox(document.getElementById('detail')); requestAnimationFrame(drawWire); }
+function renderAll(keepTab){
+  resolveMe(); renderPlayer(); renderLadder(); setTab(keepTab?tab:'s1'); syncThemeBtn(); setTimeout(fitAll,30);
+}
+window.addEventListener('resize',function(){ fitAll(); });
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ setTimeout(fitAll,30); });
+window.addEventListener('pageshow',function(e){ if(e.persisted) renderAll(true); });
+renderAll(false);
+window.GNRHUB={zones:ZONES,stampCode:stampCode,streakOf:streakOf};
 })();
-
-document.querySelectorAll('.chip[data-id]').forEach(chip=>{
-  const accent=chip.getAttribute('data-accent');
-  if(accent) chip.style.setProperty('--accent',accent);
-  const led=chip.querySelector('.led');
-  if(led && accent) led.style.setProperty('--accent',accent);
-  chip.addEventListener('click',()=>{
-    const id=chip.getAttribute('data-id');
-    const v=getVisited();
-    if(!v.includes(id)){
-      v.push(id); setVisited(v);
-      const name=chip.querySelector('.chip-name').textContent.trim();
-      showAch('⚡ <b>ปลดล็อกโมดูล:</b> '+name+' ('+v.filter(x=>MODULES.includes(x)).length+'/'+MODULES.length+')');
-      burstConfetti(28);
-      paintProgress();
-      paintBoss();
-    }
-  });
-});
-paintProgress();
-paintBoss();
-
-/* ---------- gate ---------- */
-const gate=document.getElementById('gate'), gateInput=document.getElementById('gateInput'),
-      gateBtn=document.getElementById('gateBtn'), gateMsg=document.getElementById('gateMsg');
-function checkCode(v){
-  v=(v||'').trim();
-  if(/^\d{10}$/.test(v)) return true;
-  if(v.toLowerCase()==='ru2569') return true;
-  return false;
-}
-function openBoard(){
-  gate.classList.add('hide');
-  try{ localStorage.setItem(KEY_AUTH,'1'); }catch(e){}
-}
-function tryEnter(){
-  if(checkCode(gateInput.value)){ openBoard(); }
-  else{ gateMsg.textContent='รหัสไม่ถูกต้อง — ใช้รหัสนักศึกษา 10 หลัก หรือรหัสรายวิชา'; gateInput.focus(); gateInput.select(); }
-}
-gateBtn.addEventListener('click',tryEnter);
-gateInput.addEventListener('keydown',e=>{ if(e.key==='Enter') tryEnter(); });
-gateInput.addEventListener('input',()=>{ gateMsg.textContent=''; });
-try{ if(localStorage.getItem(KEY_AUTH)==='1') gate.classList.add('hide'); }catch(e){}
-setTimeout(()=>gateInput.focus(),400);
 </script>
-
 </body>
 </html>
