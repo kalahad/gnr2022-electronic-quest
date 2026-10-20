@@ -14,6 +14,7 @@ CFG = port('gnr2022_game2_lumen_station.html', {
     'features': '<span>S1 · โซน 2</span><span>VR · LDR · ADC</span><span>PRETEST / POSTTEST</span><span>ระบบดาว 6 ดวง</span>',
     'climb_text': 'ตัวละครไต่เสาสัญญาณขึ้น 1 ชั้น ทันที',
     'footer_line': 'Season 1 · โซน 2 ตัวต้านทานปรับค่าได้ LDR และวงจรแบ่งแรงดันสู่ ADC — ภาคเรียนที่ 1/2569',
+    'rew': 'g2',
     'filekey': 'GNR2022_Z2_lumenstation',
     'go_first': 'เข้าสถานีแรก',
     # R = 10 kΩ × (300/10)^-0.7 = 0.925 kΩ (ฉบับเดิมเขียน 0.87 kΩ ซึ่งตรงกับราว 330 lx)

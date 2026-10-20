@@ -24,6 +24,8 @@ PLAY = {
     'game5_storm_harbor.html':   's1-z5-storm-harbor.html',
     'game6_night_melody.html':   's1-z6-night-melody.html',
     'game7_bjt_arena.html':      's2-z7-bjt-arena.html',
+    'game8_opamp_tower.html':    's2-z8-opamp-tower.html',
+    'game9_555_clockwork.html':  's2-z9-555-clockwork.html',
 }
 # เกมฉบับเดิม ใช้ชั่วคราวจนกว่าฉบับระบบใหม่จะพร้อม (ชื่อปลายทางเดียวกัน)
 LEGACY = {
@@ -104,9 +106,10 @@ def main(old_site, legacy_dir, out):
     hub = open(os.path.join(HERE, 'hub', 'index.html'), encoding='utf-8').read()
     open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(inject_fb(hub, ''))
     shutil.copy(os.path.join(HERE, 'hub', 'feedback.js'), os.path.join(out, 'feedback.js'))
-    rs = open(os.path.join(HERE, 'hub', 'rescue.html'), encoding='utf-8').read()   # ภารกิจกู้โซน Z4-Z6
-    open(os.path.join(out, 'play', 'rescue.html'), 'w', encoding='utf-8').write(inject_fb(inject_back(rs)))
-    print('rescue  play/rescue.html')
+    for pg in ('rescue.html', 'hard.html'):                           # ภารกิจกู้โซน Z4-Z6 และ Hard Mode Z7-Z9
+        rs = open(os.path.join(HERE, 'hub', pg), encoding='utf-8').read()
+        open(os.path.join(out, 'play', pg), 'w', encoding='utf-8').write(inject_fb(inject_back(rs)))
+        print('drill  play/' + pg)
     shutil.copy(os.path.join(ROOT, 'README.md'), os.path.join(out, 'README.md'))
     open(os.path.join(out, '.nojekyll'), 'w').close()
     skip = shutil.ignore_patterns('__pycache__', '*.pyc', '*.png', 'make_index.py', 'template_index.html', 'index_neo.css',

@@ -1,0 +1,99 @@
+<script>
+var DATA=/*__DATA__*/{};
+var META=/*__META__*/{};
+var CONF=/*__CONF__*/{};
+var ID_KEY='gnr2022_student', RES_KEY='gnr2022_results', DAY_KEY='gnr2022_days', SECRET='gnr2569', SECRETS=['ru2569','gnr2569'], MASK='xxxxxxxxxx';
+var NOTA='ไม่มีข้อใดถูก', N_Q=CONF.nq, PASS=CONF.pass, TH='1234', ZS=Object.keys(META);
+function $(s){return document.querySelector(s);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function jget(st,k,d){try{var v=JSON.parse(st.getItem(k)||'null');return v==null?d:v;}catch(e){return d;}}
+function jset(st,k,v){try{st.setItem(k,JSON.stringify(v));}catch(e){}}
+function stampCode(sid,zid){var s=sid+'|'+zid+'|'+SECRET,h=0x811c9dc5;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}
+  var A='ABCDEFGHJKMNPQRSTUVWXYZ23456789',o='';for(var j=0;j<5;j++){o+=A[h%A.length];h=Math.floor(h/A.length);}return zid.toUpperCase()+'-'+o;}
+function ymd(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+function checkId(raw){var v=(raw||'').trim();if(SECRETS.indexOf(v.toLowerCase())>=0)return {ok:true,sid:MASK};
+  var d=v.replace(/[\s-]/g,'');if(!/^\d{10}$/.test(d))return {ok:false,msg:'กรอกรหัสนักศึกษาเป็นตัวเลข 10 หลัก'};
+  if(!/^[5-7]\d{9}$/.test(d))return {ok:false,msg:'รหัสต้องขึ้นต้นด้วยปีที่เข้าศึกษา เช่น 69xxxxxxxx'};return {ok:true,sid:d};}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+try{var th=localStorage.getItem('gnr2022_theme');if(th)document.documentElement.setAttribute('data-theme',th);}catch(e){}
+
+var me=jget(sessionStorage,ID_KEY,null), Z=ZS[0], S=null, TMR=null;
+var qz=(location.search.match(/[?&]z=(z\d+)/)||[])[1]; if(qz&&META[qz])Z=qz;
+function zid(z){ return CONF.prefix+z.slice(1); }
+function recOf(z){ if(!me)return null; var all=jget(localStorage,RES_KEY,{}); return ((all[me.sid]||{})[CONF.store]||{})[z]||null; }
+function save(score,mis){
+  if(!me)return; var all=jget(localStorage,RES_KEY,{}), r=all[me.sid]=all[me.sid]||{}, rs=r[CONF.store]=r[CONF.store]||{}, o=rs[Z]||{};
+  rs[Z]={best:Math.max(score,o.best||0),last:score,mis:mis,max:N_Q,plays:(o.plays||0)+1,at:new Date().toISOString(),nick:me.nick||''};
+  jset(localStorage,RES_KEY,all); var days=jget(localStorage,DAY_KEY,[]), t=ymd(new Date()); if(days.indexOf(t)<0){days.push(t);jset(localStorage,DAY_KEY,days.slice(-200));}
+}
+function stopT(){ if(TMR){clearInterval(TMR);TMR=null;} }
+function setZone(z){stopT();Z=z;S=null;document.documentElement.style.setProperty('--z',META[z].col);
+  try{history.replaceState(null,'','?z='+z);}catch(e){} renderTabs(); intro();}
+function renderTabs(){
+  $('#tabs').innerHTML=ZS.map(function(z){var r=recOf(z);
+    return '<button class="tab'+(z===Z?' on':'')+'" data-z="'+z+'">'+z.toUpperCase()+(r&&r.best>=PASS?' ✓':'')+'</button>';}).join('');
+  $('#who').textContent=me?(me.sid===MASK?'โหมดผู้สอน':'รหัส '+me.sid):'';
+}
+function intro(){
+  var m=META[Z], r=recOf(Z), c=$('#card');
+  var h='<div class="k">'+CONF.label+' · ZONE '+Z.slice(1)+' · '+m.name+'</div><h1>'+CONF.h1+' '+Z.slice(1)+': '+m.th+'</h1>'+
+    '<p class="lead">'+m.lead+' '+CONF.howto+'</p>'+
+    '<div class="facts"><div class="fact"><b>'+N_Q+' ข้อ</b><span>สุ่มจากคลัง '+DATA[Z].length+' ข้อทุกรอบ'+(CONF.timer?' · ข้อละ '+CONF.timer+' วินาที':'')+'</span></div>'+
+    '<div class="fact"><b>'+PASS+'/'+N_Q+'</b><span>ผ่านเกณฑ์ '+CONF.reward+' '+zid(Z).toUpperCase()+'</span></div>'+
+    '<div class="fact"><b>'+(r?r.best+'/'+r.max:'—')+'</b><span>ดีที่สุดของคุณ'+(r?' · เล่น '+r.plays+' รอบ':'')+'</span></div></div>';
+  if(!me){ h+='<div class="row idrow"><input id="sid" inputmode="numeric" maxlength="12" placeholder="รหัสนักศึกษา 10 หลัก" aria-label="รหัสนักศึกษา"><button class="btn pri" id="go">เริ่มภารกิจ</button><span class="err" id="err"></span></div>'; }
+  else h+='<div class="row"><button class="btn pri" id="go">เริ่มภารกิจ</button><a class="btn" href="'+m.game+'">ทบทวนในเกมโซน '+Z.slice(1)+'</a><a class="btn" href="../index.html">แผนที่</a></div>';
+  if(me && r && r.best>=PASS) h+=stampBox();
+  c.innerHTML=h;
+  $('#go').onclick=function(){ if(!me){var v=checkId($('#sid').value); if(!v.ok){$('#err').textContent=v.msg;return;} me={sid:v.sid,nick:''}; jset(sessionStorage,ID_KEY,me); renderTabs();} start(); };
+  var inp=$('#sid'); if(inp) inp.onkeydown=function(e){ if(e.key==='Enter') $('#go').click(); };
+}
+function stampBox(){ return '<div class="stamp">'+CONF.passText+' · โซน '+Z.slice(1)+' · รหัส <code>'+stampCode(me.sid,zid(Z))+'</code><div style="font-size:.76rem;color:var(--mute);margin-top:2px">'+CONF.stampNote+'</div></div>'; }
+function start(){
+  var pool=shuffle(DATA[Z].slice()).slice(0,N_Q);
+  S={qs:pool.map(function(it){ var o=it.c.map(function(t,i){return {t:t,ok:i===0};}), nota=o.filter(function(x){return x.t===NOTA;}), rest=shuffle(o.filter(function(x){return x.t!==NOTA;}));
+      return {q:it.q,e:it.e,m:it.m,o:rest.concat(nota)}; }), i:0, pick:-1, log:[]};
+  question();
+}
+function progress(){ return '<div class="prog">'+S.qs.map(function(q,i){ var l=S.log[i]; return '<i class="'+(l?(l.ok?'ok':'bad'):(i===S.i?'cur':''))+'"></i>'; }).join('')+'</div>'; }
+function question(){
+  stopT(); var q=S.qs[S.i]; S.pick=-1;
+  $('#card').innerHTML=progress()+'<div class="qhead"><span>ข้อ '+(S.i+1)+' / '+N_Q+'</span>'+(CONF.timer?'<span class="timer" id="tm">'+CONF.timer+' s</span>':'')+'<span class="tag">'+esc(CONF.tagPre+q.m)+'</span></div>'+
+    '<div class="q">'+esc(q.q)+'</div><div class="opts">'+q.o.map(function(o,i){ return '<button class="opt" data-i="'+i+'"><em>'+TH[i]+')</em><span>'+esc(o.t)+'</span></button>'; }).join('')+'</div>'+
+    '<div class="row" id="act"><button class="btn pri" id="sure" disabled>ส่ง · มั่นใจ</button><button class="btn" id="unsure" disabled>ส่ง · ไม่แน่ใจ</button></div><div id="fb"></div>';
+  document.querySelectorAll('.opt').forEach(function(b){ b.onclick=function(){ if(S.log[S.i])return; S.pick=+b.dataset.i;
+    document.querySelectorAll('.opt').forEach(function(x){x.classList.toggle('sel',x===b);}); $('#sure').disabled=$('#unsure').disabled=false; }; });
+  $('#sure').onclick=function(){answer(true);}; $('#unsure').onclick=function(){answer(false);};
+  if(CONF.timer){ var left=CONF.timer, t0=Date.now(); TMR=setInterval(function(){ left=CONF.timer-Math.floor((Date.now()-t0)/1000); var el=$('#tm'); if(el){ el.textContent=Math.max(0,left)+' s'; el.classList.toggle('low',left<=10); }
+    if(left<=0){ stopT(); S.pick=-1; answer(false,true); } },250); }
+}
+function answer(sure,timeout){
+  stopT(); var q=S.qs[S.i], ok=S.pick>=0&&q.o[S.pick].ok; S.log[S.i]={ok:ok,sure:sure,q:q,to:!!timeout};
+  document.querySelectorAll('.opt').forEach(function(b,i){ b.disabled=true; b.classList.remove('sel'); if(q.o[i].ok)b.classList.add('ok'); else if(i===S.pick)b.classList.add('bad'); });
+  var right=q.o.filter(function(o){return o.ok;})[0].t;
+  var head=timeout?'หมดเวลา':(ok?(sure?'ถูกต้อง และมั่นใจ':'ถูกต้อง แต่ยังไม่มั่นใจ ทบทวนเหตุผลอีกครั้ง'):(sure?'ผิดทั้งที่มั่นใจ นี่คือความเข้าใจผิดที่ต้องแก้':'ยังไม่ถูก'));
+  $('#fb').innerHTML='<div class="exp'+(ok?'':' no')+'"><b>'+head+'</b> — '+(ok?'':'คำตอบคือ "'+esc(right)+'" · ')+esc(q.e)+'</div>';
+  $('#act').innerHTML='<button class="btn pri" id="nx">'+(S.i<N_Q-1?'ข้อถัดไป':'ดูผลภารกิจ')+'</button>';
+  $('#nx').onclick=function(){ if(S.i<N_Q-1){S.i++;question();} else result(); }; $('#nx').focus();
+}
+function result(){
+  var L=S.log, score=L.filter(function(x){return x.ok;}).length, c=function(ok,su){return L.filter(function(x){return x.ok===ok&&x.sure===su;}).length;}, mis=c(false,true);
+  save(score,mis); renderTabs();
+  var pass=score>=PASS, wrong=L.filter(function(x){return !x.ok;}).sort(function(a,b){return (b.sure?1:0)-(a.sure?1:0);});
+  var h='<div class="k">'+CONF.label+' REPORT · ZONE '+Z.slice(1)+'</div><h1>'+score+' / '+N_Q+(pass?' · '+CONF.passText:' · ยังไม่ผ่าน ลองอีกรอบ')+'</h1>'+
+    '<div class="grid4"><div class="cell solid"><b>'+c(true,true)+'</b>ถูก + มั่นใจ<small>เข้าใจจริง</small></div>'+
+    '<div class="cell"><b>'+c(true,false)+'</b>ถูก + ไม่แน่ใจ<small>ต้องย้ำ อาจเดาถูก</small></div>'+
+    '<div class="cell mis"><b>'+mis+'</b>ผิด + มั่นใจ<small>ความเข้าใจผิด แก้ก่อนสอบ Final</small></div>'+
+    '<div class="cell"><b>'+c(false,false)+'</b>ผิด + ไม่แน่ใจ<small>ยังไม่รู้'+(CONF.timer?' หรือหมดเวลา':'')+' ทบทวนในเกมโซน '+Z.slice(1)+'</small></div></div>';
+  if(wrong.length) h+='<div class="miss">'+wrong.map(function(x){ return '<div><b>'+(x.to?'หมดเวลา':(x.sure?'มั่นใจแต่ผิด':'ไม่แน่ใจ'))+' · '+esc(x.q.m)+'</b> '+esc(x.q.q)+'</div>'; }).join('')+'</div>';
+  if(pass) h+=stampBox();
+  h+='<div class="row"><button class="btn pri" id="again">เล่นอีกรอบ (สุ่มข้อใหม่)</button><a class="btn" href="'+META[Z].game+'">ทบทวนในเกมโซน '+Z.slice(1)+'</a><a class="btn" href="../index.html">แผนที่</a></div>';
+  $('#card').innerHTML=h; $('#again').onclick=start;
+}
+document.addEventListener('click',function(e){ var t=e.target.closest('[data-z]'); if(t) setZone(t.dataset.z); });
+setZone(Z);
+window.GNRDRILL={data:DATA,conf:CONF,stampCode:stampCode};
+window.GNRRESCUE=window.GNRDRILL;
+</script>
+</body>
+</html>

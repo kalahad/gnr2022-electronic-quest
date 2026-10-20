@@ -63,6 +63,9 @@ REW = {
 ],
 }
 
+from bank_rew_s1b import REW as _R2
+REW.update(_R2)
+
 def apply(B, key):
     """B = {district: [(q, choices, e), ...]} แก้ตัวเลือกตาม REW[key] พร้อมตรวจว่าตรงข้อ"""
     for d, i, frag, ch in REW.get(key, []):

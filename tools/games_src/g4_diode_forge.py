@@ -17,6 +17,8 @@ EXTRA_CSS = LAB_CSS + """
 .pinrow button b{display:block;font-size:1rem}
 .pinrow button.hi{border-color:var(--gold);background:var(--ember-dim)}
 .dio{display:block;width:100%;max-width:440px;margin:4px auto}
+
+@media (max-width:600px){#sgSvg{max-height:166px;width:auto}}
 """
 
 HERO = """<svg class="cityart" viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="โรงตีเหล็กที่ทั่งเป็นสัญลักษณ์ไดโอด มีประกายไฟและตัวเลข 7 ส่วน">

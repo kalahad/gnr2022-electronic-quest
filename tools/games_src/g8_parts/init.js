@@ -1,0 +1,1 @@
+ $('#cmpV').addEventListener('input',()=>cmpUpdate(true)); cmpUpdate(false); gnFill(); ['#gnType','#gnRf','#gnRi'].forEach(s=>$(s).addEventListener('change',()=>{SFX.play('select');gnUpdate(true);})); gnUpdate(false); dbRender();

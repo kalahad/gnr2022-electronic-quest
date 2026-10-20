@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ภารกิจกู้โซน (Rescue Missions) Z4 Z5 Z6 — ข้อเจาะจุดที่ห้องพลาดในกลางภาค 1/2569
 ตัวเลือกแรกคือคำตอบถูก (หน้าเว็บสลับให้ และตรึง "ไม่มีข้อใดถูก" ไว้ท้ายสุดแบบข้อสอบจริง)
-สร้างหน้า: python3 tools/hub/rescue_src.py  -> tools/hub/rescue.html"""
+สร้างหน้า: python3 tools/hub/drill_build.py  -> tools/hub/rescue.html และ hard.html"""
 import json, os
 NOTA = 'ไม่มีข้อใดถูก'
 R = {}
@@ -109,13 +109,6 @@ META = {
 B = {z: [(q, c, e) for q, c, e, m in v] for z, v in R.items()}   # ให้ bank_lint ตรวจได้
 
 if __name__ == '__main__':
-    here = os.path.dirname(os.path.abspath(__file__))
-    for z, v in R.items():
-        assert len(v) == 15, z
-        for q, c, e, m in v: assert len(c) == 4 and len(set(c)) == 4, q
-    data = {z: [{'q': q, 'c': c, 'e': e, 'm': m} for q, c, e, m in v] for z, v in R.items()}
-    tpl = open(os.path.join(here, 'rescue_tpl.html'), encoding='utf-8').read()
-    out = tpl.replace('/*__DATA__*/{}', json.dumps(data, ensure_ascii=False)).replace('/*__META__*/{}', json.dumps(META, ensure_ascii=False))
-    assert '__DATA__' not in out and '__META__' not in out
-    open(os.path.join(here, 'rescue.html'), 'w', encoding='utf-8').write(out)
-    print('rescue.html', len(out))
+    # ตั้งแต่รอบ 2 หน้า rescue.html และ hard.html สร้างจากเครื่องยนต์เดียวกัน (rescue_tpl.html เก็บไว้อ้างอิงเท่านั้น)
+    import runpy
+    runpy.run_path(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'drill_build.py'), run_name='__main__')

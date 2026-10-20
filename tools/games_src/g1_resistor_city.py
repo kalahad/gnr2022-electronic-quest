@@ -471,6 +471,10 @@ for _d, _m in AUG.items():
     for _i, _fig in _m.items():
         _q, _c, _e = B[_d][_i]; B[_d][_i] = (_q + _fig, _c, _e)
 
+# ปรับสมดุลความยาวตัวเลือก (รอบ 2) ดู bank_rew_s1b.py
+from bank_rew import apply as _rew
+_rew(B, 'g1')
+
 STAR = star_table([
  ('CITY ARCHITECT', 'อ่านรหัสสีและเลือกตัวต้านทานได้ถูกต้องทุกขั้น พร้อมออกแบบวงจรจริงแล้ว'),
  ('BAND READER', 'เกือบเต็ม ทบทวนข้อที่พลาดแล้วลองห้องทดลองหอค่ามาตรฐานอีกรอบ'),

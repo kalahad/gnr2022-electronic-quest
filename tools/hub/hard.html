@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hard Mode | GNR2022</title>
+<meta name="description" content="Hard Mode GNR2022: โจทย์หลายขั้นตอนของโซน 7 8 9 จับเวลา ไม่มีคำใบ้ ผ่านแล้วได้เพชร">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%2307070f'/><path d='M50 14 84 30v24c0 18-14 30-34 34C30 84 16 72 16 54V30z' fill='none' stroke='%23facc15' stroke-width='8'/><path d='M36 52l10 10 18-22' fill='none' stroke='%2300f0ff' stroke-width='8'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Kanit:wght@300;400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07070f;--bg2:#0d0d1d;--glass:rgba(255,255,255,.05);--glass2:rgba(255,255,255,.09);--edge:rgba(255,255,255,.11);
+  --text:#f4f4ff;--mute:#a7a8c8;--dim:#6f7096;--ok:#4ade80;--bad:#fb7185;--warn:#facc15;--z:#ff6a1f;
+  --disp:'Chakra Petch','Kanit',sans-serif;--font:'Kanit',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;color-scheme:dark}
+:root[data-theme="light"]{--bg:#f3f4fb;--bg2:#e7e9f6;--glass:rgba(255,255,255,.85);--glass2:#fff;--edge:rgba(20,22,60,.14);
+  --text:#12132a;--mute:#4b4e72;--dim:#7a7da0;--ok:#15803d;--bad:#be123c;--warn:#a16207;color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);background:radial-gradient(1200px 600px at 80% -10%,color-mix(in srgb,var(--z) 18%,transparent),transparent 60%),var(--bg);color:var(--text);
+  display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden}
+.top{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--edge);flex-wrap:wrap}
+.brand{font-family:var(--disp);font-weight:700;letter-spacing:.06em;font-size:1rem;display:flex;align-items:center;gap:8px}
+.brand i{width:10px;height:10px;border-radius:50%;background:var(--z);box-shadow:0 0 12px var(--z)}
+.tabs{display:flex;gap:6px;margin-left:auto}
+.tab{font:600 .82rem var(--mono);padding:6px 12px;border-radius:999px;border:1px solid var(--edge);background:var(--glass);color:var(--mute);cursor:pointer}
+.tab.on{color:#07070f;background:var(--z);border-color:var(--z)}
+.who{font-size:.8rem;color:var(--mute)}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:12px 16px}
+.card{width:100%;max-width:880px;background:var(--glass);border:1px solid var(--edge);border-radius:20px;padding:20px 22px;backdrop-filter:blur(10px);
+  box-shadow:0 20px 60px -30px rgba(0,0,0,.7)}
+.k{font:600 .72rem var(--mono);letter-spacing:.12em;color:var(--z)}
+h1{font-family:var(--disp);font-size:clamp(1.4rem,3vw,2rem);line-height:1.15;margin:4px 0 6px}
+p.lead{color:var(--mute);font-size:.95rem;line-height:1.55}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:14px 0}
+.fact{padding:10px 12px;border-radius:14px;border:1px solid var(--edge);background:var(--glass2)}
+.fact b{display:block;font:600 1.25rem var(--mono)}
+.fact span{font-size:.78rem;color:var(--mute)}
+.btn{font:500 .95rem var(--font);padding:10px 18px;border-radius:12px;border:1px solid var(--edge);background:var(--glass2);color:var(--text);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.pri{background:var(--z);border-color:var(--z);color:#07070f;font-weight:600}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.idrow input{font:500 1rem var(--mono);padding:9px 12px;border-radius:12px;border:1px solid var(--edge);background:var(--glass2);color:var(--text);width:220px}
+.err{color:var(--bad);font-size:.85rem}
+.prog{display:flex;gap:4px;margin-bottom:10px}
+.prog i{flex:1;height:6px;border-radius:4px;background:var(--glass2)}
+.prog i.ok{background:var(--ok)} .prog i.bad{background:var(--bad)} .prog i.cur{background:var(--z)}
+.qhead{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:.8rem;color:var(--mute)}
+.tag{font:600 .72rem var(--mono);padding:3px 9px;border-radius:999px;border:1px solid color-mix(in srgb,var(--z) 55%,transparent);color:var(--z)}
+.q{font-size:1.12rem;line-height:1.55;margin:10px 0 12px;font-weight:500}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{text-align:left;font:400 .98rem var(--font);padding:11px 14px;border-radius:12px;border:1px solid var(--edge);background:var(--glass2);color:var(--text);cursor:pointer;display:flex;gap:10px;align-items:flex-start;line-height:1.4}
+.opt em{font:600 .85rem var(--mono);font-style:normal;color:var(--mute);min-width:18px}
+.opt.sel{border-color:var(--z);box-shadow:0 0 0 2px color-mix(in srgb,var(--z) 35%,transparent)}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
+.opt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,transparent)}
+.opt:disabled{cursor:default}
+.exp{margin-top:10px;padding:10px 14px;border-radius:12px;border-left:3px solid var(--ok);background:var(--glass2);font-size:.92rem;line-height:1.55}
+.exp.no{border-left-color:var(--bad)}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.cell{padding:10px 12px;border-radius:14px;border:1px solid var(--edge);background:var(--glass2)}
+.cell b{font:600 1.4rem var(--mono);margin-right:6px}
+.cell small{display:block;color:var(--mute);font-size:.78rem;line-height:1.35;margin-top:2px}
+.cell.mis{border-color:var(--bad)} .cell.solid{border-color:var(--ok)}
+.timer{font:600 .85rem var(--mono);padding:3px 10px;border-radius:999px;border:1px solid var(--edge)}
+.timer.low{color:var(--bad);border-color:var(--bad)}
+.dia{color:var(--z)}
+.miss{max-height:130px;overflow:auto;font-size:.85rem;line-height:1.45;border-top:1px solid var(--edge);padding-top:8px}
+.miss div{margin:4px 0}
+.miss b{color:var(--bad);font-weight:500}
+.stamp{margin-top:10px;padding:10px 14px;border-radius:14px;border:1px solid var(--ok);background:color-mix(in srgb,var(--ok) 10%,transparent)}
+.stamp code{font:600 1.15rem var(--mono);letter-spacing:.12em}
+footer{text-align:center;font-size:.72rem;color:var(--dim);padding:8px 16px}
+@media (max-width:640px){.opts{grid-template-columns:1fr}.grid4{grid-template-columns:1fr 1fr;gap:6px}.cell{padding:7px 9px}.cell b{font-size:1.1rem}.cell small{font-size:.72rem}.miss{max-height:96px}.card{padding:14px}main{padding:8px 10px}.tabs{margin-left:0}footer{padding:4px 10px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><i></i>HARD MODE</div>
+  <span class="who" id="who"></span>
+  <nav class="tabs" id="tabs" aria-label="เลือกโซน"></nav>
+</header>
+<main><section class="card" id="card" aria-live="polite"></section></main>
+<footer>GNR2022 อิเล็กทรอนิกส์พื้นฐาน · ผศ.ดร.กุลวลัญช์ วรุณสิน · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยรามคำแหง · © 2569</footer>
+<script>
+var DATA={"z7": [{"q": "ต้องการ IC = 120 mA ทรานซิสเตอร์ βmin = 80 เผื่อ 3 เท่า ขับจาก 5 V (VBE 0.7 V) คำนวณ RB ได้ราว 956 Ω ควรเลือกค่ามาตรฐาน E12 ใด", "c": ["820 Ω", "1 kΩ", "1.2 kΩ", "8.2 kΩ"], "e": "IB = 120/80 × 3 = 4.5 mA, RB = 4.3 V / 4.5 mA ≈ 956 Ω ต้องปัดลงเป็น 820 Ω เพื่อให้ IB ไม่น้อยกว่าที่ออกแบบ ถ้าปัดขึ้นเป็น 1 kΩ จะได้ IB ต่ำกว่าเป้า", "m": "ออกแบบ RB"}, {"q": "GPIO 3.3 V ผ่าน RB 1 kΩ ขับทรานซิสเตอร์ βmin = 50 ที่ขับขดลวด 5 V 100 Ω (VCE(sat) 0.2 V) วงจรนี้เผื่อกระแสเบสไว้กี่เท่า", "c": ["ราว 2.7 เท่า", "ราว 0.37 เท่า", "ราว 5.4 เท่า", "ราว 1.0 เท่า"], "e": "IC ที่ต้องการ = 4.8 / 100 = 48 mA ต้องการ IB = 0.96 mA แต่ได้ IB = 2.6 mA จึงเผื่อ 2.6 / 0.96 ≈ 2.7 เท่า อิ่มตัวแน่นอน", "m": "overdrive"}, {"q": "ทรานซิสเตอร์นำ 50 mA ถ้าอิ่มตัว VCE = 0.2 V แต่ถ้าค้างในย่านแอกทีฟ VCE = 3 V กำลังสูญเสียต่างกันกี่เท่า", "c": ["ราว 15 เท่า", "ราว 3 เท่า", "ราว 150 เท่า", "เท่ากัน"], "e": "อิ่มตัว P = 0.2 × 0.05 = 10 mW แอกทีฟ P = 3 × 0.05 = 150 mW ต่างกัน 15 เท่า", "m": "กำลังสูญเสีย"}, {"q": "ดาร์ลิงตันใช้ทรานซิสเตอร์ β1 = β2 = 100 ขับโหลด 2 A ต้องการกระแสเบสขั้นต่ำประมาณเท่าใด (ไม่เผื่อ)", "c": ["0.2 mA", "20 mA", "2 mA", "0.02 mA"], "e": "β รวม ≈ 100 × 100 = 10 000 จึง IB = 2 A / 10 000 = 0.2 mA", "m": "ดาร์ลิงตัน"}, {"q": "PNP ด้านไฟบวก อิมิตเตอร์ต่อ +12 V ใช้ NPN ดึงเบสลงผ่าน RB = 4.7 kΩ (VCE(sat) ของ NPN 0.2 V) กระแสเบสของ PNP ประมาณเท่าใด", "c": ["ราว 2.4 mA", "ราว 2.6 mA", "ราว 0.24 mA", "ราว 24 mA"], "e": "IB = (12 − 0.7 − 0.2) / 4.7 kΩ ≈ 2.36 mA ถ้าลืมหัก VEB และ VCE(sat) จะได้ราว 2.6 mA", "m": "PNP ด้านไฟบวก"}, {"q": "ต่อขา GPIO 3.3 V ผ่าน RB เข้าเบสของ PNP ที่อิมิตเตอร์ต่อ +12 V โดยตรง จะเกิดอะไรขึ้น", "c": ["PNP นำตลอด สั่งปิดด้วย GPIO ไม่ได้", "PNP ปิดตลอด สั่งเปิดด้วย GPIO ไม่ได้", "ทำงานถูกต้องเหมือน NPN ทั่วไป", "GPIO จะเปลี่ยนเป็น 12 V เอง"], "e": "PNP จะดับได้ต้องดึงเบสขึ้นใกล้ 12 V แต่ GPIO HIGH ให้แค่ 3.3 V ซึ่งยังต่ำกว่า 11.3 V มาก PNP จึงนำตลอด ต้องใช้ NPN ช่วยขับ", "m": "PNP ด้านไฟบวก"}, {"q": "ขดลวดรีเลย์กินกระแส 70 mA ทันทีหลังทรานซิสเตอร์ตัดไฟ กระแสที่ไหลผ่านไดโอดกันกลับประมาณเท่าใด", "c": ["ราว 70 mA แล้วค่อย ๆ ลดลง", "เป็นศูนย์ทันที", "ราว 140 mA คงที่", "เท่ากับกระแสเบสเดิม"], "e": "ขดลวดรักษากระแสเดิมไว้ ณ ขณะตัด กระแส 70 mA จึงย้ายมาไหลวนผ่านไดโอดแล้วลดลงจนหมด ไดโอดจึงต้องทนกระแสนี้ได้", "m": "ไดโอดกันกลับ"}, {"q": "ตอน ESP32 บูต ขา GPIO ยังลอย ทำให้รีเลย์กระตุกสั้น ๆ แก้อย่างไรที่ฝั่งทรานซิสเตอร์", "c": ["ต่อ R 10 kΩ จากเบสลงอิมิตเตอร์", "ลด RB ลงเหลือ 10 Ω เพื่อให้นำเร็ว", "ถอดไดโอดกันกลับออกจากขดลวด", "ต่อเบสเข้าไฟ +5 V ไว้ตลอดเวลา"], "e": "ตัวต้านทานดึงเบสลง (pull-down) ทำให้เบสเป็น 0 V เมื่อ GPIO ลอย ทรานซิสเตอร์จึงปิดแน่นอนระหว่างบูต", "m": "การออกแบบจริง"}, {"q": "วัดวงจรสวิตช์ได้ IC = 60 mA และ IB = 3 mA ค่า \"β บังคับ\" (forced β) = 20 ในขณะที่ datasheet ระบุ hFE 100–300 แปลว่าอะไร", "c": ["อิ่มตัวลึก มีกระแสเบสเหลือเฟือ", "ทรานซิสเตอร์เสียแล้ว", "อยู่ในย่านแอกทีฟพอดี", "อยู่ในย่านคัตออฟ"], "e": "IC ถูกจำกัดด้วยโหลด ไม่ใช่ด้วย β เมื่อ IC/IB ต่ำกว่า hFE มาก แปลว่าอิ่มตัวลึก ซึ่งเป็นสิ่งที่ต้องการในงานสวิตช์", "m": "อ่านค่าวัด"}, {"q": "โฟโตทรานซิสเตอร์ต่อ R 10 kΩ จาก +5 V เข้าขาคอลเล็กเตอร์ (อิมิตเตอร์ลงกราวด์) ในที่มืด แรงดันที่ขาคอลเล็กเตอร์ประมาณเท่าใด", "c": ["ราว 5 V", "ราว 0.2 V", "ราว 0.7 V", "ราว 2.5 V"], "e": "มืดแล้วโฟโตทรานซิสเตอร์แทบไม่นำ กระแสผ่าน R เกือบศูนย์ แรงดันจึงถูกดึงขึ้นใกล้ 5 V สว่างแล้วจะต่ำลงใกล้ VCE(sat)", "m": "โฟโตทรานซิสเตอร์"}, {"q": "ESP32 (3.3 V) ขับ NPN ที่ขาคอลเล็กเตอร์ต่อขดลวดรีเลย์ 12 V จากแหล่งจ่ายแยก ใช้ได้หรือไม่", "c": ["ได้ ถ้าต่อกราวด์ร่วมกัน", "ไม่ได้ เพราะ 3.3 V ต่ำกว่า 12 V", "ได้ โดยไม่ต้องต่อกราวด์ร่วม", "ไม่ได้ ต้องใช้ GPIO 12 V"], "e": "VBE อ้างอิงขาอิมิตเตอร์ที่กราวด์ ขา C จึงต่อไฟคนละค่าได้ แต่ต้องต่อกราวด์ร่วม มิฉะนั้นกระแสเบสไม่มีทางกลับ", "m": "การออกแบบจริง"}, {"q": "สั่ง GPIO HIGH แล้ววัดได้ VBE เทียบกราวด์ของ ESP32 = 0.7 V แต่ทรานซิสเตอร์ไม่นำเลย และกราวด์ของแหล่งจ่าย 12 V ไม่ได้ต่อกับ ESP32 สาเหตุคือข้อใด", "c": ["ไม่มีกราวด์ร่วม กระแสเบสไม่ครบวง", "RB มีค่าต่ำเกินไปจนเบสไหม้", "ทรานซิสเตอร์อิ่มตัวลึกเกินไป", "ไดโอดกันกลับต่อถูกทิศแล้ว"], "e": "แรงดันที่วัดเทียบกราวด์ ESP32 ไม่ได้บอกแรงดัน B–E จริง เมื่อไม่มีกราวด์ร่วม กระแสเบสไม่ครบวงจรทรานซิสเตอร์จึงไม่นำ", "m": "หาจุดเสีย"}], "z8": [{"q": "Integrator มี R = 2 kΩ, C = 100 nF, vo(0) = 0 V ป้อน +1 V คงที่นาน 1 ms แรงดันเอาต์พุตเป็นเท่าใด", "c": ["−5 V", "+5 V", "−0.5 V", "−50 V"], "e": "vo = −(1/RC) ∫ vi dt = −(1 / 0.2 ms) × 1 V × 1 ms = −5 V (ตัวอย่างในเอกสารการสอน โมดูล 2)", "m": "Integrator"}, {"q": "ค่าคงที่การอินทิเกรต 1/RC ของ integrator ที่ R = 2 kΩ และ C = 100 nF เท่ากับเท่าใด", "c": ["5000 s⁻¹", "200 s⁻¹", "0.2 ms", "2000 s⁻¹"], "e": "RC = 2 000 × 100 × 10⁻⁹ = 2 × 10⁻⁴ s จึง 1/RC = 5000 s⁻¹ (0.2 ms คือ RC ไม่ใช่ 1/RC)", "m": "Integrator"}, {"q": "ป้อนคลื่นสี่เหลี่ยม ±1 V เข้า integrator เอาต์พุตมีรูปคลื่นแบบใด", "c": ["คลื่นสามเหลี่ยม", "คลื่นสี่เหลี่ยม", "คลื่นไซน์", "หนามแหลม (spike)"], "e": "อินทิเกรตค่าคงที่ได้เส้นตรงลาดเอียง สลับทิศทุกครึ่งคาบ จึงได้คลื่นสามเหลี่ยม (กลับเฟส)", "m": "Integrator"}, {"q": "เหตุใด integrator อุดมคติที่ไม่มี R2 ขนาน C จึงอิ่มตัวเองแม้ไม่ป้อนสัญญาณ", "c": ["C เปิดวงจรที่ DC อัตราขยายจึงเป็นอนันต์", "ตัวเก็บประจุลัดวงจรเสมอที่ความถี่ต่ำ", "ตัวต้านทานอินพุตมีค่าน้อยเกินไปมาก", "ออปแอมป์ไม่มีกระแสไบแอสไหลเข้าเลย"], "e": "ที่ 0 Hz C เปิดวงจร อัตราขยาย DC เป็นอนันต์ VIO และกระแสไบแอสเล็ก ๆ จึงถูกอินทิเกรตสะสมจนเอาต์พุตชนราง", "m": "Integrator ทางปฏิบัติ"}, {"q": "Integrator ทางปฏิบัติมี R1 = 10 kΩ และต่อ R2 = 1 MΩ ขนาน C อัตราขยายที่ DC เป็นเท่าใด", "c": ["−100", "−10", "−1000", "อนันต์"], "e": "ที่ DC C เปิดวงจร เหลือ R2 เป็นทางป้อนกลับ Av(DC) = −R2/R1 = −1M/10k = −100 จึงไม่อิ่มตัว", "m": "Integrator ทางปฏิบัติ"}, {"q": "ป้อนคลื่นสามเหลี่ยมเข้า differentiator เอาต์พุตมีรูปคลื่นแบบใด", "c": ["คลื่นสี่เหลี่ยม", "คลื่นสามเหลี่ยม", "คลื่นไซน์", "แรงดันคงที่ศูนย์"], "e": "อนุพันธ์ของเส้นลาดคงที่คือค่าคงที่ ความชันเปลี่ยนเครื่องหมายทุกครึ่งคาบ จึงได้คลื่นสี่เหลี่ยม", "m": "Differentiator"}, {"q": "Differentiator มี R = 5 kΩ, C = 0.2 µF ป้อนแรงดันที่เพิ่มขึ้นเป็นเส้นตรงจาก 0 ถึง 5 V ใน 5 ms เอาต์พุตเป็นเท่าใด", "c": ["−1 V", "+1 V", "−5 V", "−0.2 V"], "e": "vo = −RC (dv/dt) = −(1 ms) × (5 V / 5 ms) = −1 V (RC = 5k × 0.2 µ = 1 ms)", "m": "Differentiator"}, {"q": "ปัญหาหลักของ differentiator อุดมคติในทางปฏิบัติคืออะไร", "c": ["ขยายสัญญาณรบกวนความถี่สูงมาก", "อิ่มตัวเพราะอัตราขยาย DC สูง", "กลับเฟสสัญญาณไม่ได้เลยทุกกรณี", "ใช้ได้กับไฟเดี่ยวเท่านั้น"], "e": "อัตราขยายของ differentiator เพิ่มตามความถี่ สัญญาณรบกวนความถี่สูงจึงถูกขยายมาก แก้โดยต่อ R เล็ก ๆ อนุกรมกับ C", "m": "Differentiator ทางปฏิบัติ"}, {"q": "ต้องการขยายไซน์ 5 Vpeak ที่ 100 kHz โดยไม่เพี้ยนจาก slew rate ออปแอมป์ต้องมี slew rate อย่างน้อยเท่าใด", "c": ["ราว 3.14 V/µs", "ราว 0.5 V/µs", "ราว 31.4 V/µs", "ราว 0.31 V/µs"], "e": "SR ≥ 2πfVp = 2π × 100 kHz × 5 V ≈ 3.14 × 10⁶ V/s = 3.14 V/µs uA741 (0.5 V/µs) จึงใช้ไม่ได้ ส่วน LF351 (13 V/µs) ใช้ได้", "m": "Slew rate"}, {"q": "uA741 มี slew rate 0.5 V/µs ถ้าต้องการไซน์ 10 Vpeak ความถี่สูงสุดที่ไม่เพี้ยนประมาณเท่าใด", "c": ["ราว 8 kHz", "ราว 80 kHz", "ราว 800 Hz", "ราว 50 kHz"], "e": "fmax = SR / (2πVp) = 0.5 × 10⁶ / (2π × 10) ≈ 7.96 kHz", "m": "Slew rate"}, {"q": "ป้อนไซน์ความถี่สูงเกิน fmax ของ slew rate เอาต์พุตจะเพี้ยนไปเป็นรูปใด", "c": ["เกือบเป็นคลื่นสามเหลี่ยม", "คลื่นสี่เหลี่ยมคม", "ไซน์ที่ใหญ่ขึ้น", "หนามแหลมสั้น ๆ"], "e": "เอาต์พุตเปลี่ยนแรงดันได้ไม่เร็วกว่า SR ความชันจึงถูกจำกัดเป็นเส้นตรง ไซน์จึงกลายเป็นสามเหลี่ยม", "m": "Slew rate"}, {"q": "เหตุใดเอกสารการสอนจึงแนะนำ LF351 แทน uA741 สำหรับวงจร integrator", "c": ["กระแสไบแอสต่ำกว่าราวพันเท่า", "แรงดันไฟเลี้ยงต่ำกว่ามาก", "ไม่ต้องใช้ตัวเก็บประจุในวงจรเลย", "มีอัตราขยายเท่ากับหนึ่ง"], "e": "integrator สะสมกระแสทุกชนิดที่ไหลเข้า C กระแสไบแอส LF351 ราว 50 pA เทียบกับ uA741 หลายสิบถึงหลายร้อย nA การเลื่อนของเอาต์พุตจึงน้อยกว่ามาก", "m": "เลือกออปแอมป์"}], "z9": [{"q": "ออกแบบ Astable 1 kHz ใช้ C = 10 nF และ RA = 1 kΩ ต้องใช้ RB ประมาณเท่าใด", "c": ["ราว 72 kΩ", "ราว 143 kΩ", "ราว 7.2 kΩ", "ราว 36 kΩ"], "e": "RA + 2RB = 1.44 / (1000 × 10⁻⁸) = 144 kΩ → RB = (144 − 1) / 2 ≈ 71.5 kΩ ถ้าลืมหาร 2 จะได้ราว 143 kΩ", "m": "ออกแบบ Astable"}, {"q": "Astable ใช้ RA = RB = 10 kΩ ได้ duty cycle ประมาณเท่าใด", "c": ["ราว 67%", "ราว 50%", "ราว 33%", "ราว 75%"], "e": "duty = (RA + RB) / (RA + 2RB) = 20 / 30 ≈ 66.7% ค่า RA = RB ไม่ได้ให้ 50%", "m": "duty cycle"}, {"q": "Astable ใช้ RA = 1 kΩ, RB = 10 kΩ, C = 10 µF ช่วง HIGH (tH) ประมาณเท่าใด", "c": ["ราว 76 ms", "ราว 69 ms", "ราว 145 ms", "ราว 7.6 ms"], "e": "tH = 0.693 × (1k + 10k) × 10 µF ≈ 76 ms ส่วน 69 ms คือ tL = 0.693 × 10k × 10 µF", "m": "Astable"}, {"q": "Astable ต่อไดโอดขนาน RB (ชาร์จผ่าน RA อย่างเดียว) ใช้ RA = RB = 10 kΩ และ C = 1 µF ได้ duty ประมาณเท่าใด (ไม่คิดแรงดันตกของไดโอด)", "c": ["ราว 50%", "ราว 67%", "ราว 33%", "ราว 100%"], "e": "tH ≈ 0.693 RA C และ tL ≈ 0.693 RB C เมื่อ RA = RB ทั้งสองช่วงเท่ากัน duty จึงราว 50%", "m": "duty cycle"}, {"q": "ใน Astable ถ้าป้อนแรงดันที่ขา 5 (CONT) ให้ต่ำกว่า 2/3 VCC ความถี่จะเป็นอย่างไร", "c": ["สูงขึ้น", "ต่ำลง", "เท่าเดิม", "หยุดกะพริบทันที"], "e": "ขา 5 กำหนดจุดตัดบน C แกว่งระหว่าง V5/2 ถึง V5 ซึ่งแคบลงและยังชาร์จเข้าหา VCC เท่าเดิม แต่ละช่วงจึงสั้นลง ความถี่สูงขึ้น (หลักของ VCO)", "m": "ขา CONT"}, {"q": "Monostable ถ้ากดปุ่มทริกค้างไว้นานกว่าเวลา t ที่ออกแบบ เอาต์พุตจะเป็นอย่างไร", "c": ["HIGH ค้างจนกว่าจะปล่อยปุ่ม", "LOW ทันทีที่ครบเวลา t", "กะพริบจนกว่าจะปล่อยปุ่ม", "รีเซ็ตและเริ่มนับใหม่ทุกครั้งที่กด"], "e": "ขณะขา 2 ยังต่ำกว่า 1/3 VCC วงจรเปรียบเทียบตัวล่างยังสั่ง set ค้าง เอาต์พุตจึง HIGH จนกว่าจะปล่อย จึงควรใช้ปุ่มกดสั้นหรือคัปปลิงด้วย C", "m": "Monostable ขั้นสูง"}, {"q": "Monostable ระหว่างนับเวลา กดปุ่มทริกซ้ำสั้น ๆ อีกครั้ง เวลาที่เหลือจะเป็นอย่างไร (555 มาตรฐาน)", "c": ["ไม่เปลี่ยน ไม่เริ่มนับใหม่", "เริ่มนับใหม่ตั้งแต่ต้น", "เพิ่มเป็นสองเท่าทันที", "จบเวลาทันที"], "e": "555 มาตรฐานไม่ใช่วงจร retriggerable เมื่อ OUT เป็น HIGH อยู่แล้ว การทริกซ้ำไม่มีผล เวลายังจบเมื่อ C ถึง 2/3 VCC", "m": "Monostable ขั้นสูง"}, {"q": "เหตุใดในวงจร Astable จึงห้ามใช้ RA = 0 Ω", "c": ["ขา 7 จะลัด VCC ลงกราวด์ตอนคายประจุ", "ความถี่จะต่ำเกินกว่าเครื่องวัดจะวัดได้", "ตัวเก็บประจุจะชาร์จประจุไม่ได้เลย", "ขา 3 จะจ่ายกระแสเกิน 1 A"], "e": "ตอนคายประจุ ทรานซิสเตอร์ที่ขา 7 นำ ถ้าไม่มี RA จะต่อ VCC ลงกราวด์โดยตรง กระแสสูงจนไอซีเสีย", "m": "ข้อห้ามในการออกแบบ"}, {"q": "Monostable ใช้ R = 10 MΩ กับ C อิเล็กโทรไลต์ 1000 µF คำนวณได้ 3 ชั่วโมงเศษ แต่ทดลองจริงไฟไม่ดับเลย สาเหตุน่าจะเป็นข้อใด", "c": ["กระแสรั่วของ C ใกล้เคียงกระแสชาร์จ", "สูตร 1.1RC ใช้ไม่ได้เมื่อ R สูงมาก ๆ", "ขา 5 ไม่ได้ต่อ C 10 nF ลงกราวด์", "ไฟเลี้ยงสูงเกินไป"], "e": "กระแสชาร์จผ่าน 10 MΩ เหลือไม่ถึง 1 µA ขณะที่ C อิเล็กโทรไลต์ใหญ่ ๆ มีกระแสรั่วระดับเดียวกัน แรงดัน C จึงไม่ถึง 2/3 VCC งานหน่วงยาวจึงใช้ตัวนับดิจิทัลหรือไมโครคอนโทรลเลอร์แทน", "m": "ข้อจำกัดทางปฏิบัติ"}, {"q": "Astable เดิมเปลี่ยนไฟเลี้ยงจาก 5 V เป็น 12 V ความถี่จะเป็นอย่างไร", "c": ["เกือบเท่าเดิม", "สูงขึ้นราว 2.4 เท่า", "ต่ำลงราว 2.4 เท่า", "สูงขึ้นราว 5.8 เท่า"], "e": "จุดตัด 1/3 และ 2/3 VCC เปลี่ยนตาม VCC ในสัดส่วนเดียวกับแรงดันที่ชาร์จ เวลาจึงไม่ขึ้นกับ VCC ในสูตร f = 1.44 / ((RA + 2RB) C)", "m": "Astable"}, {"q": "ต้องการปรับ duty cycle ของ 555 โดยให้ความถี่เกือบคงที่ ควรต่อวงจรอย่างไร", "c": ["VR แบ่งสองฝั่งพร้อมไดโอดสองตัว", "เปลี่ยน RB เป็น VR ตัวเดียวแล้วหมุนปรับ", "เปลี่ยน C เป็นตัวเก็บประจุปรับค่าได้", "ต่อ VR อนุกรมกับขา 8"], "e": "ไดโอดแยกทางชาร์จกับทางคาย VR แบ่งความต้านทานให้สองฝั่ง ผลรวมคงที่ ความถี่จึงเกือบคงที่ขณะ duty เปลี่ยน (ใช้ทำ PWM)", "m": "PWM"}, {"q": "หลังจ่ายไฟให้ Astable ครั้งแรก ช่วง HIGH แรกยาวกว่าช่วง HIGH ถัด ๆ ไปเพราะอะไร", "c": ["C เริ่มชาร์จจาก 0 V ไม่ใช่ 1/3 VCC", "ไอซียังอุ่นเครื่องไม่เสร็จในรอบแรก", "ขา 4 เริ่มต้นที่ LOW ก่อนเสมอทุกครั้ง", "RA ร้อนขึ้นจนค่าเปลี่ยน"], "e": "รอบแรก C ต้องชาร์จจาก 0 ถึง 2/3 VCC (ราว 1.1(RA + RB)C) ส่วนรอบต่อไปชาร์จจาก 1/3 ถึง 2/3 VCC (0.693(RA + RB)C)", "m": "Astable ขั้นสูง"}]};
+var META={"z7": {"name": "BJT ARENA", "th": "ออกแบบสวิตช์ทรานซิสเตอร์ขั้นสูง", "col": "#00f0ff", "game": "s2-z7-bjt-arena.html", "lead": "โจทย์ระดับสูงกว่าเกมปกติ ต้องคำนวณหลายขั้นและเชื่อมหลายหัวข้อ เช่น ปัดค่า RB, overdrive, PNP ด้านไฟบวก และกราวด์ร่วมกับ ESP32"}, "z8": {"name": "OP-AMP TOWER", "th": "Integrator · Differentiator · Slew rate", "col": "#8b7bff", "game": "s2-z8-opamp-tower.html", "lead": "โจทย์ระดับสูงกว่าเกมปกติ ต้องคำนวณหลายขั้นและเชื่อมหลายหัวข้อ ตามเอกสารการสอนโมดูล 2–3: วงจรตัวรวม ตัวดิฟเฟอเรนเชียล และขีดจำกัดความเร็ว"}, "z9": {"name": "555 CLOCKWORK", "th": "ออกแบบ 555 และข้อจำกัดทางปฏิบัติ", "col": "#eab308", "game": "s2-z9-555-clockwork.html", "lead": "โจทย์ระดับสูงกว่าเกมปกติ ต้องคำนวณหลายขั้นและเชื่อมหลายหัวข้อ เช่น ออกแบบความถี่ duty cycle ขา CONT และข้อจำกัดของตัวเก็บประจุจริง"}};
+var CONF={"nq": 10, "pass": 8, "timer": 45, "store": "hard", "prefix": "h", "label": "HARD MODE", "h1": "Hard Mode โซน", "howto": "ไม่มีคำใบ้ จับเวลาข้อละ 45 วินาที หมดเวลานับเป็นผิด ทุกข้อให้กด <b>ส่ง · มั่นใจ</b> หรือ <b>ส่ง · ไม่แน่ใจ</b> ตามจริง เพื่อแยกความเข้าใจผิดออกจากการเดา", "reward": "ได้เพชรและรหัส", "passText": "ได้เพชร", "stampNote": "เพชรแสดงบนหน้าแผนที่และกระดานห้อง ผู้สอนตรวจรหัสนี้ได้ที่ปุ่ม \"ผู้สอน\"", "tagPre": ""};
+var ID_KEY='gnr2022_student', RES_KEY='gnr2022_results', DAY_KEY='gnr2022_days', SECRET='gnr2569', SECRETS=['ru2569','gnr2569'], MASK='xxxxxxxxxx';
+var NOTA='ไม่มีข้อใดถูก', N_Q=CONF.nq, PASS=CONF.pass, TH='1234', ZS=Object.keys(META);
+function $(s){return document.querySelector(s);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function jget(st,k,d){try{var v=JSON.parse(st.getItem(k)||'null');return v==null?d:v;}catch(e){return d;}}
+function jset(st,k,v){try{st.setItem(k,JSON.stringify(v));}catch(e){}}
+function stampCode(sid,zid){var s=sid+'|'+zid+'|'+SECRET,h=0x811c9dc5;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}
+  var A='ABCDEFGHJKMNPQRSTUVWXYZ23456789',o='';for(var j=0;j<5;j++){o+=A[h%A.length];h=Math.floor(h/A.length);}return zid.toUpperCase()+'-'+o;}
+function ymd(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+function checkId(raw){var v=(raw||'').trim();if(SECRETS.indexOf(v.toLowerCase())>=0)return {ok:true,sid:MASK};
+  var d=v.replace(/[\s-]/g,'');if(!/^\d{10}$/.test(d))return {ok:false,msg:'กรอกรหัสนักศึกษาเป็นตัวเลข 10 หลัก'};
+  if(!/^[5-7]\d{9}$/.test(d))return {ok:false,msg:'รหัสต้องขึ้นต้นด้วยปีที่เข้าศึกษา เช่น 69xxxxxxxx'};return {ok:true,sid:d};}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+try{var th=localStorage.getItem('gnr2022_theme');if(th)document.documentElement.setAttribute('data-theme',th);}catch(e){}
+
+var me=jget(sessionStorage,ID_KEY,null), Z=ZS[0], S=null, TMR=null;
+var qz=(location.search.match(/[?&]z=(z\d+)/)||[])[1]; if(qz&&META[qz])Z=qz;
+function zid(z){ return CONF.prefix+z.slice(1); }
+function recOf(z){ if(!me)return null; var all=jget(localStorage,RES_KEY,{}); return ((all[me.sid]||{})[CONF.store]||{})[z]||null; }
+function save(score,mis){
+  if(!me)return; var all=jget(localStorage,RES_KEY,{}), r=all[me.sid]=all[me.sid]||{}, rs=r[CONF.store]=r[CONF.store]||{}, o=rs[Z]||{};
+  rs[Z]={best:Math.max(score,o.best||0),last:score,mis:mis,max:N_Q,plays:(o.plays||0)+1,at:new Date().toISOString(),nick:me.nick||''};
+  jset(localStorage,RES_KEY,all); var days=jget(localStorage,DAY_KEY,[]), t=ymd(new Date()); if(days.indexOf(t)<0){days.push(t);jset(localStorage,DAY_KEY,days.slice(-200));}
+}
+function stopT(){ if(TMR){clearInterval(TMR);TMR=null;} }
+function setZone(z){stopT();Z=z;S=null;document.documentElement.style.setProperty('--z',META[z].col);
+  try{history.replaceState(null,'','?z='+z);}catch(e){} renderTabs(); intro();}
+function renderTabs(){
+  $('#tabs').innerHTML=ZS.map(function(z){var r=recOf(z);
+    return '<button class="tab'+(z===Z?' on':'')+'" data-z="'+z+'">'+z.toUpperCase()+(r&&r.best>=PASS?' ✓':'')+'</button>';}).join('');
+  $('#who').textContent=me?(me.sid===MASK?'โหมดผู้สอน':'รหัส '+me.sid):'';
+}
+function intro(){
+  var m=META[Z], r=recOf(Z), c=$('#card');
+  var h='<div class="k">'+CONF.label+' · ZONE '+Z.slice(1)+' · '+m.name+'</div><h1>'+CONF.h1+' '+Z.slice(1)+': '+m.th+'</h1>'+
+    '<p class="lead">'+m.lead+' '+CONF.howto+'</p>'+
+    '<div class="facts"><div class="fact"><b>'+N_Q+' ข้อ</b><span>สุ่มจากคลัง '+DATA[Z].length+' ข้อทุกรอบ'+(CONF.timer?' · ข้อละ '+CONF.timer+' วินาที':'')+'</span></div>'+
+    '<div class="fact"><b>'+PASS+'/'+N_Q+'</b><span>ผ่านเกณฑ์ '+CONF.reward+' '+zid(Z).toUpperCase()+'</span></div>'+
+    '<div class="fact"><b>'+(r?r.best+'/'+r.max:'—')+'</b><span>ดีที่สุดของคุณ'+(r?' · เล่น '+r.plays+' รอบ':'')+'</span></div></div>';
+  if(!me){ h+='<div class="row idrow"><input id="sid" inputmode="numeric" maxlength="12" placeholder="รหัสนักศึกษา 10 หลัก" aria-label="รหัสนักศึกษา"><button class="btn pri" id="go">เริ่มภารกิจ</button><span class="err" id="err"></span></div>'; }
+  else h+='<div class="row"><button class="btn pri" id="go">เริ่มภารกิจ</button><a class="btn" href="'+m.game+'">ทบทวนในเกมโซน '+Z.slice(1)+'</a><a class="btn" href="../index.html">แผนที่</a></div>';
+  if(me && r && r.best>=PASS) h+=stampBox();
+  c.innerHTML=h;
+  $('#go').onclick=function(){ if(!me){var v=checkId($('#sid').value); if(!v.ok){$('#err').textContent=v.msg;return;} me={sid:v.sid,nick:''}; jset(sessionStorage,ID_KEY,me); renderTabs();} start(); };
+  var inp=$('#sid'); if(inp) inp.onkeydown=function(e){ if(e.key==='Enter') $('#go').click(); };
+}
+function stampBox(){ return '<div class="stamp">'+CONF.passText+' · โซน '+Z.slice(1)+' · รหัส <code>'+stampCode(me.sid,zid(Z))+'</code><div style="font-size:.76rem;color:var(--mute);margin-top:2px">'+CONF.stampNote+'</div></div>'; }
+function start(){
+  var pool=shuffle(DATA[Z].slice()).slice(0,N_Q);
+  S={qs:pool.map(function(it){ var o=it.c.map(function(t,i){return {t:t,ok:i===0};}), nota=o.filter(function(x){return x.t===NOTA;}), rest=shuffle(o.filter(function(x){return x.t!==NOTA;}));
+      return {q:it.q,e:it.e,m:it.m,o:rest.concat(nota)}; }), i:0, pick:-1, log:[]};
+  question();
+}
+function progress(){ return '<div class="prog">'+S.qs.map(function(q,i){ var l=S.log[i]; return '<i class="'+(l?(l.ok?'ok':'bad'):(i===S.i?'cur':''))+'"></i>'; }).join('')+'</div>'; }
+function question(){
+  stopT(); var q=S.qs[S.i]; S.pick=-1;
+  $('#card').innerHTML=progress()+'<div class="qhead"><span>ข้อ '+(S.i+1)+' / '+N_Q+'</span>'+(CONF.timer?'<span class="timer" id="tm">'+CONF.timer+' s</span>':'')+'<span class="tag">'+esc(CONF.tagPre+q.m)+'</span></div>'+
+    '<div class="q">'+esc(q.q)+'</div><div class="opts">'+q.o.map(function(o,i){ return '<button class="opt" data-i="'+i+'"><em>'+TH[i]+')</em><span>'+esc(o.t)+'</span></button>'; }).join('')+'</div>'+
+    '<div class="row" id="act"><button class="btn pri" id="sure" disabled>ส่ง · มั่นใจ</button><button class="btn" id="unsure" disabled>ส่ง · ไม่แน่ใจ</button></div><div id="fb"></div>';
+  document.querySelectorAll('.opt').forEach(function(b){ b.onclick=function(){ if(S.log[S.i])return; S.pick=+b.dataset.i;
+    document.querySelectorAll('.opt').forEach(function(x){x.classList.toggle('sel',x===b);}); $('#sure').disabled=$('#unsure').disabled=false; }; });
+  $('#sure').onclick=function(){answer(true);}; $('#unsure').onclick=function(){answer(false);};
+  if(CONF.timer){ var left=CONF.timer, t0=Date.now(); TMR=setInterval(function(){ left=CONF.timer-Math.floor((Date.now()-t0)/1000); var el=$('#tm'); if(el){ el.textContent=Math.max(0,left)+' s'; el.classList.toggle('low',left<=10); }
+    if(left<=0){ stopT(); S.pick=-1; answer(false,true); } },250); }
+}
+function answer(sure,timeout){
+  stopT(); var q=S.qs[S.i], ok=S.pick>=0&&q.o[S.pick].ok; S.log[S.i]={ok:ok,sure:sure,q:q,to:!!timeout};
+  document.querySelectorAll('.opt').forEach(function(b,i){ b.disabled=true; b.classList.remove('sel'); if(q.o[i].ok)b.classList.add('ok'); else if(i===S.pick)b.classList.add('bad'); });
+  var right=q.o.filter(function(o){return o.ok;})[0].t;
+  var head=timeout?'หมดเวลา':(ok?(sure?'ถูกต้อง และมั่นใจ':'ถูกต้อง แต่ยังไม่มั่นใจ ทบทวนเหตุผลอีกครั้ง'):(sure?'ผิดทั้งที่มั่นใจ นี่คือความเข้าใจผิดที่ต้องแก้':'ยังไม่ถูก'));
+  $('#fb').innerHTML='<div class="exp'+(ok?'':' no')+'"><b>'+head+'</b> — '+(ok?'':'คำตอบคือ "'+esc(right)+'" · ')+esc(q.e)+'</div>';
+  $('#act').innerHTML='<button class="btn pri" id="nx">'+(S.i<N_Q-1?'ข้อถัดไป':'ดูผลภารกิจ')+'</button>';
+  $('#nx').onclick=function(){ if(S.i<N_Q-1){S.i++;question();} else result(); }; $('#nx').focus();
+}
+function result(){
+  var L=S.log, score=L.filter(function(x){return x.ok;}).length, c=function(ok,su){return L.filter(function(x){return x.ok===ok&&x.sure===su;}).length;}, mis=c(false,true);
+  save(score,mis); renderTabs();
+  var pass=score>=PASS, wrong=L.filter(function(x){return !x.ok;}).sort(function(a,b){return (b.sure?1:0)-(a.sure?1:0);});
+  var h='<div class="k">'+CONF.label+' REPORT · ZONE '+Z.slice(1)+'</div><h1>'+score+' / '+N_Q+(pass?' · '+CONF.passText:' · ยังไม่ผ่าน ลองอีกรอบ')+'</h1>'+
+    '<div class="grid4"><div class="cell solid"><b>'+c(true,true)+'</b>ถูก + มั่นใจ<small>เข้าใจจริง</small></div>'+
+    '<div class="cell"><b>'+c(true,false)+'</b>ถูก + ไม่แน่ใจ<small>ต้องย้ำ อาจเดาถูก</small></div>'+
+    '<div class="cell mis"><b>'+mis+'</b>ผิด + มั่นใจ<small>ความเข้าใจผิด แก้ก่อนสอบ Final</small></div>'+
+    '<div class="cell"><b>'+c(false,false)+'</b>ผิด + ไม่แน่ใจ<small>ยังไม่รู้'+(CONF.timer?' หรือหมดเวลา':'')+' ทบทวนในเกมโซน '+Z.slice(1)+'</small></div></div>';
+  if(wrong.length) h+='<div class="miss">'+wrong.map(function(x){ return '<div><b>'+(x.to?'หมดเวลา':(x.sure?'มั่นใจแต่ผิด':'ไม่แน่ใจ'))+' · '+esc(x.q.m)+'</b> '+esc(x.q.q)+'</div>'; }).join('')+'</div>';
+  if(pass) h+=stampBox();
+  h+='<div class="row"><button class="btn pri" id="again">เล่นอีกรอบ (สุ่มข้อใหม่)</button><a class="btn" href="'+META[Z].game+'">ทบทวนในเกมโซน '+Z.slice(1)+'</a><a class="btn" href="../index.html">แผนที่</a></div>';
+  $('#card').innerHTML=h; $('#again').onclick=start;
+}
+document.addEventListener('click',function(e){ var t=e.target.closest('[data-z]'); if(t) setZone(t.dataset.z); });
+setZone(Z);
+window.GNRDRILL={data:DATA,conf:CONF,stampCode:stampCode};
+window.GNRRESCUE=window.GNRDRILL;
+</script>
+</body>
+</html>

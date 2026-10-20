@@ -1,0 +1,131 @@
+
+<!-- ===== PREVIEW 1 ===== -->
+<section id="scr-preview1" class="screen">
+  <div class="panel">
+    <span class="tag">Clockwork Room 01</span>
+    <h2>กำลังจะเข้าสู่: ห้อง 1 ห้องเครื่องของ 555 (ขาและกลไกภายใน)</h2>
+    <div class="dcard">
+      <div class="ico"><svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><rect x="22" y="12" width="36" height="56" rx="5" fill="none" stroke="#eab308" stroke-width="4"/><path d="M10 22 h12 M10 34 h12 M10 46 h12 M10 58 h12 M58 22 h12 M58 34 h12 M58 46 h12 M58 58 h12" stroke="#14b8a6" stroke-width="3"/></svg></div>
+      <div><div class="skillcard" style="margin:0">
+        <div class="sk-name">ทักษะที่จะได้: บอกหน้าที่ของขาทั้ง 8 และอธิบายว่าระดับ 1/3 กับ 2/3 VCC ควบคุมการทำงานอย่างไร</div>
+        <p class="muted" style="margin:6px 0 0">ข้อสอบ Final เดิมถามเรื่อง 555 มากกว่า 10 ข้อ ห้องนี้เป็นฐานของทุกข้อ</p>
+      </div></div>
+    </div>
+    <div class="btn-row"><button class="btn primary" data-goto="scr-lesson1">เปิดห้อง</button></div>
+  </div>
+</section>
+
+<!-- ===== ROOM 1 ===== -->
+<section id="scr-lesson1" class="screen">
+  <div class="panel">
+    <span class="tag">Room 01 · Inside the 555</span>
+    <h2>ห้อง 1: ขาทั้ง 8 และกลไกภายใน 555</h2>
+    <p>ภายใน 555 มีตัวต้านทานเท่ากัน 3 ตัวแบ่งแรงดันเป็น <b>2/3 VCC</b> และ <b>1/3 VCC</b> ให้วงจรเปรียบเทียบ 2 ตัว
+      ผลเปรียบเทียบไปสั่ง flip-flop ซึ่งคุมทั้งเอาต์พุต (ขา 3) และทรานซิสเตอร์คายประจุ (ขา 7)</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>ขา</th><th>ชื่อ</th><th>หน้าที่</th><th>ขา</th><th>ชื่อ</th><th>หน้าที่</th></tr>
+      <tr><td>1</td><td>GND</td><td>กราวด์</td><td>8</td><td>VCC</td><td>ไฟเลี้ยง 4.5–16 V (NE555)</td></tr>
+      <tr><td>2</td><td>TRIG</td><td>ต่ำกว่า 1/3 VCC → เริ่มนับ OUT = HIGH</td><td>7</td><td>DISCH</td><td>คายประจุ C ลงกราวด์ขณะ OUT = LOW</td></tr>
+      <tr><td>3</td><td>OUT</td><td>เอาต์พุต จ่ายได้ราว ±200 mA</td><td>6</td><td>THRES</td><td>ถึง 2/3 VCC → จบช่วงเวลา OUT = LOW</td></tr>
+      <tr><td>4</td><td>RESET</td><td>ดึงลงต่ำ = รีเซ็ตทันที (ไม่ใช้ให้ต่อ VCC)</td><td>5</td><td>CONT</td><td>ต่อ C 10 nF ลงกราวด์ กันสัญญาณรบกวน</td></tr>
+    </table></div>
+    <div class="keyfact">จำให้ขึ้นใจ: <b>1/3 เริ่ม · 2/3 จบ</b> · VCC 9 V → TRIG 3 V และ THRES 6 V · โหมดหลักคือ <b>Monostable</b> (ตั้งเวลา) และ <b>Astable</b> (กะพริบ)</div>
+
+    <h3 style="margin-top:16px">ห้องทดลอง: ล่าขา 555</h3>
+    <p class="muted">อ่านโจทย์แล้วคลิกขาที่ถูกต้องบนตัวไอซี (ไม่มีชื่อขาบอกใบ้) หาให้ถูกอย่างน้อย 5 ขา</p>
+    <div class="labrow"><span class="readout" id="pqAsk">—</span><button class="btn sm" id="pqSkip">ข้ามโจทย์</button></div>
+    <svg class="chip555" id="pqChip" viewBox="0 0 340 190" role="img" aria-label="ไอซี 555 แบบ DIP-8 สำหรับคลิกเลือกขา"></svg>
+    <div class="status-line" id="pqStatus">คลิกขาที่ตรงกับโจทย์</div>
+    <div class="btn-row"><button class="btn primary" data-quiz="check1">ไปทำแบบฝึกหัดห้องนี้</button></div>
+  </div>
+</section>
+
+<!-- ===== PREVIEW 2 ===== -->
+<section id="scr-preview2" class="screen">
+  <div class="panel">
+    <span class="tag">Clockwork Room 02</span>
+    <h2>กำลังจะเข้าสู่: ห้อง 2 นาฬิกาจับเวลา Monostable</h2>
+    <div class="dcard">
+      <div class="ico"><svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="M6 56 h18 v-28 h34 v28 h16" fill="none" stroke="#eab308" stroke-width="4"/><path d="M24 66 h34" stroke="#14b8a6" stroke-width="3"/></svg></div>
+      <div><div class="skillcard" style="margin:0">
+        <div class="sk-name">ทักษะที่จะได้: คำนวณและออกแบบเวลา t = 1.1RC และอธิบายลำดับการทำงานตั้งแต่กดปุ่มจนไฟดับ</div>
+        <p class="muted" style="margin:6px 0 0">ต่อยอดวงจร RC ของโซน 5 (กลางภาคข้อ 64–70) ให้แม่นและตั้งเวลาได้</p>
+      </div></div>
+    </div>
+    <div class="btn-row"><button class="btn primary" data-goto="scr-lesson2">เปิดห้อง</button></div>
+  </div>
+</section>
+
+<!-- ===== ROOM 2 ===== -->
+<section id="scr-lesson2" class="screen">
+  <div class="panel">
+    <span class="tag">Room 02 · Monostable</span>
+    <h2>ห้อง 2: Monostable ตั้งเวลาครั้งเดียว</h2>
+    <div class="codebox">t = 1.1 × R × C        (R เป็น Ω, C เป็น F, t เป็นวินาที)
+ตัวอย่าง: R = 100 kΩ, C = 10 µF → t = 1.1 × 100 000 × 0.000 01 = 1.1 s
+ออกแบบ: ต้องการ 11 s มี R = 500 kΩ → C = 11 / (1.1 × 500 000) = 20 µF</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>ลำดับ</th><th>เกิดอะไรขึ้น</th></tr>
+      <tr><td>1 รอ</td><td>OUT = LOW ขา 7 คายประจุ C ค้างไว้ที่ 0 V</td></tr>
+      <tr><td>2 กดปุ่ม</td><td>ขา 2 ถูกดึงต่ำกว่า 1/3 VCC → OUT = HIGH ขา 7 ปล่อย C ให้ชาร์จผ่าน R</td></tr>
+      <tr><td>3 จบเวลา</td><td>แรงดัน C ถึง 2/3 VCC (ที่ t = 1.1RC) → OUT = LOW ขา 7 คายประจุ C ทันที</td></tr>
+    </table></div>
+    <div class="keyfact">จำให้ขึ้นใจ: <b>t = 1.1RC</b> · กด 1 ครั้งได้ 1 พัลส์ (one-shot) · R หรือ C เพิ่ม 2 เท่า เวลาเพิ่ม 2 เท่า</div>
+
+    <h3 style="margin-top:16px">ห้องทดลอง: นาฬิกาจับเวลา</h3>
+    <p class="muted">ตั้ง R และ C ให้ได้เวลาตามภารกิจ (คลาดได้ไม่เกิน 5%) แล้วกดปุ่ม TRIG ดูไฟติดและแรงดัน C ขึ้นจนถึง 2/3 VCC</p>
+    <div class="labrow"><span class="readout" id="mnGoal">—</span><button class="btn sm" id="mnNext">ภารกิจถัดไป</button></div>
+    <label class="muted" for="mnR" style="display:block;font-size:.85rem">R: <b id="mnRt">100 kΩ</b></label>
+    <input type="range" class="rng" id="mnR" min="1" max="1000" step="1" value="100" aria-label="ค่า R (kΩ)">
+    <div class="labrow"><label class="muted" style="font-size:.85rem">C <select class="sel" id="mnC" aria-label="ค่า C"></select></label><button class="btn sm primary" id="mnTrig">กด TRIG</button><span class="ledlamp" id="mnLed"></span><span class="readout" id="mnT">—</span></div>
+    <div class="cap"><i id="mnCap"></i></div>
+    <div class="chips" id="mnChips"></div>
+    <div class="status-line" id="mnStatus">ตั้งค่า R และ C</div>
+    <div class="btn-row"><button class="btn primary" data-quiz="check2">ไปทำแบบฝึกหัดห้องนี้</button></div>
+  </div>
+</section>
+
+<!-- ===== PREVIEW 3 ===== -->
+<section id="scr-preview3" class="screen">
+  <div class="panel">
+    <span class="tag">Clockwork Room 03</span>
+    <h2>กำลังจะเข้าสู่: ห้อง 3 จังหวะ Astable</h2>
+    <div class="dcard">
+      <div class="ico"><svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="M4 56 h10 v-30 h14 v30 h10 v-30 h14 v30 h10 v-30 h14" fill="none" stroke="#14b8a6" stroke-width="4"/></svg></div>
+      <div><div class="skillcard" style="margin:0">
+        <div class="sk-name">ทักษะที่จะได้: คำนวณความถี่ ช่วง HIGH/LOW และ duty cycle แล้วปรับวงจรให้กะพริบตรงจังหวะเพลง</div>
+        <p class="muted" style="margin:6px 0 0">ใช้ต่อในงาน IoT เช่น ไฟเตือน เสียงสัญญาณ และพัลส์ทดสอบเซนเซอร์</p>
+      </div></div>
+    </div>
+    <div class="btn-row"><button class="btn primary" data-goto="scr-lesson3">เปิดห้อง</button></div>
+  </div>
+</section>
+
+<!-- ===== ROOM 3 ===== -->
+<section id="scr-lesson3" class="screen">
+  <div class="panel">
+    <span class="tag">Room 03 · Astable</span>
+    <h2>ห้อง 3: Astable สร้างจังหวะต่อเนื่อง</h2>
+    <div class="codebox">f  = 1.44 / ((RA + 2RB) × C)          BPM = f × 60
+tH = 0.693 (RA + RB) C   (ชาร์จผ่าน RA และ RB)
+tL = 0.693 RB C          (คายผ่าน RB อย่างเดียว)
+duty = (RA + RB) / (RA + 2RB) × 100%  → วงจรพื้นฐานได้มากกว่า 50% เสมอ
+ตัวอย่าง: RA 1 kΩ, RB 10 kΩ, C 10 µF → f = 1.44 / (21 kΩ × 10 µF) ≈ 6.9 Hz, duty ≈ 52%</div>
+    <div class="keyfact">จำให้ขึ้นใจ: <b>C หรือ R มากขึ้น = ช้าลง</b> · ต้องการ duty ใกล้ 50% ให้ <b>RA ≪ RB</b> · ขับรีเลย์หรือโหลดหนักผ่านทรานซิสเตอร์ (โซน 7)</div>
+
+    <h3 style="margin-top:16px">ห้องทดลอง: ไฟกะพริบตามจังหวะเพลง</h3>
+    <p class="muted">เลือก RA, C แล้วปรับ RB ให้ไฟกะพริบตรง BPM เป้าหมาย (คลาดได้ไม่เกิน 3%) ทำให้ครบ 3 เพลง</p>
+    <div class="labrow"><span class="readout" id="bpGoal">—</span><button class="btn sm" id="bpNext">เพลงถัดไป</button><button class="toggle off" id="bpSnd">เสียงจังหวะ ปิด</button></div>
+    <div class="labrow">
+      <label class="muted" style="font-size:.85rem">RA <select class="sel" id="bpRA" aria-label="RA"></select></label>
+      <label class="muted" style="font-size:.85rem">C <select class="sel" id="bpC" aria-label="C"></select></label>
+      <span class="ledlamp" id="bpLed"></span>
+    </div>
+    <label class="muted" for="bpRB" style="display:block;font-size:.85rem">RB: <b id="bpRBt">33 kΩ</b></label>
+    <input type="range" class="rng" id="bpRB" min="1" max="150" step="0.5" value="33" aria-label="ค่า RB (kΩ)">
+    <div class="meas"><div><b>ความถี่</b><span id="bpF">—</span></div><div><b>BPM</b><span id="bpB">—</span></div><div><b>duty</b><span id="bpD">—</span></div><div><b>tH / tL</b><span id="bpHL">—</span></div></div>
+    <div class="chips" id="bpChips"></div>
+    <div class="status-line" id="bpStatus">ปรับค่าเพื่อเริ่ม</div>
+    <div class="btn-row"><button class="btn primary" data-quiz="check3">ไปทำแบบฝึกหัดห้องนี้</button></div>
+  </div>
+</section>

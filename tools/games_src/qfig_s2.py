@@ -44,3 +44,62 @@ def darlington():
     body += '<path d="M120 20 H204"/>' + _t(160, 14, 'C ร่วม', size=11) + _gnd(204, 150)
     body += _t(84, 140, 'Q1 β1', size=11) + _t(236, 116, 'Q2 β2', anchor='start', size=11)
     return _svg(body, 162)
+
+def _tri(x, y, h=56):
+    """สามเหลี่ยมออปแอมป์ ขา − บน ขา + ล่าง (x,y = มุมซ้ายบน) คืน (body, (xm,ym-), (xm,ym+), (xo,yo))"""
+    b = '<path d="M%g %g V%g L%g %g Z" stroke="%s"/>' % (x, y, y + h, x + 64, y + h / 2, A)
+    b += _t(x + 9, y + 18, '−', size=13) + _t(x + 9, y + h - 8, '+', size=13)
+    return b, (x, y + 14), (x, y + h - 14), (x + 64, y + h / 2)
+
+def opamp(kind='inv', ri='Ri', rf='Rf', vin='Vin', vout='Vo'):
+    """kind: inv | non | buf | cmp (เปรียบเทียบ ไม่มีป้อนกลับ)"""
+    tb, m, p, o = _tri(170, 50)
+    b = tb + '<path d="M%g %g H%g"/>' % (o[0], o[1], o[0] + 46) + _t(o[0] + 50, o[1] + 4, vout, anchor='start', size=11)
+    if kind == 'inv':
+        b += '<path d="M40 %g H70 M114 %g H%g"/><rect x="70" y="%g" width="44" height="14" rx="2" stroke="%s"/>' % (m[1], m[1], m[0], m[1] - 7, A)
+        b += _t(92, m[1] - 12, ri, size=11) + _t(36, m[1] + 4, vin, anchor='end', size=11)
+        b += '<path d="M150 %g V20 H184 M228 20 H260 V%g"/><rect x="184" y="13" width="44" height="14" rx="2" stroke="%s"/>' % (m[1], o[1], A) + _t(206, 10, rf, size=11)
+        b += '<path d="M150 %g H170"/>' % m[1]
+        b += '<path d="M%g %g H140 V128"/>' % (p[0], p[1]) + _gnd(140, 128)
+    elif kind == 'non':
+        b += '<path d="M40 %g H%g"/>' % (p[1], p[0]) + _t(36, p[1] + 4, vin, anchor='end', size=11)
+        b += '<path d="M150 %g V20 H184 M228 20 H260 V%g M150 %g H170"/><rect x="184" y="13" width="44" height="14" rx="2" stroke="%s"/>' % (m[1], o[1], m[1], A) + _t(206, 10, rf, size=11)
+        b += '<path d="M150 %g V90"/><rect x="143" y="90" width="14" height="30" rx="2" stroke="%s"/><path d="M150 120 V128"/>' % (m[1], A) + _gnd(150, 128) + _t(136, 110, ri, anchor='end', size=11)
+    elif kind == 'buf':
+        b += '<path d="M40 %g H%g"/>' % (p[1], p[0]) + _t(36, p[1] + 4, vin, anchor='end', size=11)
+        b += '<path d="M150 %g V20 H260 V%g M150 %g H170"/>' % (m[1], o[1], m[1])
+    else:
+        b += '<path d="M60 %g H%g M60 %g H%g"/>' % (p[1], p[0], m[1], m[0]) + _t(56, p[1] + 4, vin, anchor='end', size=11) + _t(56, m[1] + 4, ri, anchor='end', size=11)
+    return _svg(b, 140)
+
+P555 = {1: 'GND', 2: 'TRIG', 3: 'OUT', 4: 'RESET', 5: 'CONT', 6: 'THRES', 7: 'DISCH', 8: 'VCC'}
+def ic555(mark=None, names=True):
+    """ตัวถัง DIP-8 ของ 555 ขา 1–4 ซ้ายบนลงล่าง ขา 8–5 ขวาบนลงล่าง · mark = เลขขาที่ต้องการชี้ (ไม่บอกชื่อ)"""
+    b = '<rect x="140" y="14" width="80" height="112" rx="6" stroke="%s"/><path d="M170 14 a10 10 0 0 0 20 0"/>' % A
+    b += _t(180, 76, '555', size=14)
+    for i in range(4):
+        y = 30 + i * 26
+        for pin, x0, x1, tx, anc in ((i + 1, 116, 140, 110, 'end'), (8 - i, 220, 244, 250, 'start')):
+            col = G if pin == mark else 'currentColor'
+            b += '<path d="M%g %g H%g" stroke="%s" stroke-width="%s"/>' % (x0, y, x1, col, 4 if pin == mark else 2)
+            lab = str(pin) + ((' ' + P555[pin]) if names and pin != mark else (' ?' if pin == mark else ''))
+            b += _t(tx, y + 4, lab, anchor=anc, size=11, color=col)
+    return _svg(b, 140)
+
+def timer555(mode='astable', ra='RA', rb='RB', c='C'):
+    """บล็อกวงจร 555 แบบย่อ: astable (RA, RB, C) หรือ mono (R, C, ปุ่มกด)"""
+    b = '<rect x="150" y="30" width="70" height="86" rx="6" stroke="%s"/>' % A + _t(185, 78, '555', size=13)
+    b += '<path d="M60 14 H300"/>' + _t(60, 10, '+VCC', anchor='start', size=11)
+    b += '<path d="M185 14 V30"/>' + _t(190, 26, '8', anchor='start', size=9)
+    b += '<path d="M220 72 H270"/>' + _t(274, 76, 'OUT (3)', anchor='start', size=11)
+    if mode == 'astable':
+        b += _vres(110, 14, 52, ra) + _vres(110, 52, 92, rb)
+        b += '<path d="M110 52 H150"/>' + _t(146, 48, '7', anchor='end', size=9)
+        b += '<path d="M110 92 H150 M130 92 V104 H150"/>' + _t(146, 88, '6', anchor='end', size=9) + _t(146, 116, '2', anchor='end', size=9)
+        b += '<path d="M110 92 V108 M98 108 H122 M98 114 H122 M110 114 V132"/>' + _gnd(110, 132) + _t(92, 116, c, anchor='end', size=11)
+    else:
+        b += _vres(110, 14, 60, ra) + '<path d="M110 60 H150 M110 60 V100 M98 100 H122 M98 106 H122 M110 106 V132"/>' + _gnd(110, 132)
+        b += _t(146, 56, '6,7', anchor='end', size=9) + _t(92, 108, c, anchor='end', size=11)
+        b += '<path d="M150 100 H135 V122"/><circle cx="135" cy="124" r="2"/><path d="M135 132 l8 -6"/>' + _t(146, 96, '2', anchor='end', size=9)
+        b += _t(150, 138, 'ปุ่ม TRIG ลงกราวด์', anchor='start', size=10)
+    return _svg(b, 146)

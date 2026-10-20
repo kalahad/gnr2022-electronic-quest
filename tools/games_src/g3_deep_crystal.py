@@ -14,6 +14,7 @@ CFG = port('gnr2022_game3_deep_crystal_expedition.html', {
     'features': '<span>S1 · โซน 3</span><span>BAND · DOPING · PN</span><span>PRETEST / POSTTEST</span><span>ระบบดาว 6 ดวง</span>',
     'climb_text': 'นักสำรวจไต่ขึ้นจากถ้ำผลึก 1 ชั้น ทันที',
     'footer_line': 'Season 1 · โซน 3 แถบพลังงาน การเจือสาร และรอยต่อ PN — ภาคเรียนที่ 1/2569',
+    'rew': 'g3',
     'filekey': 'GNR2022_Z3_deepcrystal',
     'go_first': 'ลงถ้ำชั้นแรก',
     # รูปวงจรประกอบโจทย์ (ต่อท้ายโจทย์เดิม ไม่ลบข้อความ)

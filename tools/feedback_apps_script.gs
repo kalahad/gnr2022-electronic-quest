@@ -4,6 +4,7 @@
  * วิธีใช้: เปิด Google Sheets แผ่นใหม่ → ส่วนขยาย → Apps Script → วางโค้ดนี้ทั้งหมด
  *         → เลือกฟังก์ชัน setup แล้วกด Run (อนุญาตสิทธิ์) → Deploy → New deployment → Web app
  *         (Execute as: Me · Who has access: Anyone) → คัดลอก URL ไปใส่ใน feedback.js
+ * รุ่น 3 (20 ต.ค. 2569): เพิ่มเพชร Hard Mode โซน 7–9 (คอลัมน์ต่อท้าย แถวเดิมใช้ต่อได้)
  * รุ่น 2 (20 ต.ค. 2569): เพิ่มกระดานคะแนนรวมห้อง แผ่น "คะแนนรวมห้อง" (doPost type=score, doGet action=board)
  *   อัปเดตโค้ดแล้ว: Deploy → Manage deployments → แก้ไข (ดินสอ) → Version: New version → Deploy  (URL เดิมใช้ต่อได้)
  * ภาพหน้าจอเก็บใน Google Drive ของผู้สอน โฟลเดอร์ "GNR2022 เกมบทเรียน · ภาพหน้าจอจากความคิดเห็น" (ไม่เปิดสาธารณะ)
@@ -69,8 +70,9 @@ function folder_() {
    เก็บ 1 แถวต่อรหัสนักศึกษา ทุกช่องเก็บค่าสูงสุดที่เคยส่ง (ส่งซ้ำได้ ค่าไม่ลดลง)
    หน้าเว็บแสดงรหัสแบบปิดกลาง เช่น 69••••1234 ไม่ส่งชื่อหรือชื่อเล่น */
 const BOARD_SHEET = 'คะแนนรวมห้อง';
-const ZK = ['z1','z2','z3','z4','z5','z6','z7','z8','z9','z10'], RK = ['r4','r5','r6'];
-const BOARD_HEAD = ['รหัสนักศึกษา', 'ดาวรวม', 'การ์ด (≥5 ดาว)', 'กู้โซนผ่าน'].concat(ZK, RK, ['อัปเดตล่าสุด', 'ส่งแล้ว (ครั้ง)']);
+const ZK = ['z1','z2','z3','z4','z5','z6','z7','z8','z9','z10'], RK = ['r4','r5','r6'], HK = ['h7','h8','h9'];
+const BOARD_HEAD = ['รหัสนักศึกษา', 'ดาวรวม', 'การ์ด (≥5 ดาว)', 'กู้โซนผ่าน'].concat(ZK, RK, ['อัปเดตล่าสุด', 'ส่งแล้ว (ครั้ง)'], HK, ['เพชร (Hard ผ่าน)']);
+const I_DATE = 4 + ZK.length + RK.length, I_N = I_DATE + 1, I_H = I_N + 1, I_DIA = I_H + HK.length;
 
 function board_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -79,6 +81,9 @@ function board_() {
     sh = ss.insertSheet(BOARD_SHEET); sh.appendRow(BOARD_HEAD); sh.setFrozenRows(1);
     sh.getRange(1, 1, 1, BOARD_HEAD.length).setFontWeight('bold').setBackground('#d7f0fd');
     sh.getRange('A:A').setNumberFormat('@');
+  }
+  if (sh.getLastColumn() < BOARD_HEAD.length) {      // อัปเกรดหัวตารางจากรุ่น 2
+    sh.getRange(1, 1, 1, BOARD_HEAD.length).setValues([BOARD_HEAD]).setFontWeight('bold').setBackground('#d7f0fd');
   }
   return sh;
 }
@@ -97,8 +102,11 @@ function score_(d) {
   const total = z.reduce(function (a, b) { return a + b; }, 0);
   const cards = z.filter(function (x) { return x >= 5; }).length;
   const saved = r.filter(function (x) { return x >= 10; }).length;
-  const n = old ? int_(old[BOARD_HEAD.length - 1], 0, 1e6) + 1 : 1;
-  sh.getRange(row, 1, 1, BOARD_HEAD.length).setValues([[sid, total, cards, saved].concat(z, r, [new Date(), n])]);
+  const hd = d.hard || {};
+  const h = HK.map(function (k, i) { return Math.max(int_(hd[k], 0, 10), old ? int_(old[I_H + i], 0, 10) : 0); });
+  const dia = h.filter(function (x) { return x >= 8; }).length;
+  const n = old ? int_(old[I_N], 0, 1e6) + 1 : 1;
+  sh.getRange(row, 1, 1, BOARD_HEAD.length).setValues([[sid, total, cards, saved].concat(z, r, [new Date(), n], h, [dia])]);
   return ContentService.createTextOutput('ok');
 }
 
@@ -114,11 +122,11 @@ function doGet(e) {
   const p = (e && e.parameter) || {};
   if (p.action !== 'board') return ContentService.createTextOutput('GNR2022 Circuit Quest');
   const sh = board_(), last = sh.getLastRow();
-  const rows = last > 1 ? sh.getRange(2, 1, last - 1, 4).getValues() : [];
+  const rows = last > 1 ? sh.getRange(2, 1, last - 1, BOARD_HEAD.length).getValues() : [];
   const list = rows.filter(function (r) { return /^[5-7]\d{9}$/.test(String(r[0])); }).map(function (r) {
     const sid = String(r[0]);
-    return { id: sid.slice(0, 2) + '••••' + sid.slice(-4), h: fnv5_(sid), stars: Number(r[1]) || 0, cards: Number(r[2]) || 0, rescue: Number(r[3]) || 0 };
-  }).sort(function (a, b) { return b.stars - a.stars || b.cards - a.cards || b.rescue - a.rescue; });
+    return { id: sid.slice(0, 2) + '••••' + sid.slice(-4), h: fnv5_(sid), stars: Number(r[1]) || 0, cards: Number(r[2]) || 0, rescue: Number(r[3]) || 0, dia: Number(r[I_DIA]) || 0 };
+  }).sort(function (a, b) { return b.stars - a.stars || b.cards - a.cards || b.rescue - a.rescue || b.dia - a.dia; });
   return ContentService.createTextOutput(JSON.stringify({ n: list.length, at: new Date().toISOString(), list: list }))
     .setMimeType(ContentService.MimeType.JSON);
 }

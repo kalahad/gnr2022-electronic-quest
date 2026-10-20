@@ -1,0 +1,138 @@
+
+<!-- ===== PREVIEW 1 ===== -->
+<section id="scr-preview1" class="screen">
+  <div class="panel">
+    <span class="tag">Tower Floor 01</span>
+    <h2>กำลังจะเข้าสู่: ชั้น 1 กฎทองและวงจรเปรียบเทียบ</h2>
+    <div class="dcard">
+      <div class="ico"><svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="M22 14 V66 L66 40 Z" fill="none" stroke="#8b7bff" stroke-width="4" stroke-linejoin="round"/><path d="M8 28 H22 M8 52 H22 M66 40 H76 M28 28 h8 M28 52 h8 M32 48 v8" stroke="#ffe14d" stroke-width="3"/></svg></div>
+      <div><div class="skillcard" style="margin:0">
+        <div class="sk-name">ทักษะที่จะได้: ใช้กฎทอง 2 ข้อของออปแอมป์ และใช้ออปแอมป์เป็นวงจรเปรียบเทียบแรงดันแบบ LED บาร์ 4 ระดับ</div>
+        <p class="muted" style="margin:6px 0 0">ต่อยอดโซน 2: แรงดันจากวงจรแบ่งแรงดันและ LDR เข้าไปเทียบกับแรงดันอ้างอิงได้ทันที</p>
+      </div></div>
+    </div>
+    <div class="btn-row"><button class="btn primary" data-goto="scr-lesson1">ขึ้นหอคอย</button></div>
+  </div>
+</section>
+
+<!-- ===== FLOOR 1 ===== -->
+<section id="scr-lesson1" class="screen">
+  <div class="panel">
+    <span class="tag">Floor 01 · Golden Rules</span>
+    <h2>ชั้น 1: กฎทองของออปแอมป์และวงจรเปรียบเทียบ</h2>
+    <p>ออปแอมป์ขยาย <b>ผลต่างแรงดัน</b> ระหว่างขา + (non-inverting) กับขา − (inverting) ด้วยอัตราขยายรอบเปิดที่สูงมาก
+      ออปแอมป์อุดมคติมี Zin = ∞ (กระแสเข้าขาเป็นศูนย์) Zout = 0 และอัตราขยาย = ∞ เมื่อ <b>ไม่มีวงจรป้อนกลับ</b> เอาต์พุตจะวิ่งชนรางไฟทันที จึงทำหน้าที่ <b>เปรียบเทียบแรงดัน</b></p>
+    <div class="tbl-wrap"><table>
+      <tr><th>กฎทอง (มีป้อนกลับลบ)</th><th>ความหมาย</th></tr>
+      <tr><td>1) ไม่มีกระแสไหลเข้าขาอินพุต</td><td>I+ = I− = 0 (เพราะ Zin สูงมาก)</td></tr>
+      <tr><td>2) แรงดันขา + เท่ากับขา − (virtual short)</td><td>ถ้าขา + ต่อกราวด์ ขา − จะเป็น 0 V ด้วย (virtual ground)</td></tr>
+    </table></div>
+    <div class="codebox">วงจรเปรียบเทียบ (ไม่มีป้อนกลับ): V+ &gt; V− → เอาต์พุต HIGH · V+ &lt; V− → เอาต์พุต LOW
+uA741 (DIP-8): ขา 2 = −  ขา 3 = +  ขา 6 = เอาต์พุต  ขา 7 = +VCC  ขา 4 = −VCC
+LM324: ออปแอมป์ 4 ตัวในไอซีเดียว ใช้ไฟเดี่ยว 3–32 V ได้ เหมาะกับ LED บาร์ 4 ระดับในเอกสาร LAB</div>
+    <div class="keyfact">จำให้ขึ้นใจ: <b>ไม่มีป้อนกลับ = ตัวเปรียบเทียบ</b> · <b>มีป้อนกลับลบ = V+ ≈ V− และไม่มีกระแสเข้าขา</b></div>
+
+    <h3 style="margin-top:16px">ห้องทดลอง: LED บาร์ 4 ระดับด้วย LM324</h3>
+    <p class="muted">หมุน VR1 ส่งแรงดันเข้าขา + ของออปแอมป์ทั้ง 4 ตัว ขา − ต่อแรงดันอ้างอิง 1.125, 2.25, 3.375 และ 4.5 V (ไฟเลี้ยง 5 V) ทำให้ติดได้ 0, 2 และ 4 ดวง</p>
+    <label class="muted" for="cmpV" style="display:block;font-size:.85rem">แรงดันจาก VR1: <b id="cmpVt">1.50 V</b></label>
+    <input type="range" class="rng" id="cmpV" min="0" max="5" step="0.05" value="1.5" aria-label="แรงดันจาก VR1">
+    <div class="bar4" id="cmpBar"></div>
+    <div class="status-line" id="cmpStatus">เลื่อนแถบเพื่อเริ่มทดลอง</div>
+    <div class="btn-row"><button class="btn primary" data-quiz="check1">ไปทำแบบฝึกหัดชั้นนี้</button></div>
+  </div>
+</section>
+
+<!-- ===== PREVIEW 2 ===== -->
+<section id="scr-preview2" class="screen">
+  <div class="panel">
+    <span class="tag">Tower Floor 02</span>
+    <h2>กำลังจะเข้าสู่: ชั้น 2 วงจรขยาย 5 แบบ</h2>
+    <div class="dcard">
+      <div class="ico"><svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="M6 50 q8 -16 16 0 t16 0" stroke="#ffe14d" stroke-width="3" fill="none"/><path d="M40 50 q10 -40 20 0 t18 0" stroke="#ff8a1f" stroke-width="3" fill="none"/></svg></div>
+      <div><div class="skillcard" style="margin:0">
+        <div class="sk-name">ทักษะที่จะได้: คำนวณอัตราขยาย inverting, non-inverting, buffer, summing, difference และรู้ว่าเมื่อใดเอาต์พุตจะชนราง</div>
+        <p class="muted" style="margin:6px 0 0">ข้อสอบ Final เดิมถามแรงดันเอาต์พุตและอัตราขยายของวงจรขยายหลายข้อ</p>
+      </div></div>
+    </div>
+    <div class="btn-row"><button class="btn primary" data-goto="scr-lesson2">ขึ้นหอคอย</button></div>
+  </div>
+</section>
+
+<!-- ===== FLOOR 2 ===== -->
+<section id="scr-lesson2" class="screen">
+  <div class="panel">
+    <span class="tag">Floor 02 · Amplifiers</span>
+    <h2>ชั้น 2: วงจรขยายด้วยออปแอมป์</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>วงจร</th><th>อัตราขยาย / สมการ</th><th>จุดสังเกต</th></tr>
+      <tr><td>Inverting</td><td>Av = −Rf / Ri</td><td>กลับเฟส 180° ขา − เป็น virtual ground</td></tr>
+      <tr><td>Non-inverting</td><td>Av = 1 + Rf / Ri</td><td>เฟสเดิม อัตราขยายไม่ต่ำกว่า 1</td></tr>
+      <tr><td>Buffer (voltage follower)</td><td>Av = 1</td><td>Zin สูง ไม่โหลดเซนเซอร์</td></tr>
+      <tr><td>Summing</td><td>Vo = −Rf (V1/R1 + V2/R2 + …)</td><td>รวมสัญญาณหลายตัว</td></tr>
+      <tr><td>Difference</td><td>Vo = (R2/R1)(V2 − V1)</td><td>ขยายเฉพาะผลต่าง เช่น Hall sensor</td></tr>
+    </table></div>
+    <div class="codebox">ตัวอย่าง: Ri = 10 kΩ, Rf = 100 kΩ, Vin = 0.5 V
+  Inverting      Vo = −(100/10) × 0.5 = −5 V
+  Non-inverting  Vo = (1 + 100/10) × 0.5 = 5.5 V
+ไฟเลี้ยง ±12 V → เอาต์พุตแกว่งได้ราว ±10.5 V เกินกว่านี้ยอดคลื่นจะถูกตัด (saturation)</div>
+    <div class="keyfact">จำให้ขึ้นใจ: <b>Inverting = −Rf/Ri</b> · <b>Non-inverting = 1 + Rf/Ri</b> · ผลคำนวณเกินรางไฟ = <b>ชนราง</b> ไม่ใช่ค่าที่คำนวณได้</div>
+
+    <h3 style="margin-top:16px">ห้องทดลอง: ปรับอัตราขยายให้ตรงเป้า</h3>
+    <p class="muted">สัญญาณเข้า 0.5 Vp ไฟเลี้ยง ±12 V เลือกชนิดวงจรและค่า Rf, Ri ให้ได้อัตราขยายตามโจทย์ (คลาดได้ไม่เกิน 3%) โดยคลื่นไม่ชนราง</p>
+    <div class="labrow"><span class="readout" id="gnTarget">—</span><button class="btn sm" id="gnNext">โจทย์ถัดไป</button></div>
+    <div class="labrow">
+      <select class="sel" id="gnType" aria-label="ชนิดวงจร"><option value="inv">Inverting</option><option value="non">Non-inverting</option></select>
+      <label class="muted" style="font-size:.85rem">Rf <select class="sel" id="gnRf" aria-label="Rf"></select></label>
+      <label class="muted" style="font-size:.85rem">Ri <select class="sel" id="gnRi" aria-label="Ri"></select></label>
+    </div>
+    <canvas class="scope" id="gnScope" width="640" height="130" aria-label="จอออสซิลโลสโคปแสดงสัญญาณเข้าและออก"></canvas>
+    <div class="chips" id="gnChips"></div>
+    <div class="status-line" id="gnStatus">เลือกค่าเพื่อเริ่ม</div>
+    <div class="btn-row"><button class="btn primary" data-quiz="check2">ไปทำแบบฝึกหัดชั้นนี้</button></div>
+  </div>
+</section>
+
+<!-- ===== PREVIEW 3 ===== -->
+<section id="scr-preview3" class="screen">
+  <div class="panel">
+    <span class="tag">Tower Floor 03</span>
+    <h2>กำลังจะเข้าสู่: ชั้น 3 งานเซนเซอร์และโต๊ะซ่อมออปแอมป์</h2>
+    <div class="dcard">
+      <div class="ico"><svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="26" fill="none" stroke="#ff8a1f" stroke-width="4"/><path d="M28 48 l8 -16 l8 12 l8 -14" stroke="#ffe14d" stroke-width="3" fill="none"/></svg></div>
+      <div><div class="skillcard" style="margin:0">
+        <div class="sk-name">ทักษะที่จะได้: เลือกวงจรออปแอมป์ให้เหมาะกับเซนเซอร์ เข้าใจ Schmitt trigger และหาจุดเสียจากอาการบนสโคป</div>
+        <p class="muted" style="margin:6px 0 0">อ้างอิงเอกสารการสอนวงจรออปแอมป์และการประยุกต์ใช้งานเซนเซอร์ (โมดูล 3–4)</p>
+      </div></div>
+    </div>
+    <div class="btn-row"><button class="btn primary" data-goto="scr-lesson3">ขึ้นหอคอย</button></div>
+  </div>
+</section>
+
+<!-- ===== FLOOR 3 ===== -->
+<section id="scr-lesson3" class="screen">
+  <div class="panel">
+    <span class="tag">Floor 03 · Sensor &amp; Debug</span>
+    <h2>ชั้น 3: ออปแอมป์กับเซนเซอร์ และการตรวจวงจร</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>งาน</th><th>วงจรที่เหมาะ</th><th>เหตุผล</th></tr>
+      <tr><td>Hall sensor (สัญญาณระดับ mV)</td><td>Difference amplifier</td><td>ขยายเฉพาะผลต่าง ตัดแรงดันร่วม</td></tr>
+      <tr><td>เซนเซอร์อิมพีแดนซ์สูง</td><td>Buffer หรือ LF351 (อินพุต JFET)</td><td>กระแสไบแอสราว 50 pA ไม่โหลดเซนเซอร์</td></tr>
+      <tr><td>สัญญาณมีสัญญาณรบกวน</td><td>Schmitt trigger (ป้อนกลับบวก)</td><td>มี 2 จุดตัด VUT และ VLT เอาต์พุตไม่สั่นกลับไปกลับมา</td></tr>
+      <tr><td>LED บาร์ / โวลต์มิเตอร์หลายระดับ</td><td>Comparator หลายตัว</td><td>แต่ละตัวเทียบกับแรงดันอ้างอิงคนละค่า</td></tr>
+    </table></div>
+    <div class="codebox">ก่อนเปิดแหล่งจ่าย (เอกสาร LAB ข้อควรระวัง)
+  1) ตรวจขั้วไฟ: uA741 ขา 7 = +VCC และ ขา 4 = −VCC สลับขั้วแล้วไอซีเสียทันที
+  2) กราวด์ร่วมจุดเดียว: Function Generator + Oscilloscope + Power Supply
+  3) ปิด DC Offset ของ Function Generator ให้เป็น 0 V
+ปรับ Offset Null ของ uA741: VR 10 kΩ คร่อมขา 1–5 ขากลางต่อ −VCC ช็อตอินพุตลงกราวด์ แล้วหมุนจนเอาต์พุต = 0 V</div>
+    <div class="keyfact">จำให้ขึ้นใจ: เอาต์พุต <b>ค้างที่รางไฟ</b> มักแปลว่า <b>ไม่มีป้อนกลับหรือขยายเกิน</b> · ไอซีร้อนทันที = <b>ไฟสลับขั้ว</b></div>
+
+    <h3 style="margin-top:16px">ห้องทดลอง: โต๊ะซ่อมออปแอมป์</h3>
+    <p class="muted">ทุกเคสคือวงจร inverting อัตราขยาย −10 (Ri 10 kΩ, Rf 100 kΩ) ไฟ ±12 V สัญญาณเข้า 0.5 Vp ที่ทำงานผิด อ่านอาการแล้ววินิจฉัยให้ถูกครบ 4 เคส</p>
+    <div class="meas" id="dbMeas"></div>
+    <div class="pickgrid" id="dbPicks"></div>
+    <div class="labrow"><button class="btn sm" id="dbNext">เคสถัดไป</button><span class="muted" id="dbCount" style="font-size:.85rem"></span></div>
+    <div class="status-line" id="dbStatus">เลือกคำวินิจฉัย</div>
+    <div class="btn-row"><button class="btn primary" data-quiz="check3">ไปทำแบบฝึกหัดชั้นนี้</button></div>
+  </div>
+</section>
