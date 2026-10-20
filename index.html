@@ -90,6 +90,7 @@ a{color:inherit}
 .ladder .sep{font-size:.66rem;color:var(--dim);letter-spacing:.12em;padding:6px 0 2px 34px;font-family:var(--disp)}
 .railfoot{margin-top:auto;display:flex;gap:6px;flex-wrap:wrap}
 .railfoot .btn{flex:1;padding:8px 8px;font-size:.78rem}
+.mboard{display:none}
 
 /* ---------- main header ---------- */
 .top{display:flex;align-items:center;gap:12px;padding:14px clamp(14px,2.4vw,30px) 8px;flex-wrap:wrap}
@@ -182,6 +183,12 @@ a{color:inherit}
 .modal label{display:block;font-size:.78rem;color:var(--mute);margin:8px 0 3px}
 .modal input,.modal select{width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--edge);background:var(--glass2);color:var(--text);font-family:var(--mono)}
 .modal .res{margin-top:10px;font-weight:600;min-height:1.4em}
+.modal .box.wide{width:min(520px,100%)}
+.blist{max-height:min(56vh,420px);overflow:auto;margin-top:8px;border-top:1px solid var(--edge)}
+.brow{display:grid;grid-template-columns:34px 1fr 60px 46px 46px;gap:6px;align-items:center;padding:7px 4px;border-bottom:1px solid var(--edge);font-size:.86rem}
+.brow.h{font-size:.72rem;color:var(--mute);position:sticky;top:0;background:var(--bg2)}
+.brow b{font-family:var(--mono)} .brow code{font-family:var(--mono)} .brow.me{background:color-mix(in srgb,var(--a) 14%,transparent);border-radius:8px}
+.brow span{text-align:right;font-family:var(--mono)}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(30px);opacity:0;transition:.3s;z-index:60;padding:10px 16px;border-radius:12px;background:var(--glass2);border:1px solid var(--edge);font-size:.86rem;box-shadow:0 10px 30px -10px #000}
 .toast.on{opacity:1;transform:translateX(-50%)}
 
@@ -193,6 +200,7 @@ a{color:inherit}
   .foot{height:auto;white-space:normal;flex-wrap:wrap;padding:8px 12px;text-align:center}
   .rail{border-right:0;border-bottom:1px solid var(--edge);overflow:visible;padding:12px 16px}
   .rail .ladder-wrap,.rail .railfoot{display:none}
+  .mboard{display:inline-flex;margin-left:auto;padding:6px 12px;font-size:.8rem}
   .stage{grid-template-columns:1fr;padding:6px 16px 16px}
   .mapwrap,.detail{overflow:visible}
   .top{padding:12px 16px 6px}
@@ -241,6 +249,7 @@ a{color:inherit}
     </div>
 
     <div class="railfoot">
+      <button class="btn" id="boardBtn" type="button">กระดานห้อง</button>
       <button class="btn" id="themeBtn" type="button">สลับโหมดสว่าง</button>
       <button class="btn ghost" id="teachBtn" type="button">ผู้สอน</button>
     </div>
@@ -253,6 +262,7 @@ a{color:inherit}
         <h1><em>แผนที่ภารกิจ</em> วงจรอิเล็กทรอนิกส์</h1>
         <p>เลือกโซน เล่นให้ได้ 5 ดาวขึ้นไป รับการ์ดอุปกรณ์และรหัสแสตมป์ แล้วไปล้ม Final Boss</p>
       </div>
+      <button class="btn mboard" id="boardBtn2" type="button">กระดานห้อง</button>
       <nav class="tabs" role="tablist" aria-label="ซีซัน">
         <button class="tab" role="tab" data-tab="s1" aria-selected="true">SEASON 1</button>
         <button class="tab" role="tab" data-tab="s2" aria-selected="false">SEASON 2</button>
@@ -278,6 +288,15 @@ a{color:inherit}
     <label for="tmCode">รหัสแสตมป์ (เช่น Z6-ABCDE)</label><input id="tmCode" autocomplete="off">
     <div class="res" id="tmRes"></div>
     <div style="display:flex;gap:8px;margin-top:10px"><button class="btn pri" id="tmGo" type="button" style="flex:1">ตรวจ</button><button class="btn" id="tmClose" type="button">ปิด</button></div>
+  </div>
+</div>
+<div class="modal" id="boardModal" role="dialog" aria-modal="true" aria-labelledby="bmH">
+  <div class="box wide">
+    <h3 id="bmH">กระดานคะแนนรวมห้อง</h3>
+    <p style="font-size:.8rem;color:var(--mute)">แสดงด้วยรหัสนักศึกษาแบบปิดกลางเท่านั้น ไม่มีชื่อ · ระบบส่งผลของคุณอัตโนมัติเมื่อเปิดหน้าแผนที่ · ดาวรวมทุกโซน · การ์ด = โซนที่ได้ 5 ดาวขึ้นไป · กู้ = ภารกิจกู้โซนที่ผ่าน</p>
+    <div class="res" id="bmRes"></div>
+    <div class="blist" id="bmList"></div>
+    <div style="display:flex;gap:8px;margin-top:10px"><button class="btn" id="bmReload" type="button" style="flex:1">โหลดใหม่</button><button class="btn" id="bmClose" type="button">ปิด</button></div>
   </div>
 </div>
 <div class="toast" id="toast" role="status"></div>
@@ -324,26 +343,26 @@ var ZONES=[
   topics:['แถบพลังงาน','การเจือสาร N และ P','รอยต่อ PN'],
   card:'ผลึกซิลิคอน: เจือสารแล้วนำไฟฟ้า',quests:[]},
  {id:'z4',game:'game4',season:'s1',name:'DIODE FORGE',th:'โรงตีไดโอด',ico:'diode',za:'#ff6a1f',zb:'#ff2e88',zc:'#ffd60a',
-  file:'play/s1-z4-diode-forge.html',status:'ready',
+  file:'play/s1-z4-diode-forge.html',status:'ready',rescue:'play/rescue.html?z=z4',
   sub:'ไดโอด LED และตัวเลข 7 ส่วน ประตูทางเดียวของกระแส',
   topics:['ไดโอดไบแอสตรงและย้อนกลับ','LED และตัวต้านทานจำกัดกระแส','7-segment','ซีเนอร์'],
   card:'ไดโอด: ให้กระแสไหลทางเดียว',
   quests:[{f:'lab/lab-7seg-digit-forge.html',t:'DIGIT FORGE',d:'LAB 5 ตัวแสดงผล 7 ส่วน'}]},
  {id:'z5',game:'game5',season:'s1',name:'STORM HARBOR',th:'ท่าเรือพายุ',ico:'bridge',za:'#3b82f6',zb:'#22d3ee',zc:'#fde047',
-  file:'play/s1-z5-storm-harbor.html',status:'ready',
+  file:'play/s1-z5-storm-harbor.html',status:'ready',rescue:'play/rescue.html?z=z5',
   sub:'เปลี่ยนพายุไฟสลับให้เป็นไฟตรงที่นิ่งสงบ',
   topics:['เรียงกระแสครึ่งคลื่น','เต็มคลื่น CT และบริดจ์','ตัวกรอง C และซีเนอร์'],
   card:'วงจรเรียงกระแส: AC เป็น DC',quests:[]},
  {id:'z6',game:'game6',season:'s1',name:'NIGHT MELODY',th:'วงจรเพลงยามค่ำ',ico:'melody',za:'#a78bfa',zb:'#2dd4bf',zc:'#facc15',boss:true,
-  file:'play/s1-z6-night-melody.html',status:'ready',
+  file:'play/s1-z6-night-melody.html',status:'ready',rescue:'play/rescue.html?z=z6',
   sub:'บอส Season 1: รวม LDR ทรานซิสเตอร์ และไอซีเสียงเพลง เป็นระบบเดียว (ข้อสอบกลางภาคข้อ 72)',
   topics:['LDR และวงจรแบ่งแรงดัน','ทรานซิสเตอร์เป็นสวิตช์','ประกอบระบบ 5 บล็อก'],
   card:'ระบบเพลงยามค่ำ: รับรู้ สวิตช์ ส่งเสียง',
   quests:[{f:'lab/lab-3-44-dusk-guard.html',t:'DUSK GUARD',d:'รูปที่ 3-44 เปิดไฟกลางคืนอัตโนมัติ'}]},
  {id:'z7',game:'game7',season:'s2',name:'BJT ARENA',th:'สังเวียนทรานซิสเตอร์',ico:'bjt',za:'#00f0ff',zb:'#b14bff',zc:'#c6ff3d',
-  file:'play/s2-z7-bjt-arena.html',status:'soon',
-  sub:'ทรานซิสเตอร์ทั้งสวิตช์และขยายสัญญาณ',
-  topics:['ย่านคัตออฟ แอกทีฟ อิ่มตัว','การไบแอส','งานประยุกต์เซนเซอร์'],
+  file:'play/s2-z7-bjt-arena.html',status:'ready',
+  sub:'อ่านลูกศร NPN/PNP ออกแบบสวิตช์ขับรีเลย์จาก ESP32 และซ่อมวงจรจากค่าที่วัดได้',
+  topics:['สัญลักษณ์และย่านทำงาน','ออกแบบสวิตช์ขับรีเลย์','เซนเซอร์และหาจุดเสีย'],
   card:'BJT: กระแสเล็กคุมกระแสใหญ่',
   quests:[{f:'lab/lab-3-47-beam-sentry.html',t:'BEAM SENTRY',d:'รูปที่ 3-47 กันขโมยแบบตัดลำแสง'},{f:'lab/lab-3-50-pulse-eye.html',t:'PULSE EYE',d:'รูปที่ 3-50 เซนเซอร์สะท้อนวัตถุ'}]},
  {id:'z8',game:'game8',season:'s2',name:'OP-AMP TOWER',th:'หอคอยออปแอมป์',ico:'opamp',za:'#8b7bff',zb:'#ff8a1f',zc:'#ffe14d',
@@ -550,6 +569,11 @@ function pick(z,scroll){
     else h+='<p class="note">ทำ Posttest ให้ได้ '+STAMP_MIN+' ดาวขึ้นไป เพื่อรับการ์ดและรหัสแสตมป์ของโซนนี้</p>';
   }
   if(z.status==='legacy') h+='<p class="note">โซนนี้ยังเป็นฉบับเดิม ดาวจะยังไม่นับเข้าแรงก์จนกว่าจะอัปเกรดเป็นระบบใหม่ ซึ่งจะใช้ลิงก์เดิม</p>';
+  if(z.rescue){
+    var rr=me?((R.rescue||{})[z.id]):null, rp=rr&&rr.best>=10;
+    h+='<div class="sub-h">RESCUE · ภารกิจกู้โซนหลังกลางภาค</div><a class="quest" href="'+z.rescue+'"><i>'+(rp?'ผ่าน':'กู้')+'</i><span>ฝึกข้อที่ห้องพลาดในกลางภาค'+
+       '<small>'+(rr?('ดีที่สุด '+rr.best+'/'+rr.max+(rp&&me?' · รหัส '+stampCode(me.sid,'r'+z.id.slice(1)):' · ผ่านที่ 10/12')):'12 ข้อแบบข้อสอบจริง ผ่าน 10/12 รับรหัสแสตมป์')+'</small></span></a>';
+  }
   if(z.quests.length){
     h+='<div class="sub-h">SIDE QUEST · ห้องทดลองจำลอง</div>';
     z.quests.forEach(function(q){ h+='<a class="quest" href="'+q.f+'"><i>LAB</i><span>'+q.t+'<small>'+q.d+'</small></span></a>'; });
@@ -602,11 +626,44 @@ tm.onclick=function(e){ if(e.target===tm) tm.classList.remove('open'); };
 document.getElementById('tmGo').onclick=function(){
   var res=document.getElementById('tmRes'), sec=document.getElementById('tmSecret').value.trim().toLowerCase(), sid=document.getElementById('tmSid').value.trim(), code=document.getElementById('tmCode').value.trim().toUpperCase();
   if(SECRETS.indexOf(sec)<0){ res.style.color='#fb7185'; res.textContent='รหัสผู้สอนไม่ถูกต้อง'; return; }
-  var m=code.match(/^(Z\d+)-/); if(!m||!/^\d{10}$/.test(sid)){ res.style.color='#fb7185'; res.textContent='กรอกรหัสนักศึกษาและรหัสแสตมป์ให้ครบ'; return; }
+  var m=code.match(/^([ZR]\d+)-/); if(!m||!/^\d{10}$/.test(sid)){ res.style.color='#fb7185'; res.textContent='กรอกรหัสนักศึกษาและรหัสแสตมป์ให้ครบ'; return; }
   var ok=stampCode(sid,m[1].toLowerCase())===code, z=byId(m[1].toLowerCase());
-  res.style.color=ok?'var(--ok)':'#fb7185'; res.textContent=ok?('ถูกต้อง: '+(z?z.name:m[1])+' ของ '+sid):'ไม่ตรงกัน กรุณาตรวจอีกครั้ง';
+  res.style.color=ok?'var(--ok)':'#fb7185'; res.textContent=ok?('ถูกต้อง: '+(z?z.name:('RESCUE ZONE '+m[1].slice(1)))+' ของ '+sid):'ไม่ตรงกัน กรุณาตรวจอีกครั้ง';
 };
-document.addEventListener('keydown',function(e){ if(e.key==='Escape') tm.classList.remove('open'); });
+/* ---------- กระดานคะแนนรวมห้อง (ส่งผ่าน Apps Script เดียวกับปุ่มความคิดเห็น) ---------- */
+function fnv5(s){ var h=0x811c9dc5; for(var i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,0x01000193)>>>0; }
+  var A='ABCDEFGHJKMNPQRSTUVWXYZ23456789',o=''; for(var j=0;j<5;j++){ o+=A[h%A.length]; h=Math.floor(h/A.length); } return o; }
+function boardUrl(){ return (typeof window.GNR_FEEDBACK_URL==='string')?window.GNR_FEEDBACK_URL:''; }
+function syncBoard(){
+  if(!me||me.guess||me.sid===MASK||!/^[5-7]\d{9}$/.test(me.sid)||!boardUrl()) return;
+  var st={}, rs={}, rr=R.rescue||{};
+  ZONES.forEach(function(z){ if(z.status==='ready') st[z.id]=zStars(z); });
+  ['z4','z5','z6'].forEach(function(k){ if(rr[k]) rs['r'+k.slice(1)]=rr[k].best||0; });
+  var body=JSON.stringify({type:'score',sid:me.sid,stars:st,rescue:rs}), key='gnr2022_board_sent';
+  try{ if(localStorage.getItem(key)===body) return; }catch(e){}
+  fetch(boardUrl(),{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:body})
+    .then(function(){ try{ localStorage.setItem(key,body); }catch(e){} }).catch(function(){});
+}
+var bm=document.getElementById('boardModal');
+function loadBoard(){
+  var res=document.getElementById('bmRes'), list=document.getElementById('bmList');
+  if(!boardUrl()){ res.style.color='#fb7185'; res.textContent='ระบบกระดานยังไม่เปิดใช้งาน'; return; }
+  res.style.color='var(--mute)'; res.textContent='กำลังโหลด...'; list.innerHTML='';
+  fetch(boardUrl()+'?action=board',{cache:'no-store'}).then(function(r){ return r.json(); }).then(function(d){
+    var mine=(me&&me.sid!==MASK)?fnv5(me.sid):'', rank=0, prev=null;
+    var rows=d.list.map(function(x,i){ var k=x.stars+'|'+x.cards+'|'+x.rescue; if(k!==prev){ rank=i+1; prev=k; }
+      return '<div class="brow'+(x.h===mine?' me':'')+'"><b>'+rank+'</b><code>'+esc(x.id)+(x.h===mine?' (คุณ)':'')+'</code><span>'+x.stars+'</span><span>'+x.cards+'</span><span>'+x.rescue+'</span></div>'; });
+    list.innerHTML='<div class="brow h"><b>#</b><span style="text-align:left">รหัส</span><span>ดาว</span><span>การ์ด</span><span>กู้</span></div>'+rows.join('');
+    res.textContent=d.n+' คน · อัปเดต '+new Date(d.at).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'});
+    if(mine && !d.list.some(function(x){ return x.h===mine; })) res.textContent+=' · ผลของคุณยังไม่ขึ้น (เล่นจบอย่างน้อย 1 โซนแล้วเปิดหน้าแผนที่อีกครั้ง)';
+  }).catch(function(){ res.style.color='#fb7185'; res.textContent='โหลดไม่สำเร็จ ลองใหม่อีกครั้ง'; });
+}
+document.getElementById('boardBtn').onclick=document.getElementById('boardBtn2').onclick=function(){ bm.classList.add('open'); loadBoard(); };
+document.getElementById('bmReload').onclick=loadBoard;
+document.getElementById('bmClose').onclick=function(){ bm.classList.remove('open'); };
+bm.onclick=function(e){ if(e.target===bm) bm.classList.remove('open'); };
+window.addEventListener('load',function(){ setTimeout(syncBoard,800); });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ tm.classList.remove('open'); bm.classList.remove('open'); } });
 var tt; function toast(m){ var t=document.getElementById('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(function(){ t.classList.remove('on'); },2600); }
 
 /* ย่อเนื้อหาให้พอดีจอเดียวบนเดสก์ท็อป (ไม่ต้องเลื่อนเมาส์) */

@@ -428,6 +428,10 @@ for _d, _m in AUG.items():
     for _i, _fig in _m.items():
         _q, _c, _e = B[_d][_i]; B[_d][_i] = (_q + _fig, _c, _e)
 
+# ปรับสมดุลความยาวตัวเลือก (Rescue รอบ 1) ดู bank_rew.py
+from bank_rew import apply as _rew
+_rew(B, 'g4')
+
 STAR = star_table([
  ('FORGE MASTER', 'คุมไดโอด LED 7 ส่วน และซีเนอร์ได้ครบ พร้อมต่อวงจรแสดงผลและวงจรจ่ายไฟจริง'),
  ('ANVIL SMITH', 'เกือบเต็ม ทบทวนข้อที่พลาดแล้วลองห้องทดลองบ่อชุบซีเนอร์อีกรอบ'),

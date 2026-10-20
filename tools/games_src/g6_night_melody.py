@@ -456,6 +456,10 @@ for _d, _m in AUG.items():
     for _i, _fig in _m.items():
         _q, _c, _e = B[_d][_i]; B[_d][_i] = (_q + _fig, _c, _e)
 
+# ปรับสมดุลความยาวตัวเลือก (Rescue รอบ 1) ดู bank_rew.py
+from bank_rew import apply as _rew
+_rew(B, 'g6')
+
 STAR = star_table([
  ('NIGHT MAESTRO', 'ประกอบระบบได้ครบทุกบล็อก พร้อมตอบข้อเขียนออกแบบวงจรใน Final แล้ว ลองช่วยอธิบายให้คู่ของคุณ'),
  ('MELODY MAKER', 'เกือบสมบูรณ์ ทบทวนข้อที่พลาดอีกครั้ง แล้วลองต่อวงจรจริงบนโปรโตบอร์ด'),

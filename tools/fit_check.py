@@ -9,7 +9,7 @@ MEASURE = """()=>{const a=document.querySelector('.screen.active'); const p=a&&a
  const sl=a&&a.querySelector('.neo-slide.on'); const d=document.documentElement;
  return {id:a?a.id:'', page:d.scrollHeight-innerHeight, hs:d.scrollWidth-innerWidth, panel:p?p.scrollHeight-p.clientHeight:0, slide:sl?sl.scrollHeight-sl.clientHeight:0}}"""
 with sync_playwright() as pw:
-    b = pw.chromium.launch(); bad = 0
+    b = pw.chromium.launch(**({'executable_path': os.environ['PW_EXE'], 'args': ['--no-sandbox']} if os.environ.get('PW_EXE') else {})); bad = 0
     for w, h in sizes:
         pg = b.new_page(viewport={'width': w, 'height': h}); errs = []
         pg.on('pageerror', lambda e: errs.append(str(e)))

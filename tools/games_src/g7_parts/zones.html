@@ -1,0 +1,134 @@
+
+<!-- ===== PREVIEW 1 ===== -->
+<section id="scr-preview1" class="screen">
+  <div class="panel">
+    <span class="tag">Arena Round 01</span>
+    <h2>กำลังจะเข้าสู่: ยก 1 กายวิภาคทรานซิสเตอร์ (ขา สัญลักษณ์ ย่านทำงาน)</h2>
+    <div class="dcard">
+      <div class="ico"><svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="44" cy="40" r="24" fill="none" stroke="#00f0ff" stroke-width="4"/><path d="M14 40 h22 M36 26 v28 M36 34 l18 -12 M36 46 l18 12" stroke="#00f0ff" stroke-width="4" fill="none"/><path d="M48 54 l7 4 l-8 2" fill="#c6ff3d"/></svg></div>
+      <div><div class="skillcard" style="margin:0">
+        <div class="sk-name">ทักษะที่จะได้: แยก NPN กับ PNP จากลูกศร คำนวณ IB IC IE β และบอกย่านทำงานจากค่าที่วัดได้</div>
+        <p class="muted" style="margin:6px 0 0">กลางภาคข้อ 56–57 (สัญลักษณ์ NPN/PNP) และข้อ 40 (IE) มีผู้ตอบผิดเกินครึ่งห้อง ยกนี้จึงเริ่มจากจุดนั้น</p>
+      </div></div>
+    </div>
+    <div class="btn-row"><button class="btn primary" data-goto="scr-lesson1">ขึ้นสังเวียน</button></div>
+  </div>
+</section>
+
+<!-- ===== ROUND 1 ===== -->
+<section id="scr-lesson1" class="screen">
+  <div class="panel">
+    <span class="tag">Round 01 · Anatomy</span>
+    <h2>ยก 1: ขา สัญลักษณ์ และย่านทำงานของ BJT</h2>
+    <p>BJT มีสาร 3 ชั้น จึงมี <b>2 รอยต่อ</b> คือ B–E และ B–C ขา 3 ขาคือ <b>เบส (B) คอลเล็กเตอร์ (C) อิมิตเตอร์ (E)</b>
+      ลูกศรอยู่ที่ขาอิมิตเตอร์เสมอและชี้ตามทิศกระแส: <b>NPN ลูกศรชี้ออก</b> (Not Pointing iN) · <b>PNP ลูกศรชี้เข้า</b></p>
+    <div class="codebox">IC = β × IB        IE = IB + IC        β = IC / IB  (หรือ hFE)
+แปลงหน่วยก่อนคำนวณเสมอ: 125 µA = 0.125 mA → IE = 0.125 + 25 = 25.125 mA
+2N3904: hFE 100–300 ที่ IC = 10 mA (ค่าแต่ละตัวต่างกันได้ 3 เท่า)</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>ย่าน</th><th>รอยต่อ B–E / B–C</th><th>ค่าที่วัดได้ (NPN)</th><th>ใช้งาน</th></tr>
+      <tr><td>คัตออฟ</td><td>ไม่นำ / กลับ</td><td>VBE &lt; 0.7 V · VCE ≈ VCC</td><td>สวิตช์ OFF</td></tr>
+      <tr><td>แอกทีฟ</td><td>ตรง / กลับ</td><td>VBE ≈ 0.7 V · VCE อยู่กลาง ๆ</td><td>ขยายสัญญาณ</td></tr>
+      <tr><td>อิ่มตัว</td><td>ตรง / ตรง</td><td>VBE ≈ 0.7 V · VCE ≈ 0.2 V</td><td>สวิตช์ ON</td></tr>
+    </table></div>
+    <div class="keyfact">จำให้ขึ้นใจ: <b>ลูกศรชี้ออก = NPN</b> · <b>IE = IB + IC</b> · ดูย่านจาก <b>VCE</b>: เกือบเท่า VCC = OFF · ราว 0.2 V = ON เต็มที่</div>
+
+    <h3 style="margin-top:16px">ห้องทดลอง: มิเตอร์บอกย่าน</h3>
+    <p class="muted">VCC 5 V, RC 1 kΩ, β = 100 เลื่อนแรงดันขับเบสและเลือก RB แล้วหาให้ครบทั้ง 3 ย่าน</p>
+    <label class="muted" for="rmV" style="display:block;font-size:.85rem">แรงดันขับเบส Vin: <b id="rmVt">1.0 V</b></label>
+    <input type="range" class="rng" id="rmV" min="0" max="5" step="0.1" value="1" aria-label="แรงดันขับเบส">
+    <div class="labrow"><button class="btn sm" data-rmrb="100000">RB 100 kΩ</button><button class="btn sm" data-rmrb="22000">RB 22 kΩ</button><button class="btn sm" data-rmrb="4700">RB 4.7 kΩ</button><span class="ledlamp" id="rmLed"></span></div>
+    <div class="meas"><div><b>IB</b><span id="rmIB">—</span></div><div><b>IC</b><span id="rmIC">—</span></div><div><b>VCE</b><span id="rmVCE">—</span></div></div>
+    <div class="rgchips" id="rmChips"><span data-rg="cut">คัตออฟ</span><span data-rg="act">แอกทีฟ</span><span data-rg="sat">อิ่มตัว</span></div>
+    <div class="status-line" id="rmStatus">เลื่อนแถบเพื่อเริ่มทดลอง</div>
+    <div class="btn-row"><button class="btn primary" data-quiz="check1">ไปทำแบบฝึกหัดยกนี้</button></div>
+  </div>
+</section>
+
+<!-- ===== PREVIEW 2 ===== -->
+<section id="scr-preview2" class="screen">
+  <div class="panel">
+    <span class="tag">Arena Round 02</span>
+    <h2>กำลังจะเข้าสู่: ยก 2 ออกแบบสวิตช์ขับรีเลย์จากบอร์ด IoT</h2>
+    <div class="dcard">
+      <div class="ico"><svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><rect x="42" y="10" width="22" height="34" rx="3" fill="none" stroke="#b14bff" stroke-width="4"/><path d="M10 60 h20 M30 48 v24 M30 54 l16 -10 v-2 M30 66 l16 10" stroke="#00f0ff" stroke-width="4" fill="none"/><path d="M70 14 v28" stroke="#c6ff3d" stroke-width="3"/></svg></div>
+      <div><div class="skillcard" style="margin:0">
+        <div class="sk-name">ทักษะที่จะได้: คำนวณ RB ให้อิ่มตัวแน่นอน (overdrive) และใส่ไดโอดกันกลับคร่อมขดลวด</div>
+        <p class="muted" style="margin:6px 0 0">ต่อยอดโซน 4 (ไดโอด) และเป็นพื้นฐานวิชา CPE2422/2428 ที่ ESP32 สั่งโหลดจริง</p>
+      </div></div>
+    </div>
+    <div class="btn-row"><button class="btn primary" data-goto="scr-lesson2">ขึ้นสังเวียน</button></div>
+  </div>
+</section>
+
+<!-- ===== ROUND 2 ===== -->
+<section id="scr-lesson2" class="screen">
+  <div class="panel">
+    <span class="tag">Round 02 · Switch Design</span>
+    <h2>ยก 2: ทรานซิสเตอร์เป็นสวิตช์ขับรีเลย์</h2>
+    <p>ขา GPIO ของ ESP32 ให้ <b>3.3 V</b> และควรจ่ายกระแสเพียงไม่กี่ mA ขดลวดรีเลย์ 5 V ต้องการหลายสิบ mA จึงให้ทรานซิสเตอร์เป็นสวิตช์
+      ออกแบบด้วย <b>β ต่ำสุด</b> จาก datasheet แล้วเผื่อกระแสเบส 2–5 เท่า (overdrive) เพื่อให้ <b>อิ่มตัวแน่นอน</b></p>
+    <div class="codebox">1) IC  = (VCC − VCE(sat)) / Rcoil = (5 − 0.2) / 70 Ω ≈ 68.6 mA
+2) IB  = IC / βmin × overdrive = 68.6 mA / 100 × 3 ≈ 2.06 mA
+3) RB  = (VGPIO − VBE) / IB   = (3.3 − 0.7) / 2.06 mA ≈ 1.26 kΩ → เลือก 1.2 kΩ (ค่าที่ต่ำกว่า)
+4) P   = VCE × IC : อิ่มตัว 0.2 × 68.6 mA ≈ 14 mW · แอกทีฟ VCE 2 V → 137 mW (ร้อนกว่าเกือบ 10 เท่า)</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>ประเด็น</th><th>ตัวต้านทาน LED (โซน 1)</th><th>RB ของสวิตช์ทรานซิสเตอร์</th></tr>
+      <tr><td>ปัดค่ามาตรฐาน</td><td>ปัดขึ้น กระแสไม่เกิน</td><td><b>ปัดลง</b> ได้ IB มากขึ้น อิ่มตัวแน่นอน</td></tr>
+      <tr><td>ไดโอดคร่อมขดลวด</td><td>—</td><td>แคโทดต่อ +VCC แอโนดต่อขา C (ไบอัสกลับขณะปกติ)</td></tr>
+    </table></div>
+    <div class="keyfact">จำให้ขึ้นใจ: <b>ใช้ βmin + เผื่อ 2–5 เท่า</b> · <b>RB ปัดลง</b> · ขดลวดทุกชนิดต้องมี <b>ไดโอดกันกลับ</b> ไม่งั้นแรงดันพุ่งตอนตัดไฟจะทำลายทรานซิสเตอร์</div>
+
+    <h3 style="margin-top:16px">ห้องทดลอง: ขับรีเลย์จาก GPIO 3.3 V</h3>
+    <p class="muted">2N3904 (βmin 100) รีเลย์ 5 V 70 Ω เลือก RB ใส่หรือถอดไดโอด แล้วสั่ง GPIO HIGH/LOW ภารกิจ: รีเลย์ติดแน่น ทรานซิสเตอร์เย็น และตัดไฟได้อย่างปลอดภัย</p>
+    <div class="labrow"><button class="btn sm" data-rlrb="220">RB 220 Ω</button><button class="btn sm" data-rlrb="1200">RB 1.2 kΩ</button><button class="btn sm" data-rlrb="4700">RB 4.7 kΩ</button><button class="btn sm" data-rlrb="22000">RB 22 kΩ</button></div>
+    <div class="labrow"><button class="toggle on" id="rlDiode">มีไดโอดกันกลับ</button><button class="toggle off" id="rlGpio">GPIO LOW</button><span class="ledlamp" id="rlLed"></span></div>
+    <div class="meas"><div><b>IB</b><span id="rlIB">—</span></div><div><b>IC</b><span id="rlIC">—</span></div><div><b>VCE</b><span id="rlVCE">—</span></div><div><b>P ทรานซิสเตอร์</b><span id="rlP">—</span></div></div>
+    <div class="status-line" id="rlStatus">เลือก RB แล้วกด GPIO เพื่อสั่งรีเลย์</div>
+    <div class="btn-row"><button class="btn primary" data-quiz="check2">ไปทำแบบฝึกหัดยกนี้</button></div>
+  </div>
+</section>
+
+<!-- ===== PREVIEW 3 ===== -->
+<section id="scr-preview3" class="screen">
+  <div class="panel">
+    <span class="tag">Arena Round 03</span>
+    <h2>กำลังจะเข้าสู่: ยก 3 งานเซนเซอร์และโต๊ะซ่อมวงจร</h2>
+    <div class="dcard">
+      <div class="ico"><svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="26" fill="none" stroke="#b14bff" stroke-width="4"/><path d="M40 20 v12 M40 48 v12 M20 40 h12 M48 40 h12" stroke="#c6ff3d" stroke-width="4"/></svg></div>
+      <div><div class="skillcard" style="margin:0">
+        <div class="sk-name">ทักษะที่จะได้: ใช้ดาร์ลิงตัน PNP และโฟโตทรานซิสเตอร์ในงานเซนเซอร์ และหาจุดเสียจากค่า VBE กับ VCE</div>
+        <p class="muted" style="margin:6px 0 0">โยงกับ LAB รูปที่ 3-47 (กันขโมยตัดลำแสง) และ 3-50 (เซนเซอร์สะท้อนวัตถุ)</p>
+      </div></div>
+    </div>
+    <div class="btn-row"><button class="btn primary" data-goto="scr-lesson3">ขึ้นสังเวียน</button></div>
+  </div>
+</section>
+
+<!-- ===== ROUND 3 ===== -->
+<section id="scr-lesson3" class="screen">
+  <div class="panel">
+    <span class="tag">Round 03 · Sensor &amp; Debug</span>
+    <h2>ยก 3: งานเซนเซอร์และการหาจุดเสีย</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>วงจร</th><th>หลักการ</th><th>ตัวเลขที่ต้องจำ</th></tr>
+      <tr><td>ดาร์ลิงตัน</td><td>E ของตัวแรกเข้า B ของตัวที่สอง ไวต่อกระแสอ่อนมาก</td><td>β ≈ β1 × β2 · VBE ≈ 1.4 V · VCE(sat) สูงกว่า</td></tr>
+      <tr><td>PNP ด้านไฟบวก</td><td>อิมิตเตอร์ต่อ +VCC นำเมื่อดึงเบสต่ำกว่า E</td><td>VB ≈ VCC − 0.7 V จึงนำ</td></tr>
+      <tr><td>โฟโตทรานซิสเตอร์</td><td>แสงทำหน้าที่แทนกระแสเบส</td><td>แสงมาก → นำมาก · ถูกบัง → นำลดลง</td></tr>
+    </table></div>
+    <div class="codebox">ตรวจวงจรสวิตช์ด้วยมัลติมิเตอร์ 2 จุด (ขณะสั่ง ON)
+  VBE ≈ 0 V            → ไม่มีกระแสเข้าเบส: RB ขาด สายหลุด หรือ GPIO ไม่ได้สั่ง
+  VBE ≈ 0.7, VCE ≈ VCC → C–E ไม่นำ: ต่อขาสลับ หรือตัวเสียแบบเปิด
+  VBE ≈ 0.7, VCE 1–3 V → แอกทีฟ: IB น้อยไป ให้ลด RB
+  VBE ≈ 0.7, VCE ≈ 0.2 → อิ่มตัวปกติ ถ้าโหลดยังไม่ทำงาน ให้ตรวจฝั่งโหลด</div>
+    <div class="keyfact">จำให้ขึ้นใจ: วัด <b>VBE ก่อน แล้ววัด VCE</b> · ขาแต่ละรุ่นเรียงไม่เหมือนกัน (2N3904 = E B C, BC547 = C B E) <b>ดู datasheet เสมอ</b></div>
+
+    <h3 style="margin-top:16px">ห้องทดลอง: โต๊ะซ่อมวงจร</h3>
+    <p class="muted">ทุกเคสคือวงจรขับรีเลย์ของยก 2 ที่สั่ง GPIO HIGH แล้วแต่ทำงานผิด อ่านค่าที่วัดได้แล้ววินิจฉัยให้ถูกครบ 4 เคส</p>
+    <div class="meas" id="dbMeas"></div>
+    <div class="pickgrid" id="dbPicks"></div>
+    <div class="labrow"><button class="btn sm" id="dbNext">เคสถัดไป</button><span class="muted" id="dbCount" style="font-size:.85rem"></span></div>
+    <div class="status-line" id="dbStatus">เลือกคำวินิจฉัย</div>
+    <div class="btn-row"><button class="btn primary" data-quiz="check3">ไปทำแบบฝึกหัดยกนี้</button></div>
+  </div>
+</section>

@@ -986,10 +986,10 @@ const BANK = {
   {
    "q": "ทำไมต้องต่อ LDR เป็นวงจรแบ่งแรงดันก่อนนำไปควบคุมทรานซิสเตอร์",
    "c": [
-    "LDR เปลี่ยนเพียงความต้านทาน ไม่ได้สร้างแรงดัน จึงต้องใช้วงจรแบ่งแรงดันแปลงเป็นแรงดัน",
-    "LDR สร้างแรงดันได้เองเหมือนเซลล์แสงอาทิตย์ จึงไม่ต้องต่อเพิ่ม",
-    "เพื่อเปลี่ยนไฟ AC เป็น DC",
-    "เพื่อเพิ่มความถี่ของสัญญาณ"
+    "LDR เปลี่ยนแค่ความต้านทาน ต้องแปลงเป็นแรงดัน",
+    "LDR สร้างแรงดันเองได้เหมือนเซลล์แสงอาทิตย์ทุกชนิด",
+    "เพื่อเปลี่ยนไฟ AC จาก LDR ให้เป็นไฟ DC",
+    "เพื่อเพิ่มความถี่ของสัญญาณจาก LDR"
    ],
    "a": 0,
    "e": "ทรานซิสเตอร์ต้องการแรงดันที่เบส (≈ 0.7 V) การต่อ LDR กับตัวต้านทานอีกตัวทำให้ความต้านทานที่เปลี่ยนตามแสงกลายเป็นแรงดันที่เปลี่ยนตามแสง"
@@ -1008,10 +1008,10 @@ const BANK = {
   {
    "q": "การใช้ตัวต้านทานปรับค่าได้ (VR) คู่กับ LDR ในวงจรแบ่งแรงดันมีประโยชน์อย่างไร",
    "c": [
-    "ปรับระดับความมืดที่ทำให้วงจรเริ่มทำงาน (ปรับความไว)",
+    "ปรับระดับความมืดที่วงจรเริ่มทำงาน",
     "เพิ่มอัตราขยายกระแสของทรานซิสเตอร์",
-    "กรองแรงดันให้เรียบ",
-    "เปลี่ยนไฟ AC เป็น DC"
+    "กรองแรงดันจาก LDR ให้เรียบขึ้น",
+    "เปลี่ยนไฟ AC ให้เป็นไฟ DC"
    ],
    "a": 0,
    "e": "แต่ละห้องสว่างไม่เท่ากัน VR ช่วยเลื่อนจุดที่แรงดันถึงเกณฑ์ เช่น 0.7 V ที่เบส ให้วงจรทำงานตรงกับความต้องการ"
@@ -1030,10 +1030,10 @@ const BANK = {
   {
    "q": "LDR ตอบสนองต่อการเปลี่ยนแสงช้าระดับหลายสิบมิลลิวินาที ข้อสรุปใดถูกต้อง",
    "c": [
-    "เหมาะกับงานตรวจระดับแสงทั่วไป แต่ไม่เหมาะกับการรับสัญญาณความเร็วสูง",
-    "เหมาะกับการรับรีโมททีวีที่ความถี่ 38 kHz",
-    "ตอบสนองเร็วกว่าโฟโตไดโอด",
-    "ใช้แทนตัวรับแสงในใยแก้วนำแสงได้ดีที่สุด"
+    "เหมาะกับตรวจระดับแสง ไม่เหมาะกับสัญญาณเร็ว",
+    "เหมาะกับรับรีโมททีวีที่ความถี่ 38 kHz",
+    "ตอบสนองได้เร็วกว่าโฟโตไดโอดทุกรุ่น",
+    "ใช้แทนตัวรับแสงในใยแก้วนำแสงได้ดี"
    ],
    "a": 0,
    "e": "งานเปิดไฟหรือส่งเสียงเมื่อมืดไม่ต้องการความเร็ว LDR จึงเหมาะ ส่วนงานสื่อสารความเร็วสูงใช้โฟโตไดโอดหรือโฟโตทรานซิสเตอร์"
@@ -1153,10 +1153,10 @@ const BANK = {
   {
    "q": "ในโครงงานที่ 6 ถ้าปรับ VR2 ให้ความต้านทานเพิ่มขึ้น ผลคืออะไร<svg class=\"qfig\" viewBox=\"0 0 360 162\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M30 14 H300\"/><text x=\"30\" y=\"10\" text-anchor=\"start\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+9 V</text><path d=\"M110 14 V17 M110 49 V52\"/><rect x=\"103\" y=\"17\" width=\"14\" height=\"32\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"96\" y=\"37\" text-anchor=\"end\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">R2 24 kΩ</text><path d=\"M110 52 V56 M110 88 V92\"/><rect x=\"103\" y=\"56\" width=\"14\" height=\"32\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"96\" y=\"76\" text-anchor=\"end\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">VR2 10 kΩ</text><path d=\"M110 92 V100\"/><circle cx=\"110\" cy=\"100\" r=\"3\" fill=\"currentColor\"/><path d=\"M110 100 V109 M110 141 V150\"/><rect x=\"103\" y=\"109\" width=\"14\" height=\"32\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><path d=\"M86 109 l9 7 M86 119 l9 7\" stroke=\"var(--gold,#b8860b)\"/><text x=\"84\" y=\"129\" text-anchor=\"end\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">LDR</text><path d=\"M100 150 H120 M104 154 H116 M108 158 H112\"/><path d=\"M110 100 H186 M186 86 V114 M186 94 L214 80 V70 M186 106 L214 120 V150\"/><path d=\"M206 116 L214 120 L204 122\" fill=\"currentColor\"/><path d=\"M204 150 H224 M208 154 H220 M212 158 H216\"/><text x=\"196\" y=\"134\" text-anchor=\"start\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">Q1</text><path d=\"M214 14 V11 M214 43 V40\"/><rect x=\"207\" y=\"11\" width=\"14\" height=\"32\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"228\" y=\"31\" text-anchor=\"start\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">R3 330 Ω</text><path d=\"M214 40 V46 M214 66 V70\"/><path d=\"M203 46 L225 46 L214 64 Z\" stroke=\"var(--ember,#c2410c)\" fill=\"var(--ember,#c2410c)\" fill-opacity=\".25\"/><path d=\"M203 66 H225\" stroke=\"var(--ember,#c2410c)\"/><path d=\"M228 52 l8 -6 M228 60 l8 -6\" stroke=\"var(--gold,#b8860b)\"/><text x=\"240\" y=\"62\" text-anchor=\"start\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">LED2</text><text x=\"150\" y=\"94\" text-anchor=\"middle\" font-size=\"10\" fill=\"var(--gold,#b8860b)\" stroke=\"none\" font-family=\"inherit\">VB</text></g></svg>",
    "c": [
-    "ต้องมืดมากขึ้นกว่าเดิม วงจรจึงทำงาน",
-    "วงจรทำงานเร็วขึ้นตั้งแต่ยังสว่าง",
-    "LED2 สว่างตลอดเวลา",
-    "ไม่มีผลต่อการทำงาน"
+    "ต้องมืดมากขึ้น วงจรจึงทำงาน",
+    "วงจรทำงานตั้งแต่ยังสว่างอยู่มาก",
+    "LED2 สว่างค้างตลอดเวลา",
+    "ไม่มีผลต่อการทำงานเลย"
    ],
    "a": 0,
    "e": "R ด้านบนมากขึ้น แรงดันที่เบสต่ำลงที่ความมืดเท่าเดิม ต้องให้ LDR สูงขึ้นอีก (มืดกว่าเดิม) VB จึงถึง 0.7 V"
@@ -1199,10 +1199,10 @@ const BANK = {
   {
    "q": "ในโครงงานที่ 3 รีดสวิตช์ S1 ทำหน้าที่อะไร<svg class=\"qfig\" viewBox=\"0 0 360 152\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M60 14 H200\"/><text x=\"60\" y=\"10\" text-anchor=\"start\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+5 V (จาก 7805)</text><path d=\"M120 14 V22 M120 54 V62\"/><rect x=\"113\" y=\"22\" width=\"14\" height=\"32\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"106\" y=\"42\" text-anchor=\"end\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">R1 10 kΩ</text><path d=\"M120 62 V72 M120 72 H250\"/><circle cx=\"120\" cy=\"72\" r=\"3\" fill=\"currentColor\"/><rect x=\"250\" y=\"56\" width=\"74\" height=\"40\" rx=\"6\" stroke=\"var(--ember,#c2410c)\"/><text x=\"287\" y=\"74\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">UM66</text><text x=\"287\" y=\"88\" text-anchor=\"middle\" font-size=\"10\" fill=\"var(--gold,#b8860b)\" stroke=\"none\" font-family=\"inherit\">ขา 1</text><path d=\"M120 72 V96 M120 118 V140 M120 96 L134 116\"/><circle cx=\"120\" cy=\"96\" r=\"2.5\"/><circle cx=\"120\" cy=\"118\" r=\"2.5\"/><path d=\"M110 140 H130 M114 144 H126 M118 148 H122\"/><text x=\"144\" y=\"112\" text-anchor=\"start\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">S1 รีดสวิตช์</text></g></svg>",
    "c": [
-    "สวิตช์ที่ต่อวงจรเมื่อแม่เหล็กเข้าใกล้ ดึงขา 1 ของไอซีเสียงเพลงลงกราวด์",
-    "ขยายสัญญาณเสียง",
-    "รักษาระดับแรงดัน",
-    "กำเนิดความถี่เสียงเพลง"
+    "ต่อวงจรเมื่อแม่เหล็กใกล้ ดึงขา 1 ลงกราวด์",
+    "ขยายสัญญาณเสียงจากไอซีไปขับลำโพง",
+    "รักษาระดับแรงดันไฟเลี้ยงให้คงที่",
+    "กำเนิดความถี่ของเสียงเพลงขึ้นเอง"
    ],
    "a": 0,
    "e": "เอกสาร LAB อธิบายว่าเมื่อแม่เหล็กเข้าใกล้ หน้าสัมผัสของ S1 ต่อถึงกัน ขา 1 ของไอซีเสียงเพลงจึงต่อลงกราวด์และไอซีสร้างเพลง"
@@ -1210,10 +1210,10 @@ const BANK = {
   {
    "q": "ขณะรีดสวิตช์ S1 เปิดวงจร ขา 1 ของไอซีเสียงเพลงอยู่ในสภาวะใด<svg class=\"qfig\" viewBox=\"0 0 360 152\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M60 14 H200\"/><text x=\"60\" y=\"10\" text-anchor=\"start\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+5 V (จาก 7805)</text><path d=\"M120 14 V22 M120 54 V62\"/><rect x=\"113\" y=\"22\" width=\"14\" height=\"32\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"106\" y=\"42\" text-anchor=\"end\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">R1 10 kΩ</text><path d=\"M120 62 V72 M120 72 H250\"/><circle cx=\"120\" cy=\"72\" r=\"3\" fill=\"currentColor\"/><rect x=\"250\" y=\"56\" width=\"74\" height=\"40\" rx=\"6\" stroke=\"var(--ember,#c2410c)\"/><text x=\"287\" y=\"74\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">UM66</text><text x=\"287\" y=\"88\" text-anchor=\"middle\" font-size=\"10\" fill=\"var(--gold,#b8860b)\" stroke=\"none\" font-family=\"inherit\">ขา 1</text><path d=\"M120 72 V96 M120 118 V140 M120 96 L134 116\"/><circle cx=\"120\" cy=\"96\" r=\"2.5\"/><circle cx=\"120\" cy=\"118\" r=\"2.5\"/><path d=\"M110 140 H130 M114 144 H126 M118 148 H122\"/><text x=\"144\" y=\"112\" text-anchor=\"start\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">S1 รีดสวิตช์</text></g></svg>",
    "c": [
-    "ถูก R1 10 kΩ ดึงขึ้นไปทางไฟบวก ไอซีจึงไม่สร้างเพลง",
-    "ลอย ไอซีสร้างเพลงตลอด",
-    "ต่อลงกราวด์ ไอซีสร้างเพลง",
-    "ขาดไฟเลี้ยงทั้งวงจร"
+    "ถูก R1 ดึงขึ้นไฟบวก ไอซีจึงเงียบ",
+    "ลอยอยู่ ไอซีจึงสร้างเพลงตลอดเวลา",
+    "ต่อลงกราวด์ ไอซีจึงสร้างเพลง",
+    "ขาดไฟเลี้ยง ทั้งวงจรจึงหยุดทำงาน"
    ],
    "a": 0,
    "e": "R1 เป็นตัวต้านทานพูลอัป ทำให้ขา 1 มีแรงดันสูงเมื่อสวิตช์เปิด ไอซีจึงเงียบ"
@@ -1221,10 +1221,10 @@ const BANK = {
   {
    "q": "ไอซี 7805 (IC1) ในวงจรทำหน้าที่อะไร",
    "c": [
-    "รักษาระดับแรงดันขาออกให้คงที่ 5 V",
-    "ขยายสัญญาณเสียง",
-    "สร้างเพลง",
-    "เรียงกระแส AC เป็น DC"
+    "รักษาแรงดันขาออกให้คงที่ 5 V",
+    "ขยายสัญญาณเสียงไปขับลำโพง",
+    "สร้างเสียงเพลงจากหน่วยความจำ",
+    "เรียงกระแส AC ให้เป็น DC"
    ],
    "a": 0,
    "e": "7805 เป็นไอซีเรกูเลเตอร์ 3 ขา รับแรงดันขาเข้าที่สูงกว่าแล้วจ่ายออก 5 V คงที่"
@@ -1232,10 +1232,10 @@ const BANK = {
   {
    "q": "Q1 (C9013) และ R2 2 kΩ หลังขา 3 ของไอซีเสียงเพลงทำหน้าที่อะไร",
    "c": [
-    "ขยายสัญญาณจากไอซีให้แรงพอขับลำโพง",
-    "สร้างเพลง",
-    "ลดแรงดันแหล่งจ่าย",
-    "ตรวจจับแสง"
+    "ขยายสัญญาณให้แรงพอขับลำโพง",
+    "สร้างเสียงเพลงขึ้นมาใหม่",
+    "ลดแรงดันแหล่งจ่ายลงเหลือ 5 V",
+    "ตรวจจับแสงเพื่อสั่งให้เพลงดัง"
    ],
    "a": 0,
    "e": "สัญญาณจากไอซีเพลงมีกำลังน้อย จึงผ่าน R2 เข้าเบสของ Q1 ให้ทรานซิสเตอร์ขยายกระแสขับลำโพงผ่าน R3"
@@ -1243,10 +1243,10 @@ const BANK = {
   {
    "q": "ต้องการให้เพลงดังเมื่อมืด ควรใช้อะไรทำหน้าที่แทนรีดสวิตช์ S1<svg class=\"qfig\" viewBox=\"0 0 360 152\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M60 14 H200\"/><text x=\"60\" y=\"10\" text-anchor=\"start\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+5 V (จาก 7805)</text><path d=\"M120 14 V22 M120 54 V62\"/><rect x=\"113\" y=\"22\" width=\"14\" height=\"32\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"106\" y=\"42\" text-anchor=\"end\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">R1 10 kΩ</text><path d=\"M120 62 V72 M120 72 H250\"/><circle cx=\"120\" cy=\"72\" r=\"3\" fill=\"currentColor\"/><rect x=\"250\" y=\"56\" width=\"74\" height=\"40\" rx=\"6\" stroke=\"var(--ember,#c2410c)\"/><text x=\"287\" y=\"74\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">UM66</text><text x=\"287\" y=\"88\" text-anchor=\"middle\" font-size=\"10\" fill=\"var(--gold,#b8860b)\" stroke=\"none\" font-family=\"inherit\">ขา 1</text><path d=\"M120 72 V92 M120 128 V140\"/><rect x=\"104\" y=\"92\" width=\"32\" height=\"36\" rx=\"4\" stroke-dasharray=\"4 4\" stroke=\"var(--ember,#c2410c)\"/><text x=\"120\" y=\"115\" text-anchor=\"middle\" font-size=\"14\" fill=\"var(--gold,#b8860b)\" stroke=\"none\" font-family=\"inherit\">?</text><path d=\"M110 140 H130 M114 144 H126 M118 148 H122\"/><text x=\"144\" y=\"112\" text-anchor=\"start\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">? (แทน S1)</text></g></svg>",
    "c": [
-    "ทรานซิสเตอร์จากวงจร LDR โดยขา C ต่อจุดขา 1 และขา E ลงกราวด์",
-    "LED",
-    "ตัวเก็บประจุ 100 µF",
-    "ไดโอดเรียงกระแส"
+    "ทรานซิสเตอร์จากวงจร LDR (C ต่อขา 1)",
+    "LED ที่ต่ออนุกรมกับตัวต้านทาน 330 Ω",
+    "ตัวเก็บประจุ 100 µF คร่อมขา 1",
+    "ไดโอดเรียงกระแสที่ต่อกลับขั้ว"
    ],
    "a": 0,
    "e": "ทรานซิสเตอร์ที่นำเมื่อมืดทำหน้าที่เหมือนสวิตช์ที่ปิดวงจร ดึงขา 1 ลงกราวด์แทนรีดสวิตช์ นี่คือคำตอบหลักของข้อ 72"
@@ -1254,10 +1254,10 @@ const BANK = {
   {
    "q": "ในวงจรรวมของข้อ 72 เมื่อสว่างจะเกิดอะไรขึ้น<svg class=\"qfig\" viewBox=\"0 0 360 152\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M60 14 H200\"/><text x=\"60\" y=\"10\" text-anchor=\"start\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+5 V (จาก 7805)</text><path d=\"M120 14 V22 M120 54 V62\"/><rect x=\"113\" y=\"22\" width=\"14\" height=\"32\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"106\" y=\"42\" text-anchor=\"end\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">R1 10 kΩ</text><path d=\"M120 62 V72 M120 72 H250\"/><circle cx=\"120\" cy=\"72\" r=\"3\" fill=\"currentColor\"/><rect x=\"250\" y=\"56\" width=\"74\" height=\"40\" rx=\"6\" stroke=\"var(--ember,#c2410c)\"/><text x=\"287\" y=\"74\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">UM66</text><text x=\"287\" y=\"88\" text-anchor=\"middle\" font-size=\"10\" fill=\"var(--gold,#b8860b)\" stroke=\"none\" font-family=\"inherit\">ขา 1</text><path d=\"M120 72 V92 M86 110 H106 M106 98 V122 M106 104 L120 96 M106 116 L120 126 V140\"/><path d=\"M114 123 L120 126 L112 128\" fill=\"currentColor\"/><text x=\"80\" y=\"114\" text-anchor=\"end\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">จาก LDR</text><path d=\"M110 140 H130 M114 144 H126 M118 148 H122\"/><text x=\"144\" y=\"112\" text-anchor=\"start\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ทรานซิสเตอร์ (แทน S1)</text></g></svg>",
    "c": [
-    "ทรานซิสเตอร์ไม่นำ ขา 1 ถูก R1 ดึงขึ้น ลำโพงเงียบ",
-    "ทรานซิสเตอร์นำ เพลงดัง",
-    "ลำโพงดังตลอดเวลา",
-    "7805 หยุดทำงาน"
+    "ทรานซิสเตอร์ไม่นำ ขา 1 ถูกดึงขึ้น เงียบ",
+    "ทรานซิสเตอร์นำ ขา 1 ลงกราวด์ เพลงดัง",
+    "ลำโพงดังตลอดไม่ว่ามืดหรือสว่าง",
+    "7805 หยุดทำงาน ทั้งวงจรจึงเงียบ"
    ],
    "a": 0,
    "e": "สว่างแล้ว LDR ต่ำ แรงดันเบสไม่ถึง 0.7 V ทรานซิสเตอร์ไม่นำ เหมือนสวิตช์เปิด ขา 1 จึงถูกดึงขึ้นและไอซีเงียบ"
@@ -1265,10 +1265,10 @@ const BANK = {
   {
    "q": "ข้อใดเรียงบล็อกของวงจร \"ส่งเสียงเพลงเมื่อมืด\" ตามการไหลของสัญญาณได้ถูกต้อง",
    "c": [
-    "LDR แบ่งแรงดัน → ทรานซิสเตอร์สวิตช์ → ไอซีเสียงเพลง → C9013 ขยาย → ลำโพง",
-    "ลำโพง → C9013 → ไอซีเสียงเพลง → LDR → ทรานซิสเตอร์",
-    "ไอซีเสียงเพลง → LDR → ลำโพง → ทรานซิสเตอร์ → C9013",
-    "ทรานซิสเตอร์ → แบตเตอรี่ → LDR → ลำโพง → ไอซีเสียงเพลง"
+    "LDR → ทรานซิสเตอร์ → ไอซีเพลง → C9013 → ลำโพง",
+    "ลำโพง → C9013 → ไอซีเพลง → LDR → ทรานซิสเตอร์",
+    "ไอซีเพลง → LDR → ลำโพง → ทรานซิสเตอร์ → C9013",
+    "ทรานซิสเตอร์ → LDR → C9013 → ไอซีเพลง → ลำโพง"
    ],
    "a": 0,
    "e": "สัญญาณเริ่มจากตัวรับรู้ ผ่านสวิตช์ ไปสั่งไอซีสร้างเพลง แล้วขยายก่อนออกลำโพง ใช้เป็นบล็อกไดอะแกรมตอบข้อเขียนได้ทันที"
@@ -1276,10 +1276,10 @@ const BANK = {
   {
    "q": "ขั้นแรกของ \"สูตรตอบข้อเขียนออกแบบวงจร 4 ขั้น\" คืออะไร",
    "c": [
-    "วาดบล็อกไดอะแกรม ตัวรับรู้ → สวิตช์ → เอาต์พุต",
-    "คำนวณค่าตัวต้านทานทุกตัวก่อน",
+    "วาดบล็อกไดอะแกรมของระบบ",
+    "คำนวณค่าตัวต้านทานทุกตัว",
     "เขียนคำอธิบายยาว ๆ ให้ครบ",
-    "เลือกยี่ห้ออุปกรณ์"
+    "เลือกยี่ห้อของอุปกรณ์ก่อน"
    ],
    "a": 0,
    "e": "บล็อกไดอะแกรมทำให้เห็นโครงของระบบและได้คะแนนบางส่วนทันที ในกลางภาคมี 17 คนได้ 0 คะแนนในข้อ 72 เพราะไม่ได้เขียนส่วนนี้"
@@ -1287,10 +1287,10 @@ const BANK = {
   {
    "q": "วงจรรวมไม่ดังเมื่อมืด แต่เมื่อลัดขา C กับ E ของทรานซิสเตอร์ด้วยสายไฟ เพลงดังทันที ปัญหาน่าจะอยู่ที่ใด<svg class=\"qfig\" viewBox=\"0 0 360 152\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"รูปวงจรประกอบโจทย์\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M60 14 H200\"/><text x=\"60\" y=\"10\" text-anchor=\"start\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">+5 V (จาก 7805)</text><path d=\"M120 14 V22 M120 54 V62\"/><rect x=\"113\" y=\"22\" width=\"14\" height=\"32\" rx=\"2\" stroke=\"var(--ember,#c2410c)\"/><text x=\"106\" y=\"42\" text-anchor=\"end\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">R1 10 kΩ</text><path d=\"M120 62 V72 M120 72 H250\"/><circle cx=\"120\" cy=\"72\" r=\"3\" fill=\"currentColor\"/><rect x=\"250\" y=\"56\" width=\"74\" height=\"40\" rx=\"6\" stroke=\"var(--ember,#c2410c)\"/><text x=\"287\" y=\"74\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">UM66</text><text x=\"287\" y=\"88\" text-anchor=\"middle\" font-size=\"10\" fill=\"var(--gold,#b8860b)\" stroke=\"none\" font-family=\"inherit\">ขา 1</text><path d=\"M120 72 V92 M86 110 H106 M106 98 V122 M106 104 L120 96 M106 116 L120 126 V140\"/><path d=\"M114 123 L120 126 L112 128\" fill=\"currentColor\"/><text x=\"80\" y=\"114\" text-anchor=\"end\" font-size=\"10\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">จาก LDR</text><path d=\"M110 140 H130 M114 144 H126 M118 148 H122\"/><text x=\"144\" y=\"112\" text-anchor=\"start\" font-size=\"11\" fill=\"currentColor\" stroke=\"none\" font-family=\"inherit\">ทรานซิสเตอร์ (แทน S1)</text></g></svg>",
    "c": [
-    "ส่วนตัวรับรู้หรือไบอัสเบส เช่น ต้องปรับ VR2 หรือตรวจ LDR",
-    "ลำโพงเสีย",
-    "ไอซี 7805 เสีย",
-    "ไอซีเสียงเพลงเสีย"
+    "ส่วนตัวรับรู้หรือไบอัสเบส (VR2/LDR)",
+    "ลำโพงหรือสายลำโพงเสีย",
+    "ไอซีเรกูเลเตอร์ 7805 เสีย",
+    "ไอซีเสียงเพลง UM66 เสีย"
    ],
    "a": 0,
    "e": "การลัดขา C–E จำลองว่าสวิตช์ปิดแล้วเพลงดัง แปลว่าส่วนเพลง ขยาย และลำโพงทำงานปกติ ปัญหาจึงอยู่ก่อนหน้า คือแรงดันเบสยังไม่ถึง 0.7 V"
@@ -1298,10 +1298,10 @@ const BANK = {
   {
    "q": "R3 = 330 Ω ที่ต่ออนุกรมกับลำโพงในขา C ของ Q1 มีหน้าที่หลักอะไร",
    "c": [
-    "จำกัดกระแสผ่านลำโพงและทรานซิสเตอร์",
-    "เพิ่มความดังของลำโพง",
-    "ไบอัสขาเบสของ Q1",
-    "กรองไฟ AC"
+    "จำกัดกระแสผ่านลำโพงและ Q1",
+    "เพิ่มความดังของลำโพงให้มากขึ้น",
+    "ไบอัสขาเบสของ Q1 ให้ได้ 0.7 V",
+    "กรองสัญญาณรบกวนจากไฟ AC"
    ],
    "a": 0,
    "e": "ลำโพง 8 Ω มีความต้านทานต่ำมาก ถ้าไม่มี R3 กระแสจะสูงเกินจนทรานซิสเตอร์และแบตเตอรี่ทำงานหนัก"
@@ -1309,10 +1309,10 @@ const BANK = {
   {
    "q": "C1 = 100 µF ที่ต่อคร่อมแหล่งจ่ายมีหน้าที่อะไร",
    "c": [
-    "ช่วยให้แรงดันแหล่งจ่ายนิ่ง ลดสัญญาณรบกวน",
-    "เก็บเสียงเพลงไว้เล่นซ้ำ",
-    "ขยายสัญญาณ",
-    "ตั้งเวลาให้เพลงหยุด"
+    "ทำให้แรงดันแหล่งจ่ายนิ่ง ลดสัญญาณรบกวน",
+    "เก็บเสียงเพลงไว้เล่นซ้ำภายหลัง",
+    "ขยายสัญญาณเสียงก่อนเข้าลำโพง",
+    "ตั้งเวลาให้เพลงหยุดเองอัตโนมัติ"
    ],
    "a": 0,
    "e": "ตัวเก็บประจุคร่อมแหล่งจ่ายดูดซับการเปลี่ยนแปลงกระแสชั่วขณะ แรงดันที่จ่ายให้ไอซีจึงนิ่งขึ้น"
@@ -1321,9 +1321,9 @@ const BANK = {
    "q": "ถ้าต้องการให้วงจรทรานซิสเตอร์ + LDR ทำงานเมื่อ \"สว่าง\" แทน (เช่น เตือนประตูตู้เย็นเปิด) ต้องแก้อย่างไร",
    "c": [
     "สลับตำแหน่ง LDR กับ R2 + VR2",
-    "กลับขั้วแบตเตอรี่",
-    "ถอด 7805 ออก",
-    "เปลี่ยน LED เป็นสีอื่น"
+    "กลับขั้วแบตเตอรี่ 9 V ของวงจรนี้",
+    "ถอดไอซี 7805 ออกจากวงจร",
+    "เปลี่ยน LED เป็นสีที่สว่างกว่า"
    ],
    "a": 0,
    "e": "เมื่อ LDR อยู่ด้านบน สว่างแล้ว LDR ต่ำ แรงดันเบสจะสูงขึ้นจนทรานซิสเตอร์นำ เป็นหลักการเดียวกับโครงงานที่ 24"

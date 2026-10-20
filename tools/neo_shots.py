@@ -3,7 +3,7 @@ from playwright.async_api import async_playwright
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 async def main(f, w, h, theme='dark', tag=''):
     async with async_playwright() as p:
-        b=await p.chromium.launch(); pg=await b.new_page(viewport={'width':w,'height':h})
+        b=await p.chromium.launch(**({'executable_path': os.environ['PW_EXE'], 'args': ['--no-sandbox']} if os.environ.get('PW_EXE') else {})); pg=await b.new_page(viewport={'width':w,'height':h})
         errs=[]; pg.on('pageerror',lambda e:errs.append(str(e)))
         await pg.add_init_script("localStorage.setItem('gnr2022_theme','%s');sessionStorage.setItem('gnr2022_student',JSON.stringify({sid:'6911111111',via:'id',raw:'6911111111',nick:'k'}))"%theme)
         await pg.goto('file://'+os.path.join(ROOT,f)); await pg.wait_for_timeout(700)

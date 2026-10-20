@@ -23,6 +23,7 @@ PLAY = {
     'game4_diode_forge.html':    's1-z4-diode-forge.html',
     'game5_storm_harbor.html':   's1-z5-storm-harbor.html',
     'game6_night_melody.html':   's1-z6-night-melody.html',
+    'game7_bjt_arena.html':      's2-z7-bjt-arena.html',
 }
 # เกมฉบับเดิม ใช้ชั่วคราวจนกว่าฉบับระบบใหม่จะพร้อม (ชื่อปลายทางเดียวกัน)
 LEGACY = {
@@ -92,6 +93,8 @@ def main(old_site, legacy_dir, out):
             print('play  ', dst, '(ฉบับเดิมชั่วคราว)')
     for src, dst in LABS.items():
         s = open(os.path.join(old_site, src), encoding='utf-8').read()
+        if 'http-equiv="refresh"' in s and len(s) < 4000:     # ไฟล์ชื่อเดิมใน repo เป็นหน้าส่งต่อ ใช้ฉบับที่เผยแพร่อยู่แทน
+            s = open(os.path.join(old_site, dst), encoding='utf-8').read()
         s = s.replace('href="index.html"', 'href="../index.html"')
         open(os.path.join(out, dst), 'w', encoding='utf-8').write(inject_fb(inject_back(s)))
         open(os.path.join(out, src), 'w', encoding='utf-8').write(stub(dst))
@@ -101,6 +104,9 @@ def main(old_site, legacy_dir, out):
     hub = open(os.path.join(HERE, 'hub', 'index.html'), encoding='utf-8').read()
     open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(inject_fb(hub, ''))
     shutil.copy(os.path.join(HERE, 'hub', 'feedback.js'), os.path.join(out, 'feedback.js'))
+    rs = open(os.path.join(HERE, 'hub', 'rescue.html'), encoding='utf-8').read()   # ภารกิจกู้โซน Z4-Z6
+    open(os.path.join(out, 'play', 'rescue.html'), 'w', encoding='utf-8').write(inject_fb(inject_back(rs)))
+    print('rescue  play/rescue.html')
     shutil.copy(os.path.join(ROOT, 'README.md'), os.path.join(out, 'README.md'))
     open(os.path.join(out, '.nojekyll'), 'w').close()
     skip = shutil.ignore_patterns('__pycache__', '*.pyc', '*.png', 'make_index.py', 'template_index.html', 'index_neo.css',

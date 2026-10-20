@@ -29,7 +29,7 @@ async def answer_round(page, n_expected=None, pick_correct=True):
 async def run(path):
     errs = []
     async with async_playwright() as p:
-        b = await p.chromium.launch()
+        b = await p.chromium.launch(**({'executable_path': os.environ['PW_EXE'], 'args': ['--no-sandbox']} if os.environ.get('PW_EXE') else {}))
         page = await b.new_page(viewport={'width': 390, 'height': 844})
         page.on('pageerror', lambda e: errs.append('pageerror: ' + str(e)))
         page.on('console', lambda m: errs.append('console: ' + m.text) if m.type == 'error' and 'net::' not in m.text and 'Failed to load resource' not in m.text else None)

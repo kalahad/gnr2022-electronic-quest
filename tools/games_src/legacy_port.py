@@ -107,6 +107,9 @@ def port(fname, o):
     for old, new in o.get('fixes', []):          # แก้ความคลาดเคลื่อนของเนื้อหาเดิม (ตรวจแล้วระบุเหตุผลในคอนฟิกโซน)
         assert old in d['zones'] or old in d['lab_js'], 'fix not found: ' + old
         d['zones'] = d['zones'].replace(old, new); d['lab_js'] = d['lab_js'].replace(old, new)
+    if o.get('rew'):                                   # ปรับสมดุลความยาวตัวเลือก (bank_rew.py)
+        from bank_rew import apply as _rew
+        _rew(d['bank'], o['rew'])
     for dist, m in o.get('aug', {}).items():          # เพิ่มรูปวงจรท้ายโจทย์ (ไม่ลบข้อความเดิม)
         for i, fig in m.items():
             q, c, e = d['bank'][dist][i]; d['bank'][dist][i] = (q + fig, c, e)
